@@ -6,19 +6,68 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/09 16:11:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 12:53:52 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.hpp"
 
-parsing::parsing(std::string filename)
+AllData	parsing::getAllData(void) const
+{
+	return allData;
+}
+int	parsing::countSize(std::string text)
+{
+	size_t index;
+	size_t __size;
+
+	index = 0;
+	__size = 0;
+	while (1337)
+	{
+		index = text.find("server\n{", index);
+		if (index == std::string::npos)
+			return __size;
+		__size++;
+		index += strlen("server\n{");
+	}
+	return __size;
+}
+
+parsing::parsing(std::string filename) : _size(0)
 {
 	std::string text;
+	std::string	subText;
+	t_data		__data;
+	int			i;
+	int			start;
+	int			end;
 
 	text = readFile(filename);
-	parseFile(text, 0);
-	data.push_back(info);
+	_size = countSize(text);
+	i = 0;
+	end = 0;
+	if (_size)
+	{
+		while (i < _size)
+		{
+			start = end;
+			end = text.find("server\n{", start + 5);
+			if (end == std::string::npos)
+				end = text.size();
+			subText = text.substr(start, (end - start));
+			parseFile(subText, 0);
+			data.push_back(info);
+			// std::cout << subText << std::endl;
+			__data.data = data;
+			__data.locations = locations;
+			allData.insert(std::make_pair("server", __data));
+			data.clear();
+			info.clear();
+			locations.clear();
+			i++;
+		}
+	}
 }
 
 void	parsing::checkMethods(std::vector<std::string>  & methods)
@@ -75,6 +124,7 @@ Pair	parsing::parseLine(std::string line)
 	return std::make_pair(keyWord, value);
 }
 
+
 int	parsing::getTokenType(std::string line)
 {
 	Pair	value = parseLine(line);
@@ -127,6 +177,12 @@ void	parsing::parseLocation(std::string text, int start)
 			}
 			locationsInfo.insert(std::make_pair(conf.first, methods));
 		}
+		else if (getTokenType(line) == COMMENT)
+			end = text.find_first_of("\n", start);
+		else if (getTokenType(line) == NONE)
+		{
+			throw std::runtime_error("unrecognized token : " + line);
+		}
 		skipWhiteSpaces(text, ++end);
 		parseLocation(text, end);
 	}
@@ -156,6 +212,8 @@ void	parsing::parseFile(std::string text, int start)
 			locations.insert(std::make_pair(conf.second, locationsInfo));
 			locationsInfo.clear();
 		}
+		else if (getTokenType(line) == COMMENT)
+			end = text.find_first_of("\n", start);
 		else if (getTokenType(line) == NONE)
 		{
 			throw std::runtime_error("unrecognized token : " + line);
@@ -202,5 +260,6 @@ std::vector <std::string >	parsing::parseArray(const std::string & line)
 
 parsing::~parsing()
 {
+	// delete [] allData;
 }
 
