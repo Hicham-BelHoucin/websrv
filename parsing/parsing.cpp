@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 15:50:38 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 17:53:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,28 @@ int	parsing::countSize(std::string text)
 	return __size;
 }
 
+void	parsing::checkKeyWords(void)
+{
+	std::string keywords[3] = {"listen", "host", "root"};
+	AllData::iterator begin;
+	int				i = 0;
+
+	begin = allData.begin();
+	while (begin != allData.end())
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (begin->second.data.find(keywords[j]) == begin->second.data.end())
+			{
+				throw std::runtime_error("messing 1 necessary element => '" + keywords[j] + "' server Number : " + std::to_string(i + 1));
+				return ;
+			}
+		}
+		i++;
+		begin++;
+	}
+}
+
 parsing::parsing(std::string filename) : _size(0)
 {
 	std::string text;
@@ -94,15 +116,14 @@ parsing::parsing(std::string filename) : _size(0)
 				end = text.size();
 			subText = text.substr(start, (end - start));
 			parseFile(subText, 0);
-			data.push_back(info);
-			__data.data = data;
+			__data.data = info;
 			__data.locations = locations;
 			allData.insert(std::make_pair("server", __data));
-			data.clear();
 			info.clear();
 			locations.clear();
 			i++;
 		}
+		checkKeyWords();
 	}
 }
 
@@ -273,6 +294,11 @@ void	parsing::parseFile(std::string text, int start)
 			conf = parseLine(line);
 			end = text.find_first_of("}", start);
 			parseLocation(text.substr(start, (end - start)), 0);
+			if (locationsInfo.empty())
+			{
+				throw std::runtime_error("error : Curly brakets without properties");
+				return ;
+			}
 			locations.insert(std::make_pair(conf.second, locationsInfo));
 			locationsInfo.clear();
 		}
