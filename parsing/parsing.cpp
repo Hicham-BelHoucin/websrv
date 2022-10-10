@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 17:53:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 21:43:27 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,27 @@ void	parsing::checkBrackets(std::string text)
 	}
 	if (!s.empty())
 		throw UnclosedBrakets();
+}
+
+
+void parsing::checkSemicolon(std::string text)
+{
+	std::stringstream str(text);
+	std::string line;
+	while (std::getline(str, line, '\n'))
+	{
+		std::stringstream ln(line);
+		int index = 0;
+		std::string l;
+		ln >> l;
+		skipWhiteSpaces(line, index);
+		if ( line != "server" && l != "location" && line[line.length() - 1] != ';' && 
+			!strchr(line.c_str(), '}') && !strchr(line.c_str(), '{') && line[index] != '#')
+		{
+			std::cout << line << std::endl;
+			throw Nosemicolon();
+		}
+	}
 }
 
 AllData	parsing::getAllData(void) const
@@ -102,6 +123,7 @@ parsing::parsing(std::string filename) : _size(0)
 	text = readFile(filename);
 	_size = countSize(text);
 	checkBrackets(text);
+	checkSemicolon(text);
 	if (!_size)
 		throw Usage();
 	i = 0;
@@ -206,7 +228,11 @@ const char * parsing::Usage::what() const throw ()
 
 const char * parsing::UnclosedBrakets::what() const throw ()
 {
-	return "You Have an Unclosed Bracket";
+	return "Error: You Have an Unclosed Bracket !";
+}
+const char * parsing::Nosemicolon::what() const throw ()
+{
+	return "Error: A semicolon is missing !";
 }
 
 
