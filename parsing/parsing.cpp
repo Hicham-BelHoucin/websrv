@@ -6,11 +6,44 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 14:47:47 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 15:50:38 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.hpp"
+
+void	parsing::checkBrackets(std::string text)
+{
+	std::stack<char> s;
+
+	for (int i = 0; i < text.size(); i++)
+	{
+		if ((text[i] == '}' || text[i] == ']') && s.empty())
+		{
+			throw UnclosedBrakets();
+			return ;
+		}
+		if (text[i] == '{' || text[i] == '[')
+			s.push(text[i]);
+		else if (text[i] == '}' && s.top() == '{')
+			s.pop();
+		else if (text[i] == ']' && s.top() == '[')
+			s.pop();
+		else if (text[i] == '}' && s.top() != '{')
+		{
+			throw UnclosedBrakets();
+			return ;
+		}
+		else if (text[i] == ']' && s.top() != '[')
+		{
+			throw UnclosedBrakets();
+			return ;
+		}
+
+	}
+	if (!s.empty())
+		throw UnclosedBrakets();
+}
 
 AllData	parsing::getAllData(void) const
 {
@@ -46,6 +79,7 @@ parsing::parsing(std::string filename) : _size(0)
 
 	text = readFile(filename);
 	_size = countSize(text);
+	checkBrackets(text);
 	if (!_size)
 		throw Usage();
 	i = 0;
@@ -61,7 +95,6 @@ parsing::parsing(std::string filename) : _size(0)
 			subText = text.substr(start, (end - start));
 			parseFile(subText, 0);
 			data.push_back(info);
-			// std::cout << subText << std::endl;
 			__data.data = data;
 			__data.locations = locations;
 			allData.insert(std::make_pair("server", __data));
@@ -148,6 +181,11 @@ const char * parsing::Usage::what() const throw ()
 				location properties ; \n \
 			} \n\
 		}";
+}
+
+const char * parsing::UnclosedBrakets::what() const throw ()
+{
+	return "You Have an Unclosed Bracket";
 }
 
 

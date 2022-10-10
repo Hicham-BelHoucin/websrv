@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 13:04:32 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 15:24:15 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef enum s_type
 #include <vector>
 #include <map>
 #include <set>
+#include <stack>
 #include <cstring>
 # include <fstream>
 #define	UPPERCASE ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -68,7 +69,12 @@ class parsing
         {
             const char * what() const throw ();
         };
+		class UnclosedBrakets : public std::exception
+        {
+            const char * what() const throw ();
+        };
 		AllData		getAllData(void) const;
+		void		checkBrackets(std::string text);
 		void		checkMethods(std::vector<std::string>  & methods);
 		void		skip(const std::string & line, int & index);
 		std::vector <std::string >		parseArray(const std::string &  line);
