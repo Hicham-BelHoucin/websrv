@@ -6,24 +6,28 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/09 12:36:36 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/09 16:11:16 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.hpp"
 
-parsing::parsing()
+parsing::parsing(std::string filename)
 {
+	std::string text;
+
+	text = readFile(filename);
+	parseFile(text, 0);
+	data.push_back(info);
 }
 
 void	parsing::checkMethods(std::vector<std::string>  & methods)
 {
 	for (int i = 0; i < methods.size(); i++)
 	{
-		std::transform(methods[i].begin(), methods[i].end(), methods[i].begin(), ::toupper);
 		if ((methods[i] != "GET" ) && ( methods[i] != "POST" ) && ( methods[i] != "DELETE" ))
 		{
-			throw std::runtime_error("Bad Syntax in allow_methods\nUsage : [GET,POST,DELETE]");
+			throw std::runtime_error("Bad Syntax in allow_methods\nUsage : [GET,POST,DELETE] => '" + methods[i] + "'");
 			return ;
 		}
 	}
@@ -70,34 +74,98 @@ Pair	parsing::parseLine(std::string line)
 	value = line.substr(start, end - start);
 	return std::make_pair(keyWord, value);
 }
-void	parsing::parseFile(std::string text, int start)
+
+int	parsing::getTokenType(std::string line)
 {
-	// Map		info;
+	Pair	value = parseLine(line);
+
+	if (value.first == "server")
+		return KEYWORD;
+	else if (value.first == "location")
+		return LOCATION;
+	if (value.first[0] == '#')
+		return COMMENT;
+	else if (value.first != value.second)
+		return PAIR;
+	else if (value.first == "[")
+		return OPENSQUAREBRACKET;
+	else if (value.first == "]")
+		return CLOSESQUAREBRACKET;
+	else if (value.first == "{")
+		return OPENCURLYBRACKET;
+	else if (value.first == "}")
+		return CLOSECURLYBRACKET;
+	else if (value.first == ";")
+		return SEMICOLONE;
+	return NONE;
+}
+
+void	parsing::parseLocation(std::string text, int start)
+{
+	std::string line;
+	Methods		methods;
 	Pair	conf;
 	int		end;
 
-	if (start > end)
-		return ;
-	end = text.find_first_of("\n", start);
+	end = text.find_first_of(";\n", start);
 	if (end == std::string::npos)
-		end = text.size();
+		return;
+	if (start < end)
+	{
+		line = text.substr(start, end - start);
+		if (getTokenType(line) == PAIR)
+		{
+			conf = parseLine(line);
+			if (conf.second[0] == '[')
+			{
+				methods = parseArray(conf.second);
+			}
+			else
+			{
+				methods.clear();
+				methods.push_back(conf.second);
+			}
+			locationsInfo.insert(std::make_pair(conf.first, methods));
+		}
+		skipWhiteSpaces(text, ++end);
+		parseLocation(text, end);
+	}
+}
+
+void	parsing::parseFile(std::string text, int start)
+{
+	Pair	conf;
+	int		end;
+
+	end = text.find_first_of(";\n", start);
+	if (end == std::string::npos)
+		return ;
 	if (start < end)
 	{
 		std::string line = text.substr(start, end - start);
-		if (line == "location_/")
+		if (getTokenType(line) == PAIR)
 		{
-			puts("push");
-			data.push_back(info);
-			return ;
+			conf = parseLine(line);
+			info.insert(conf);
 		}
-		conf = parseLine(line);
-		info.insert(conf);
+		else if (getTokenType(line) == LOCATION)
+		{
+			conf = parseLine(line);
+			end = text.find_first_of("}", start);
+			parseLocation(text.substr(start, (end - start)), 0);
+			locations.insert(std::make_pair(conf.second, locationsInfo));
+			locationsInfo.clear();
+		}
+		else if (getTokenType(line) == NONE)
+		{
+			throw std::runtime_error("unrecognized token : " + line);
+		}
 		skipWhiteSpaces(text, ++end);
 		parseFile(text, end);
 	}
 }
 
-void	parsing::parseArray(const std::string & line)
+std::vector <std::string >	parsing::parseArray(const std::string & line)
 {
 	std::vector <std::string > methods;
 
@@ -111,7 +179,9 @@ void	parsing::parseArray(const std::string & line)
 				int start;
 				skipWhiteSpaces(line, j);
 				start = j;
-				skip(line, j);
+				j = line.find_first_of(" {}[];,", j);
+				if (j == std::string::npos)
+					j = line.size();
 				if (start < j)
 					methods.insert(methods.end(), line.substr(start, j - start));
 			}
@@ -125,8 +195,9 @@ void	parsing::parseArray(const std::string & line)
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
+		exit(0);
 	}
-
+	return methods;
 }
 
 parsing::~parsing()
