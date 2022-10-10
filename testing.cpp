@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:54:04 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 14:46:57 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,13 @@ void	print(Data data, Set locations)
 }
 
 int main() {
-	parsing		obj("./config.conf");
 
+try
+{
+	parsing		obj("./config.conf");
 	AllData temp = obj.getAllData();
+	/* code */
+
 	AllData::iterator	begin;
 
 	begin = temp.begin();
@@ -60,5 +64,11 @@ int main() {
 		begin++;
 	}
 
+}
+catch(const std::exception& e)
+{
+	std::cerr << e.what() << '\n';
+	exit(0);
+}
 }
 
