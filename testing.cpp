@@ -6,30 +6,42 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/09 12:37:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/09 15:46:39 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./parsing/parsing.hpp"
 
 int main() {
-	parsing		obj;
-	Iter		begin;
+	parsing		obj("./config.conf");
+	std::map<std::string, LMap>::iterator begin;
+	std::map<std::string , Methods>::iterator	start;
+	std::map<std::string , std::string>::iterator	it;
 
-	// obj.parseArray("[   GET   ,    POST   ,   DELETE    ]   ;");
-	std::string text = obj.readFile("./config.conf");
-	obj.parseFile(text, 0);
+	std::cout << "********************************" << std::endl;
 	for (int i = 0 ;i < obj.data.size(); i++)
 	{
-		begin = obj.data[i].begin();
-		if (begin == obj.data[i].end())
-			puts("hi");
-		while (begin != obj.data[i].end())
+		it = obj.data[i].begin();
+		while (it != obj.data[i].end())
 		{
-			std::cout << "key : " << begin->first << " => "<< "value : " << begin->second << std::endl;
-			begin++;
+			std::cout << it->first << " == "<< it->second << std::endl;
+			it++;
 		}
 	}
-
+	std::cout << "********************************" << std::endl;
+	begin = obj.locations.begin();
+	while (begin != obj.locations.end())
+	{
+		std::cout << begin->first << std::endl;
+		start = begin->second.begin();
+		while (start != begin->second.end())
+		{
+			std::cout << "	" << start->first << " : " << std::endl;
+			for (int i = 0; i < start->second.size() ; i++)
+				std::cout << "			" << start->second[i] << std::endl;
+			start ++;
+		}
+		begin++;
+	}
 }
 
