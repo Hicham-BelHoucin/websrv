@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:53:20 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 13:04:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ class parsing
 		Set				locations;
 		unsigned int	_size;
 	public:
+		class Usage : public std::exception
+        {
+            const char * what() const throw ();
+        };
 		AllData		getAllData(void) const;
 		void		checkMethods(std::vector<std::string>  & methods);
 		void		skip(const std::string & line, int & index);
