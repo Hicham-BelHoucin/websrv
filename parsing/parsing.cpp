@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/09 16:11:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 09:42:47 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,14 @@ void	parsing::parseFile(std::string text, int start)
 		{
 			throw std::runtime_error("unrecognized token : " + line);
 		}
+		else if (getTokenType(line) == KEYWORD)
+		{
+			conf = parseLine(line);
+			if (conf.first != "server")
+				throw std::runtime_error("unrecognized token : " + conf.first);
+		}
+		else if (getTokenType(line) == COMMENT)
+			end = text.find_first_of("\n", start);
 		skipWhiteSpaces(text, ++end);
 		parseFile(text, end);
 	}
