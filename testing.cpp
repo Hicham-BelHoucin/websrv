@@ -6,13 +6,13 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 15:29:24 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 17:41:03 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./parsing/parsing.hpp"
 
-void	print(Data data, Set locations)
+void	print(Map data, Set locations)
 {
 	std::map<std::string, LMap>::iterator begin;
 	std::map<std::string, Methods>::iterator	start;
@@ -21,8 +21,8 @@ void	print(Data data, Set locations)
 	std::cout << "********************************" << std::endl;
 	for (int i = 0 ;i < data.size(); i++)
 	{
-		it = data[i].begin();
-		while (it != data[i].end())
+		it = data.begin();
+		while (it != data.end())
 		{
 			std::cout << it->first << " == "<< it->second << std::endl;
 			it++;
@@ -55,14 +55,14 @@ try
 
 	AllData::iterator	begin;
 
-	begin = temp.begin();
-	while (begin != temp.end())
-	{
-		std::cout << begin->first << std::endl;
-		print(begin->second.data, begin->second.locations);
-		// std::cout << "********************************//////////////////////////////////" << std::endl;
-		begin++;
-	}
+	// begin = temp.begin();
+	// while (begin != temp.end())
+	// {
+	// 	std::cout << begin->first << std::endl;
+	// 	print(begin->second.data, begin->second.locations);
+	// 	// std::cout << "********************************//////////////////////////////////" << std::endl;
+	// 	begin++;
+	// }
 
 }
 catch(const std::exception& e)

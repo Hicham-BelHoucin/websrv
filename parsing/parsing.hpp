@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 15:24:15 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 17:41:31 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,16 @@ typedef enum s_type
 #define	LOWERCASE abcdefghijklmnopqrstuvwxyz
 #define	WHITESPACES " \t\n\v\f\r"
 
-typedef	std::vector<std::multimap<std::string, std::string> >		Data;
 typedef	std::vector <std::string >								Methods;
 typedef std::pair<std::string, std::string>						Pair;
-typedef	std::multimap<std::string , std::string>						Map;
+typedef	std::multimap<std::string , std::string>				Map;
 typedef	std::map<std::string , Methods>							LMap;
 typedef std::map<std::string, LMap>								Set;
 typedef	std::map<std::string , std::string >::iterator			Iter;
 
 typedef	struct s_data
 {
-	Data 			data;
+	Map 			data;
 	Set				locations;
 } t_data;
 
@@ -59,7 +58,6 @@ class parsing
 {
 	private:
 		AllData			allData;
-		Data 			data;
 		Map				info;
 		LMap			locationsInfo;
 		Set				locations;
@@ -74,6 +72,7 @@ class parsing
             const char * what() const throw ();
         };
 		AllData		getAllData(void) const;
+		void		checkKeyWords(void);
 		void		checkBrackets(std::string text);
 		void		checkMethods(std::vector<std::string>  & methods);
 		void		skip(const std::string & line, int & index);
