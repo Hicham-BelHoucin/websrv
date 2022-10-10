@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:53:52 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/10 14:47:47 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ AllData	parsing::getAllData(void) const
 {
 	return allData;
 }
+
 int	parsing::countSize(std::string text)
 {
 	size_t index;
@@ -45,6 +46,8 @@ parsing::parsing(std::string filename) : _size(0)
 
 	text = readFile(filename);
 	_size = countSize(text);
+	if (!_size)
+		throw Usage();
 	i = 0;
 	end = 0;
 	if (_size)
@@ -93,11 +96,21 @@ std::string	parsing::readFile(std::string filename)
 {
 	std::ifstream   in_file(filename);
     std::string     text;
+    std::string     line;
 
     if (in_file.is_open())
-		getline(in_file, text, '\0');
+	{
+		while (getline(in_file, line, '\n'))
+		{
+			if (line != "" &&  line.find_first_not_of(WHITESPACES, 0) != std::string::npos)
+			{
+				line += "\n";
+				text += line;
+			}
+		}
+	}
     else
-        std::cout << "error" << std::endl;
+        throw std::runtime_error("cannot open file " + filename);
     return text;
 }
 
@@ -122,6 +135,19 @@ Pair	parsing::parseLine(std::string line)
 	end = line.find_first_of(";", start);
 	value = line.substr(start, end - start);
 	return std::make_pair(keyWord, value);
+}
+
+const char * parsing::Usage::what() const throw ()
+{
+	return "Usage : \n \
+		server  \n\
+		{  \n\
+			server properties ; \n \
+			location /  \n\
+			{  \n\
+				location properties ; \n \
+			} \n\
+		}";
 }
 
 
