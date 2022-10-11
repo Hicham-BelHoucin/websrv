@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/11 13:17:09 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/11 15:34:03 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,25 @@ void parsing::checkSemicolon(std::string text)
 			std::cout << line << std::endl;
 			throw Nosemicolon();
 		}
-		// else if (((l.substr(0,6) == "server" || l.substr(0,8) == "location" || line[index] == '{' || 
-		// 	line[index] == '}') && line[line.length() - 1] == ';') || l == ";")
-		// {
-		// 	std::cout << line << std::endl;
-		// 	throw Extrasemicolon();
-		// }
+		else if ((((l.substr(0,6) == "server" && l.substr(0,7) != "server_") || l.substr(0,8) == "location" || line[index] == '{' || 
+			line[index] == '}') && line[line.length() - 1] == ';') || l == ";")
+		{
+			std::cout << line << std::endl;
+			throw Extrasemicolon();
+		}
+		if ((strchr(line.c_str(),'{') || strchr(line.c_str(),'}')))
+		{
+			// std::cout << line << std::endl;
+			while(line.c_str()[index])
+			{
+				if (line[index] != ' ' && line[index] != '}' && line[index] != '{')
+				{
+					std::cout << line.c_str() + index << std::endl;
+					throw Extrasemicolon();
+				}
+				index++;
+			}
+		}
 	}
 }
 
@@ -129,7 +142,7 @@ parsing::parsing(std::string filename) : _size(0)
 	text = readFile(filename);
 	_size = countSize(text);
 	checkBrackets(text);
-	// checkSemicolon(text);
+	checkSemicolon(text);
 	if (!_size)
 		throw Usage();
 	i = 0;
