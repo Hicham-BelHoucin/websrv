@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/11 12:29:51 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/11 13:17:09 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ parsing::parsing(std::string filename) : _size(0)
 	text = readFile(filename);
 	_size = countSize(text);
 	checkBrackets(text);
-	checkSemicolon(text);
+	// checkSemicolon(text);
 	if (!_size)
 		throw Usage();
 	i = 0;
@@ -151,7 +151,7 @@ parsing::parsing(std::string filename) : _size(0)
 			locations.clear();
 			i++;
 		}
-		checkKeyWords();
+		// checkKeyWords();
 	}
 }
 
@@ -258,15 +258,15 @@ int	parsing::getTokenType(std::string line)
 		return COMMENT;
 	else if (value.first != value.second)
 		return PAIR;
-	else if (value.first == "[")
+	else if (value.first[0] == '[')
 		return OPENSQUAREBRACKET;
-	else if (value.first == "]")
+	else if (value.first[0] == ']')
 		return CLOSESQUAREBRACKET;
-	else if (value.first == "{")
+	else if (value.first[0] == '{')
 		return OPENCURLYBRACKET;
-	else if (value.first == "}")
+	else if (value.first[0] == '}')
 		return CLOSECURLYBRACKET;
-	else if (value.first == ";")
+	else if (value.first[0] == ';')
 		return SEMICOLONE;
 	return NONE;
 }
@@ -302,7 +302,7 @@ void	parsing::parseLocation(std::string text, int start)
 			end = text.find_first_of("\n", start);
 		else if (getTokenType(line) == NONE)
 		{
-			throw std::runtime_error("unrecognized token : " + line);
+			throw std::runtime_error("unrecognized token : '" + line + "'");
 		}
 		skipWhiteSpaces(text, ++end);
 		parseLocation(text, end);
