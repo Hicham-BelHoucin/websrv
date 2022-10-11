@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 21:43:27 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/11 12:29:51 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,18 @@ void parsing::checkSemicolon(std::string text)
 		std::string l;
 		ln >> l;
 		skipWhiteSpaces(line, index);
-		if ( line != "server" && l != "location" && line[line.length() - 1] != ';' && 
+		if ( l != "server" && l != "location" && line[line.length() - 1] != ';' && 
 			!strchr(line.c_str(), '}') && !strchr(line.c_str(), '{') && line[index] != '#')
 		{
 			std::cout << line << std::endl;
 			throw Nosemicolon();
 		}
+		// else if (((l.substr(0,6) == "server" || l.substr(0,8) == "location" || line[index] == '{' || 
+		// 	line[index] == '}') && line[line.length() - 1] == ';') || l == ";")
+		// {
+		// 	std::cout << line << std::endl;
+		// 	throw Extrasemicolon();
+		// }
 	}
 }
 
@@ -233,6 +239,10 @@ const char * parsing::UnclosedBrakets::what() const throw ()
 const char * parsing::Nosemicolon::what() const throw ()
 {
 	return "Error: A semicolon is missing !";
+}
+const char * parsing::Extrasemicolon::what() const throw ()
+{
+	return "Error: An extra semicolon found !";
 }
 
 

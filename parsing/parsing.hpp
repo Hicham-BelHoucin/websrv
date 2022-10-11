@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 21:28:02 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/11 10:57:50 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,10 @@ class parsing
             const char * what() const throw ();
         };
 		class Nosemicolon : public std::exception
+        {
+            const char * what() const throw ();
+        };
+		class Extrasemicolon : public std::exception
         {
             const char * what() const throw ();
         };
