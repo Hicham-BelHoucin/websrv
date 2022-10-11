@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/11 15:34:03 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/11 17:05:51 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,17 +69,16 @@ void parsing::checkSemicolon(std::string text)
 			std::cout << line << std::endl;
 			throw Extrasemicolon();
 		}
-		if ((strchr(line.c_str(),'{') || strchr(line.c_str(),'}')))
+		else if ((strchr(line.c_str(),'{') || strchr(line.c_str(),'}')))
 		{
-			// std::cout << line << std::endl;
-			while(line.c_str()[index])
+			int i = 0;
+			while(line[i] != '\0')
 			{
-				if (line[index] != ' ' && line[index] != '}' && line[index] != '{')
+				if (!strchr("\n\t\v\f\r ", line[i]) && line[i] != '}' && line[i] != '{')
 				{
-					std::cout << line.c_str() + index << std::endl;
-					throw Extrasemicolon();
+					throw Nobarcket();
 				}
-				index++;
+				i++;
 			}
 		}
 	}
@@ -256,6 +255,10 @@ const char * parsing::Nosemicolon::what() const throw ()
 const char * parsing::Extrasemicolon::what() const throw ()
 {
 	return "Error: An extra semicolon found !";
+}
+const char * parsing::Nobarcket::what() const throw ()
+{
+	return "Error: The curly braket should be in a single line !";
 }
 
 
