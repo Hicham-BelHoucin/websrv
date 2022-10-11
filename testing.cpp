@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/11 15:47:28 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/11 16:24:04 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int main() {
 
 try
 {
-	parsing		obj("./config.conf");
+	parsing		obj("./conf/config.conf");
 	AllData temp = obj.getAllData();
 	/* code */
 
