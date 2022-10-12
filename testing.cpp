@@ -6,11 +6,11 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 17:41:03 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/12 10:47:18 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./parsing/parsing.hpp"
+#include "include/parsing.hpp"
 
 void	print(Map data, Set locations)
 {
@@ -49,7 +49,7 @@ int main() {
 
 try
 {
-	parsing		obj("./config.conf");
+	parsing		obj("./conf/config.conf");
 	AllData temp = obj.getAllData();
 	/* code */
 

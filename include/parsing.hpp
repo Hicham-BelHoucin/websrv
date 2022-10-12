@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/10 17:41:31 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/12 13:03:28 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ typedef enum s_type
 #include <set>
 #include <stack>
 #include <cstring>
-# include <fstream>
+#include <fstream>
+#include <sstream>
 #define	UPPERCASE ABCDEFGHIJKLMNOPQRSTUVWXYZ
 #define	SPECIAL	  "{}[];,"
 #define	LOWERCASE abcdefghijklmnopqrstuvwxyz
@@ -71,15 +72,25 @@ class parsing
         {
             const char * what() const throw ();
         };
+		class Nosemicolon : public std::exception
+        {
+            const char * what() const throw ();
+        };
+		class Extrasemicolon : public std::exception
+        {
+            const char * what() const throw ();
+        };
 		AllData		getAllData(void) const;
 		void		checkKeyWords(void);
 		void		checkBrackets(std::string text);
+		int			checkPath(std::string text);
 		void		checkMethods(std::vector<std::string>  & methods);
 		void		skip(const std::string & line, int & index);
 		std::vector <std::string >		parseArray(const std::string &  line);
 		void		parseFile(std::string text, int start);
 		void		parseLocation(std::string text, int start);
 		Pair		parseLine(std::string line);
+		void        checkSemicolon(std::string text);
 		int			countSize(std::string text);
 		int			getTokenType(std::string line);
 		void		skipWhiteSpaces(const std::string &  line, int & index);
