@@ -3,34 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   testing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/09 15:46:39 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/11 16:24:04 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./parsing/parsing.hpp"
+#include "parsing.hpp"
 
-int main() {
-	parsing		obj("./config.conf");
+void	print(Map data, Set locations)
+{
 	std::map<std::string, LMap>::iterator begin;
-	std::map<std::string , Methods>::iterator	start;
-	std::map<std::string , std::string>::iterator	it;
+	std::map<std::string, Methods>::iterator	start;
+	std::map<std::string, std::string>::iterator	it;
 
 	std::cout << "********************************" << std::endl;
-	for (int i = 0 ;i < obj.data.size(); i++)
+	for (int i = 0 ;i < data.size(); i++)
 	{
-		it = obj.data[i].begin();
-		while (it != obj.data[i].end())
+		it = data.begin();
+		while (it != data.end())
 		{
 			std::cout << it->first << " == "<< it->second << std::endl;
 			it++;
 		}
 	}
 	std::cout << "********************************" << std::endl;
-	begin = obj.locations.begin();
-	while (begin != obj.locations.end())
+	begin = locations.begin();
+	while (begin != locations.end())
 	{
 		std::cout << begin->first << std::endl;
 		start = begin->second.begin();
@@ -43,5 +43,32 @@ int main() {
 		}
 		begin++;
 	}
+}
+
+int main() {
+
+try
+{
+	parsing		obj("./conf/config.conf");
+	AllData temp = obj.getAllData();
+	/* code */
+
+	AllData::iterator	begin;
+
+	// begin = temp.begin();
+	// while (begin != temp.end())
+	// {
+	// 	std::cout << begin->first << std::endl;
+	// 	print(begin->second.data, begin->second.locations);
+	// 	// std::cout << "********************************//////////////////////////////////" << std::endl;
+	// 	begin++;
+	// }
+
+}
+catch(const std::exception& e)
+{
+	std::cerr << e.what() << '\n';
+	exit(0);
+}
 }
 
