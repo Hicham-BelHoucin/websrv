@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/11 17:05:51 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/12 13:51:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.hpp"
+#include "../../include/parsing.hpp"
 
 void	parsing::checkBrackets(std::string text)
 {
@@ -57,13 +57,13 @@ void parsing::checkSemicolon(std::string text)
 		std::string l;
 		ln >> l;
 		skipWhiteSpaces(line, index);
-		if ( l != "server" && l != "location" && line[line.length() - 1] != ';' && 
+		if ( l != "server" && l != "location" && line[line.length() - 1] != ';' &&
 			!strchr(line.c_str(), '}') && !strchr(line.c_str(), '{') && line[index] != '#')
 		{
 			std::cout << line << std::endl;
 			throw Nosemicolon();
 		}
-		else if ((((l.substr(0,6) == "server" && l.substr(0,7) != "server_") || l.substr(0,8) == "location" || line[index] == '{' || 
+		else if ((((l.substr(0,6) == "server" && l.substr(0,7) != "server_") || l.substr(0,8) == "location" || line[index] == '{' ||
 			line[index] == '}') && line[line.length() - 1] == ';') || l == ";")
 		{
 			std::cout << line << std::endl;
@@ -163,7 +163,7 @@ parsing::parsing(std::string filename) : _size(0)
 			locations.clear();
 			i++;
 		}
-		// checkKeyWords();
+		checkKeyWords();
 	}
 }
 
@@ -306,6 +306,11 @@ void	parsing::parseLocation(std::string text, int start)
 			if (conf.second[0] == '[')
 			{
 				methods = parseArray(conf.second);
+				if (methods.empty())
+				{
+					throw std::runtime_error("empty square brackets ! ");
+					return ;
+				}
 			}
 			else
 			{
@@ -323,6 +328,26 @@ void	parsing::parseLocation(std::string text, int start)
 		skipWhiteSpaces(text, ++end);
 		parseLocation(text, end);
 	}
+}
+
+int	parsing::checkPath(std::string text)
+{
+	if (text[0] != '/' && text[0] != '*')
+	{
+		throw std::runtime_error("loacation must be followed by path '/' ");
+		return (1);
+	}
+	if (text[0] == '*' && text[1] != '.')
+	{
+		throw std::runtime_error("loacation must be followed by path '" + text + "'");
+		return (1);
+	}
+	if (text[0] == '*' && (text.substr(1) != ".php" && text.substr(1) != ".py"))
+	{
+		throw std::runtime_error("unacceptable extensions " + text + " expected extensions : ['.php', '.py']");
+		return (1);
+	}
+	return (0);
 }
 
 void	parsing::parseFile(std::string text, int start)
@@ -344,6 +369,8 @@ void	parsing::parseFile(std::string text, int start)
 		else if (getTokenType(line) == LOCATION)
 		{
 			conf = parseLine(line);
+			if (checkPath(conf.second))
+				return ;
 			end = text.find_first_of("}", start);
 			parseLocation(text.substr(start, (end - start)), 0);
 			if (locationsInfo.empty())
