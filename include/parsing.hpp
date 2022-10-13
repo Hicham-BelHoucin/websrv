@@ -80,6 +80,10 @@ class parsing
         {
             const char * what() const throw ();
         };
+		class Nobarcket : public std::exception
+        {
+            const char * what() const throw ();
+        };
 		AllData		getAllData(void) const;
 		void		checkKeyWords(void);
 		void		checkBrackets(std::string text);
