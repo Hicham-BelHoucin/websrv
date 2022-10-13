@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/12 13:51:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/13 17:59:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,13 +110,29 @@ int	parsing::countSize(std::string text)
 
 void	parsing::checkKeyWords(void)
 {
-	std::string keywords[3] = {"listen", "host", "root"};
+	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
 	AllData::iterator begin;
+	Map::iterator		start;
+	std::set<int> 	values;
 	int				i = 0;
+	int				port;
 
 	begin = allData.begin();
 	while (begin != allData.end())
 	{
+		start = begin->second.data.begin();
+		while (start != begin->second.data.end())
+		{
+			// std::cout << start->second << std::endl;
+			if (start->first == "listen")
+			{
+				port = std::stoi(start->second);
+				if (values.find(port) != values.end())
+					throw std::runtime_error("duplicate port value");
+				values.insert(port);
+			}
+			start++;
+		}
 		for (int j = 0; j < 3; j++)
 		{
 			if (begin->second.data.find(keywords[j]) == begin->second.data.end())
@@ -125,6 +141,12 @@ void	parsing::checkKeyWords(void)
 				return ;
 			}
 		}
+		for (int i = 1; i < 10; i++)
+		{
+			if (begin->second.data.count(keywords[i]) > 1)
+				throw std::runtime_error("duplicate " + keywords[i]);
+		}
+		values.clear();
 		i++;
 		begin++;
 	}
@@ -142,7 +164,7 @@ parsing::parsing(std::string filename) : _size(0)
 	text = readFile(filename);
 	_size = countSize(text);
 	checkBrackets(text);
-	checkSemicolon(text);
+	// checkSemicolon(text);
 	if (!_size)
 		throw Usage();
 	i = 0;
@@ -229,6 +251,8 @@ Pair	parsing::parseLine(std::string line)
 	skipWhiteSpaces(line, start);
 	end = line.find_first_of(";", start);
 	value = line.substr(start, end - start);
+	if (keyWord[0] != '#' && keyWord != "return" && value.find_first_of(WHITESPACES) != std::string::npos)
+		throw std::runtime_error("error in this line => " + value);
 	return std::make_pair(keyWord, value);
 }
 
@@ -311,6 +335,8 @@ void	parsing::parseLocation(std::string text, int start)
 			}
 			else
 			{
+				if (conf.second.find_first_of("{}[];,()") != std::string::npos)
+					throw std::runtime_error("error : " + conf.second);
 				methods.clear();
 				methods.push_back(conf.second);
 			}
@@ -321,9 +347,40 @@ void	parsing::parseLocation(std::string text, int start)
 		else if (getTokenType(line) == NONE)
 		{
 			throw std::runtime_error("unrecognized token : '" + line + "'");
+			return ;
 		}
 		skipWhiteSpaces(text, ++end);
 		parseLocation(text, end);
+	}
+}
+
+void	parsing::checkMethodsKeyWords(LMap locations)
+{
+	LMap::iterator		begin;
+	std::string names[7] = {"upload_enable", "upload_store", "allow_methods", "autoindex" , "index", "return", "fastcgi_pass"};
+
+	begin = locations.begin();
+	while (begin != locations.end())
+	{
+		for (int i = 0; i < 7; i++)
+		{
+			if (begin->first == "upload_enable" || begin->first == "autoindex")
+			{
+				if (begin->second[0] != "off" && begin->second[0] != "on")
+				{
+					throw std::runtime_error("unacceptable value : " + begin->second[0]);
+					return ;
+				}
+			}
+			else if (names[i] == begin->first)
+				break;
+			else if (i == 6 && names[i] != begin->first)
+			{
+				throw std::runtime_error("unknown key word " + begin->first);
+				return ;
+			}
+		}
+		begin++;
 	}
 }
 
@@ -349,6 +406,7 @@ int	parsing::checkPath(std::string text)
 
 void	parsing::parseFile(std::string text, int start)
 {
+	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
 	Pair	conf;
 	int		end;
 
@@ -361,6 +419,44 @@ void	parsing::parseFile(std::string text, int start)
 		if (getTokenType(line) == PAIR)
 		{
 			conf = parseLine(line);
+			if (conf.first == "listen")
+			{
+				if (conf.second.find_first_not_of("0123456789") != std::string::npos)
+					throw	std::runtime_error("port value must composed only from digits ! ");
+			}
+			else if (conf.first == "host")
+			{
+				if (conf.second.find_first_not_of("0123456789.") != std::string::npos)
+					throw	std::runtime_error("host value must composed only from digits ! ");
+				int j = 0;
+				for (int i = 0; i < conf.second.size(); i++)
+				{
+					if (conf.second[i] == '.' && !std::isdigit(conf.second[i + 1]))
+						throw std::runtime_error("host value must be an ip address ! => 0.0.0.0");
+					else if (conf.second.find_first_not_of("0123456789", i) != std::string::npos)
+					{
+						j++;
+						i = conf.second.find_first_not_of("0123456789", i);
+						if (conf.second[i] == '.' && !conf.second[i + 1])
+							throw std::runtime_error("host value must be an ip address ! => 0.0.0.0");
+
+					}
+				}
+				if (j != 3)
+					throw std::runtime_error("host value must be an ip address ! => 0.0.0.0");
+			}
+			else if (conf.first == "client_max_body_size")
+			{
+				if (conf.second.find_first_not_of("0123456789m") != std::string::npos || conf.second[conf.second.size() - 1] != 'm')
+					throw std::runtime_error("client max body must be composed only from digits !");
+			}
+			for (int i = 0; i < 10; i++)
+			{
+				if (conf.first == keywords[i])
+					break;
+				else if (i == 9 && conf.first != keywords[i])
+					throw std::runtime_error("unknown key word " + conf.first);
+			}
 			info.insert(conf);
 		}
 		else if (getTokenType(line) == LOCATION)
@@ -375,6 +471,7 @@ void	parsing::parseFile(std::string text, int start)
 				throw std::runtime_error("error : Curly brakets without properties");
 				return ;
 			}
+			checkMethodsKeyWords(locationsInfo);
 			locations.insert(std::make_pair(conf.second, locationsInfo));
 			locationsInfo.clear();
 		}
