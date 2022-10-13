@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/12 13:03:28 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/12 15:12:22 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ class parsing
             const char * what() const throw ();
         };
 		AllData		getAllData(void) const;
+		void		checkMethodsKeyWords(LMap locations);
 		void		checkKeyWords(void);
 		void		checkBrackets(std::string text);
 		int			checkPath(std::string text);
