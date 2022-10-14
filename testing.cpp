@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   testing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 11:44:47 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/11 16:24:04 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/12 10:47:18 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.hpp"
+#include "include/parsing.hpp"
 
 void	print(Map data, Set locations)
 {
