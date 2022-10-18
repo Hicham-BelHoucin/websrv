@@ -6,14 +6,14 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/13 17:07:20 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/16 13:32:08 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "createSocket.hpp"
 createSocket::createSocket()
 {
-    
+  
 }
 createSocket::createSocket(int domaine, int type, int protocol, u_int32_t ip, int port)
 {

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/12 16:35:10 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/18 10:52:43 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,19 @@ int main(int argc, char const *argv[])
         new_socket = accept(sockfd, (struct sockaddr*)&add,(socklen_t*)&addrlen);
         int valread = read(new_socket, buffer, 1024);
         std::cout << buffer << std::endl;
-        send(new_socket, "<h3 style=\"color: blue\">Hello message sent from obeaj host motherfucker<h3>", strlen("<h3 style=\"color: red\">Hello message sent from obeaj host motherfucker<h3>"), 0);
+        char* reply = 
+            "HTTP/1.1 200 OK\n"
+            "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+            "Server: Apache/2.2.3\n"
+            "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+            "ETag: \"56d-9989200-1132c580\"\n"
+            "Content-Type: text/html\n"
+            "Content-Length: 75\n"
+            "Accept-Ranges: bytes\n"
+            "Connection: Keep Alive\n"
+            "\n"
+            "<h3 style=\"color: blue\">Hello message sent from obeaj host motherfucker<h3>";
+        send(new_socket, reply, strlen(reply), 0);
         std::cout << "<h3>Hello message sent<h3>\n";
     // closing the connected socket
     close(new_socket);
