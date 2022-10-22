@@ -3,18 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   createSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/13 17:07:20 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/22 17:06:43 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "createSocket.hpp"
+
 createSocket::createSocket()
 {
     
 }
+
+int createSocket::init(int domaine, int type, int protocol, u_int32_t ip, int port)
+{
+    sockfd = socket(domaine, type, protocol);
+    address.sin_family = domaine;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(port);
+    addrlen = sizeof(address);
+    return sockfd;
+}
+
+int createSocket::_close(void)
+{
+    return close(sockfd);
+}
+
+int createSocket::_bind(void)
+{
+    return bind(sockfd, (struct sockaddr*)&address, sizeof(address));
+}
+
+int createSocket::_accept(void)
+{
+    return accept(sockfd, (struct sockaddr*)&address,(socklen_t*)&addrlen);
+}
+
+int createSocket::_listen(void)
+{
+    return listen(sockfd, 5);
+}
+
 createSocket::createSocket(int domaine, int type, int protocol, u_int32_t ip, int port)
 {
     if ((sockfd = socket(domaine, type, protocol)) < 0)
@@ -22,7 +54,9 @@ createSocket::createSocket(int domaine, int type, int protocol, u_int32_t ip, in
     address.sin_family = domaine;
     address.sin_addr.s_addr = ip;
     address.sin_port = htons(port);
+    addrlen = sizeof(address);
 }
+
 createSocket::~createSocket()
 {
     
