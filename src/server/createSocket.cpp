@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/22 17:06:43 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/22 18:57:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 createSocket::createSocket()
 {
-    
+
 }
 
 int createSocket::init(int domaine, int type, int protocol, u_int32_t ip, int port)
 {
     sockfd = socket(domaine, type, protocol);
     address.sin_family = domaine;
-    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_addr.s_addr = htons(ip);
     address.sin_port = htons(port);
     addrlen = sizeof(address);
     return sockfd;
@@ -29,7 +29,7 @@ int createSocket::init(int domaine, int type, int protocol, u_int32_t ip, int po
 
 int createSocket::_close(void)
 {
-    return close(sockfd);
+    return shutdown(sockfd, SHUT_RDWR);;
 }
 
 int createSocket::_bind(void)
@@ -59,5 +59,5 @@ createSocket::createSocket(int domaine, int type, int protocol, u_int32_t ip, in
 
 createSocket::~createSocket()
 {
-    
+
 }
