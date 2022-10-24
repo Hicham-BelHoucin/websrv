@@ -6,11 +6,12 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/18 14:13:08 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/21 18:57:19 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webServ.hpp"
+#include "request.hpp"
 #define PORT 80
 
 int main(int argc, char const *argv[])
@@ -39,13 +40,15 @@ int main(int argc, char const *argv[])
         "Connection: Keep Alive\n"
         "\n"
         "<h3 style=\"color: blue\">Hello message sent from obeaj host motherfucker<h3>\r\n";
+    
     while(1)
     {
         listen(sockfd, 5);
         new_socket = accept(sockfd, (struct sockaddr*)&add,(socklen_t*)&addrlen);
         int valread = read(new_socket, buffer, 2048);
         send(new_socket, reply, strlen(reply), 0);
-        std::cout << buffer << std::endl;
+        request req(buffer);
+        // std::cout << buffer << std::endl;
         // closing the connected socket
         close(new_socket);
         // closing the listening socket

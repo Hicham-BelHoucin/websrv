@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/19 11:33:14 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/21 19:32:17 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class request
 {
     private:
         std::map<std::string, std::vector<std::string> > req;
+        int error;
     public:
         request(std::string _req);
         ~request();
