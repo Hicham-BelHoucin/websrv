@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/22 18:57:51 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/24 16:46:50 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,14 @@ createSocket::createSocket()
 
 }
 
-int createSocket::init(int domaine, int type, int protocol, u_int32_t ip, int port)
+int createSocket::init(int domaine, int type, int protocol, std::string ip, int port)
 {
     sockfd = socket(domaine, type, protocol);
     address.sin_family = domaine;
-    address.sin_addr.s_addr = htons(ip);
+	this->port = port;
+	this->ip = ip;
+	if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)
+		perror("inet_aton");
     address.sin_port = htons(port);
     addrlen = sizeof(address);
     return sockfd;
@@ -44,17 +47,23 @@ int createSocket::_accept(void)
 
 int createSocket::_listen(void)
 {
-    return listen(sockfd, 5);
+	if (listen(sockfd, 5) == -1)
+		return (-1);
+	std::cout << "listing on port: " << ip << ":" << port << std::endl;
+    return (0);
 }
 
-createSocket::createSocket(int domaine, int type, int protocol, u_int32_t ip, int port)
+createSocket::createSocket(int domaine, int type, int protocol, std::string ip, int port)
 {
     if ((sockfd = socket(domaine, type, protocol)) < 0)
         throw std::runtime_error("Error: Socket cannot be created ! \n");
     address.sin_family = domaine;
-    address.sin_addr.s_addr = ip;
+    if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)
+		perror("inet_aton");
     address.sin_port = htons(port);
     addrlen = sizeof(address);
+	this->port = port;
+	this->ip = ip;
 }
 
 createSocket::~createSocket()

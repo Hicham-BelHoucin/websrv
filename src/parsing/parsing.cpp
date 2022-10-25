@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/13 17:59:51 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/25 12:56:30 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	parsing::checkBrackets(std::string text)
 			throw UnclosedBrakets();
 			return ;
 		}
-
 	}
 	if (!s.empty())
 		throw UnclosedBrakets();
@@ -122,7 +121,6 @@ void	parsing::checkKeyWords(void)
 		start = begin->second.data.begin();
 		while (start != begin->second.data.end())
 		{
-			// std::cout << start->second << std::endl;
 			if (start->first == "listen")
 			{
 				port = std::stoi(start->second);
