@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/12 15:12:22 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/25 15:10:52 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSING_HPP
 #define PARSING_HPP
+
+#include "shortcuts.h"
 
 typedef enum s_type
 {
@@ -27,25 +29,10 @@ typedef enum s_type
 	COMMENT,
 } t_type;
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <set>
-#include <stack>
-#include <cstring>
-#include <fstream>
-#include <sstream>
 #define	UPPERCASE ABCDEFGHIJKLMNOPQRSTUVWXYZ
 #define	SPECIAL	  "{}[];,"
 #define	LOWERCASE abcdefghijklmnopqrstuvwxyz
-#define	WHITESPACES " \t\n\v\f\r"
 
-typedef	std::vector <std::string >								Methods;
-typedef std::pair<std::string, std::string>						Pair;
-typedef	std::multimap<std::string , std::string>				Map;
-typedef	std::map<std::string , Methods>							LMap;
-typedef std::map<std::string, LMap>								Set;
-typedef	std::map<std::string , std::string >::iterator			Iter;
 
 typedef	struct s_data
 {
