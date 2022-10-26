@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webServ.hpp                                        :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/14 14:20:19 by obeaj            ###   ########.fr       */
+/*   Created: 2022/10/26 09:19:00 by obeaj             #+#    #+#             */
+/*   Updated: 2022/10/26 12:19:59 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERV_HPP  
-#define WEBSERV_HPP
+#ifndef UTILS_H
+#define UTILS_H
+#include "shortcuts.h"
 
-#include "common.h"
-#include "createSocket.hpp"
-#include "parsing.hpp"
-#include "server.hpp"
-class webserv
-{
-    public:
-        webserv();
-        ~webserv();
-};
-#endif
+std::string&    stringtrim(std::string &str);
+
+#endif // !UTILS_H
