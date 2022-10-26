@@ -6,13 +6,14 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 12:19:59 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/26 14:41:54 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_H
 #define UTILS_H
-#include "shortcuts.h"
+
+#include "common.h"
 
 std::string&    stringtrim(std::string &str);
 

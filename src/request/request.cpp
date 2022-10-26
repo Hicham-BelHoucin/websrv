@@ -6,13 +6,13 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 12:58:31 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/26 14:40:09 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "request.hpp"
 
-/*------------------------Consructors Destructors-----------------------------------*/
+/*-----------------------------Consructors Destructors------------------------------------*/
 
 request::request(std::string _req)
 {
@@ -46,7 +46,7 @@ request::~request()
 {
 }
 
-/*-------------------------------Member functions----------------------------------------*/
+/*---------------------------------Member functions----------------------------------------*/
 
 void request::parseReqLine(std::string line)
 {
@@ -72,7 +72,7 @@ void request::parseReqMethods(std::string line)
     req_version = stringtrim(key);
 }
 
-/*-----------------------------Getters-------------------------------*/
+/*--------------------------------------Getters-------------------------------------------*/
 
 std::string request::getHeaderValue(std::string &key)
 {
