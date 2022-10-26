@@ -3,31 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   createSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:54:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/12 16:50:44 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/25 13:07:29 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CREATESOCKET_HPP
 #define CREATESOCKET_HPP
-#include <string>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <iostream>
-#include <unistd.h>
-#include <errno.h>
 
+#include "common.h"
 class createSocket
 {
     private:
-        int sockfd;
-        struct sockaddr_in address;
+        int                 sockfd;
+        int                 addrlen;
+		int					port;
+		std::string			ip;
+        struct sockaddr_in  address;
     public:
         createSocket();
-        createSocket(int domaine, int type, int protocol, u_int32_t ip, int port);
+        createSocket(int domaine, int type, int protocol, std::string ip, int port);
+        int init(int domaine, int type, int protocol, std::string ip, int port);
+        int _bind(void);
+        int _listen(void);
+        int _accept(void);
+        int _close(void);
         ~createSocket();
-        int getSockfd();      
+        int getSockfd(){return sockfd;};
 };
 #endif
