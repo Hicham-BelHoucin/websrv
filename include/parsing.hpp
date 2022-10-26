@@ -6,13 +6,13 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/25 15:10:52 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/26 14:38:37 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSING_HPP
 #define PARSING_HPP
-
+#include "common.h"
 class parsing
 {
 	private:
