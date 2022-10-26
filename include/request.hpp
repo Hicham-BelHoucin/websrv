@@ -6,14 +6,13 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/25 18:54:52 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/26 12:25:50 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
-# include "shortcuts.h"
-
+#include "utils.h"
 class request
 {
     private:

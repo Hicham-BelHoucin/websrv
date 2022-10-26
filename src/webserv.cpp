@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/25 19:03:41 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/26 12:58:53 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ int main(int argc, char const *argv[])
         send(new_socket, reply, strlen(reply), 0);
         request req(buffer);
         std::string key = "Content-Type";
-        std::cout << req.getReqMethod() << std::endl << std::endl;
-        std::cout << req.getHeaderValue(key) <<std::endl;
+        // std::cout << req.getReqMethod() << std::endl << std::endl;
+        // std::cout << req.getHeaderValue(key) <<std::endl;
         // std::cout << "############################## request ###############################\n";
         // std::cout << buffer << std::endl;
         // std::cout << "######################################################################\n";

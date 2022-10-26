@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/25 19:00:16 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/26 12:58:31 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ request::request(std::string _req)
     }
     while (std::getline(reqstream, line))
     {
-        req_body += line;
+        req_body += stringtrim(line);
         req_body += "\n";
     }
     
@@ -40,7 +40,7 @@ request::request(std::string _req)
     }
     std::cout<<std::endl;
     std::cout << req_body;
-    std::cout << "\n\n\n\n --------------------------------------------------------------------\n\n";
+    std::cout << "\n --------------------------------------------------------------------\n\n";
 }
 request::~request()
 {
@@ -55,7 +55,7 @@ void request::parseReqLine(std::string line)
     std::string value;
     std::getline(str, key, ':');
     std::getline(str, value);
-    req_headers.insert(Pair(key,value));
+    req_headers.insert(Pair(stringtrim(key),stringtrim(value)));
 }
 void request::parseReqMethods(std::string line)
 {
@@ -65,11 +65,11 @@ void request::parseReqMethods(std::string line)
     std::string value;
     
     std::getline(str, key, ' ');
-    req_method = key;
+    req_method = stringtrim(key);
     std::getline(str, key, ' ');
-    req_path = key;
+    req_path = stringtrim(key);
     std::getline(str, key, ' ');
-    req_version = key;
+    req_version = stringtrim(key);
 }
 
 /*-----------------------------Getters-------------------------------*/
