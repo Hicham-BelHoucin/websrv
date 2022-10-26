@@ -13,35 +13,6 @@
 #ifndef PARSING_HPP
 #define PARSING_HPP
 
-#include "shortcuts.h"
-
-typedef enum s_type
-{
-	NONE = 0,
-	KEYWORD,
-	PAIR,
-	LOCATION,
-	OPENCURLYBRACKET,
-	CLOSECURLYBRACKET,
-	OPENSQUAREBRACKET,
-	CLOSESQUAREBRACKET,
-	SEMICOLONE,
-	COMMENT,
-} t_type;
-
-#define	UPPERCASE ABCDEFGHIJKLMNOPQRSTUVWXYZ
-#define	SPECIAL	  "{}[];,"
-#define	LOWERCASE abcdefghijklmnopqrstuvwxyz
-
-
-typedef	struct s_data
-{
-	Map 			data;
-	Set				locations;
-} t_data;
-
-typedef std::multimap<std::string, t_data>								AllData;
-
 class parsing
 {
 	private:
