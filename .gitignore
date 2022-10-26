@@ -1,8 +1,12 @@
 *.out
 *.exe
+*.o
 .DS_Store
 /.vscode
 .vscode
 *.dSYM
 Webserv
-/testing-socket
+testing-socket/
+test.cpp
+testing.cpp
+used_struct.hpp
