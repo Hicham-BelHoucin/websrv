@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/26 13:53:15 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:16:54 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 #define PARSING_HPP
 
 #include "common.h"
+#include "utils.h"
 class parsing
 {
 	private:
-		AllData			allData;
+		Data			data;
 		Map				info;
-		LMap			locationsInfo;
+		LocationMap			locationsInfo;
 		Set				locations;
 		unsigned int	_size;
 	public:
@@ -43,13 +44,17 @@ class parsing
         {
             const char * what() const throw ();
         };
-		AllData		getAllData(void) const;
-		void		checkMethodsKeyWords(LMap locations);
+		Data		getData(void) const;
+		int			checkDuplicatePort(Map data);
+		void		checkMethodsKeyWords(LocationMap locations);
 		void		checkKeyWords(void);
 		void		checkBrackets(std::string text);
 		int			checkPath(std::string text);
+		void		checkHost(Pair);
 		void		checkMethods(std::vector<std::string>  & methods);
 		void		skip(const std::string & line, int & index);
+		int			checkDuplicateKwywords(Map data, std::string[]);
+		int			checkMessingElements(Map data, std::string[]);
 		std::vector <std::string >		parseArray(const std::string &  line);
 		void		parseFile(std::string text, int start);
 		void		parseLocation(std::string text, int start);

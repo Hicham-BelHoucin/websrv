@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 12:19:59 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/27 16:05:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_H
 #define UTILS_H
-#include "shortcuts.h"
+
+#include "common.h"
 
 std::string&    stringtrim(std::string &str);
 

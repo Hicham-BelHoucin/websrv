@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 12:58:31 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/27 11:31:48 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "request.hpp"
 
-/*------------------------Consructors Destructors-----------------------------------*/
+/*-----------------------------Consructors Destructors------------------------------------*/
 
 request::request(std::string _req)
 {
@@ -29,7 +29,7 @@ request::request(std::string _req)
         req_body += stringtrim(line);
         req_body += "\n";
     }
-    
+
     std::cout << req_method << "\t" << req_path << "\t" << req_version << "\n";
     for (Map::iterator itr = req_headers.begin(); itr !=req_headers.end(); ++itr) {
         if(itr->first != "" && itr->second != "")
@@ -42,11 +42,12 @@ request::request(std::string _req)
     std::cout << req_body;
     std::cout << "\n --------------------------------------------------------------------\n\n";
 }
+
 request::~request()
 {
 }
 
-/*-------------------------------Member functions----------------------------------------*/
+/*---------------------------------Member functions----------------------------------------*/
 
 void request::parseReqLine(std::string line)
 {
@@ -63,7 +64,7 @@ void request::parseReqMethods(std::string line)
     std::string key;
     std::vector<std::string> values;
     std::string value;
-    
+
     std::getline(str, key, ' ');
     req_method = stringtrim(key);
     std::getline(str, key, ' ');
@@ -72,7 +73,7 @@ void request::parseReqMethods(std::string line)
     req_version = stringtrim(key);
 }
 
-/*-----------------------------Getters-------------------------------*/
+/*--------------------------------------Getters-------------------------------------------*/
 
 std::string request::getHeaderValue(std::string &key)
 {
@@ -84,14 +85,14 @@ std::string request::getHeaderValue(std::string &key)
     {
         return "NoValue";
     }
-    
+
 }
 
 std::string request::getReqMethod()
 {
     return this->req_method;
 }
-    
+
 std::string request::getReqVersion()
 {
     return this->req_version;

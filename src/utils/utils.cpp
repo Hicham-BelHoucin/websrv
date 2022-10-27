@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 12:30:04 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/27 16:06:52 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,17 @@ std::string& ltrim(std::string& str, const std::string &ws)
 std::string&    stringtrim(std::string &str)
 {
     return(ltrim(rtrim(str, WHITESPACES), WHITESPACES));
+}
+
+// print logs in the log file
+void			printLogs(const std::string & line)
+{
+	std::ofstream	logfile;
+
+	logfile.open("werserver.logs", std::ifstream::app);
+	if (logfile.is_open())
+	{
+		logfile << line << std::endl;
+		logfile.close();
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:50 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/27 11:12:42 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/27 16:36:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,15 @@ void	server::create_requset(int connection)
     baytesread = read(connection, buff, 100000);
 	_requset = std::string(buff);
 	system("clear");
-	// std::cout << "requset : " << _requset << std::endl;
-	std::cout << baytesread << std::endl;
+	std::cout << "requset : " << _requset << std::endl;
+	// std::cout << baytesread << std::endl;
 }
 
 void server::setSocket(vector&	s)
 {
 	for (int i = 0; i < s.size(); i++)
 	{
-		s[i]._bind();
-		s[i]._listen();
+		s[i]._connect();
 		FD_SET(s[i].getSockfd(), &current_sockets);
 		if (max_fd < s[i].getSockfd())
 			max_fd = s[i].getSockfd();
@@ -84,13 +83,13 @@ void	server::acceptConnection(createSocket _socket)
         "Accept-Ranges: bytes\n"
         "Connection: Keep Alive\n"
         "\n";
-    response += readFile("./src/page.html");
+    response += readFile("./src/error/error_500.html");
 	response += "\r\n";
     connection = _socket._accept();
     if (connection == -1)
         std::cout << "error accepting connection" << std::endl;
 	create_requset(connection);
-    write(connection, response.c_str(), response.size());
+	send(connection, response.c_str(), response.size(), 0);
     close(connection);
 }
 
