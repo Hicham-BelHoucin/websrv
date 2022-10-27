@@ -1,0 +1,32 @@
+requset : GET / HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.25.0
+Accept: */*
+Postman-Token: 0b4da5b0-1166-4385-9b81-d56752958c9f
+Host: 127.0.0.1:12
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+2b
+{
+    "name": "hciham",
+    "bool": false
+}
+0
+
+
+/////////////////////////////////
+
+requset : GET / HTTP/1.1
+User-Agent: PostmanRuntime/7.25.0
+Accept: */*
+Postman-Token: 10ddcae0-7bfd-4794-82a8-b94fd609dc3d
+Host: 127.0.0.1:12
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Length: 43
+
+{
+    "name": "hciham",
+    "bool": false
+}
