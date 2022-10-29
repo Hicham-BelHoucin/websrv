@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 14:59:40 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/29 17:39:36 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,28 +94,21 @@ int main(int argc, char const *argv[])
 {
     try
 	{
-		std::vector<int>			ports;
-		std::vector<createSocket>	sockets;
+		server  s;
 		parsing		obj("./conf/config.conf");
-		AllData		data = obj.getAllData();
-		AllData::iterator it = data.begin();
-		std::pair <Map::iterator, Map::iterator> ret;
-		fd_set	current_sockets, ready_sockets;
-		server			s1;
+		Data data;
+		std::vector<createSocket>	sockets;
+		std::pair<Map::iterator, Map::iterator> ret;
 
-
-		Map map = it->second.data;
-		while (it != data.end())
-        {
-			get_ports(ports, it->second.data);
-			it++;
-		}
-		for (int i = 0; i < ports.size(); i++)
+		data = obj.getData();
+		ret = data[0].data.equal_range("listen");
+		while (ret.first != ret.second)
 		{
-			sockets.push_back(createSocket(AF_INET, SOCK_STREAM, 0, map.find("host")->second, ports[i]));
+			sockets.push_back(createSocket(AF_INET, SOCK_STREAM, 0, data[0].data.find("host")->second, std::stoi(ret.first->second)));
+			ret.first++;
 		}
-		s1.setSocket(sockets);
-		s1.listen();
+		s.setSocket(sockets);
+		s.listen();
 	}
 	catch(const std::exception& e)
 	{
@@ -123,44 +116,3 @@ int main(int argc, char const *argv[])
 	}
 	return (0);
 }
-		// init
-		// FD_ZERO(&current_sockets);
-		// int max_fd;
-		// max_fd = sockets.front().getSockfd() + 1;
-		// for (int i = 0; i < sockets.size(); i++)
-		// {
-		// 	connect(sockets[i]);
-		// 	FD_SET(sockets[i].getSockfd(), &current_sockets);
-		// 	if (max_fd < sockets[i].getSockfd())
-		// 		max_fd = sockets[i].getSockfd() + 1;
-		// }
-		// while (1337)
-		// {
-		// 	ready_sockets = current_sockets;
-		// 	if (select(max_fd, &ready_sockets,NULL, NULL, NULL) == -1)
-		// 		perror("select");
-
-		// 	for (int i = 0; i < max_fd; i++)
-		// 	{
-		// 		if (FD_ISSET(i, &ready_sockets))
-		// 		{
-		// 			// if (i == sockets[0].getSockfd() || i == sockets[1].getSockfd() || i == sockets[2].getSockfd())
-		// 			// {
-		// 			// 	// do something
-		// 			// 	std::cout << "new connection established" << std::endl;
-		// 			// 	FD_SET(new_connection, &current_sockets);
-		// 			// 	max_fd = new_connection + 1;
-		// 			// }
-		// 			// else
-		// 			// {
-		// 			// 	std::cout << "handle connection" << std::endl;
-		// 			// 	FD_CLR(i, &current_sockets);
-		// 			// 	// max_fd--;
-		// 			// 	// close(i);
-		// 			// 	// max_fd
-		// 			// }
-		// 			// int new_connection = get_socket(sockets, i)._accept();
-		// 			acceptConnection(get_socket(sockets, i), 0);
-		// 		}
-		// 	}
-		// }

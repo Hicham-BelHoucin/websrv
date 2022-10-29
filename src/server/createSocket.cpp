@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/16 13:32:08 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/27 12:35:36 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,28 @@ int createSocket::init(int domaine, int type, int protocol, std::string ip, int 
     address.sin_port = htons(port);
     addrlen = sizeof(address);
     return sockfd;
+}
+
+int	 createSocket::getSockfd(void)
+{
+	return sockfd;
+}
+
+int	 createSocket::_read(int connection)
+{
+	return sockfd;
+}
+
+int	 createSocket::_send(int connection, int flags)
+{
+	return sockfd;
+}
+
+int	 createSocket::_connect(void)
+{
+	if (_bind() == -1)
+		perror("bind");
+	return _listen();;
 }
 
 int createSocket::_close(void)
