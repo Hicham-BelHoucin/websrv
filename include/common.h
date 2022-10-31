@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/27 17:55:44 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:39:52 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@
 # define ERROR403 "/Users/hbel-hou/Desktop/websrv/src/error/error_403.html"
 # define ERROR500 "/Users/hbel-hou/Desktop/websrv/src/error/error_500.html"
 # define ERROR502 "/Users/hbel-hou/Desktop/websrv/src/error/error_502.html"
-# define CLINETMAXBODYSIZE "1m"
+# define CONFIGFILE "/Users/hbel-hou/Desktop/websrv/conf/config.conf"
+# define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
 
 typedef enum s_type
@@ -60,9 +61,7 @@ typedef std::pair<std::string, std::string>						Pair;
 typedef	std::multimap<std::string , std::string>				Map;
 typedef	std::map<std::string , Methods>							LocationMap;
 typedef std::map<std::string, LocationMap>						Set;
-typedef	std::map<std::string , std::string >::iterator			Iter;
-
-void			printLogs(const std::string & line);
+typedef	std::string												String;
 
 typedef	struct s_data
 {

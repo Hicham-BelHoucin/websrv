@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 15:04:41 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/10/31 16:38:05 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,19 @@
 
 #include "common.h"
 #include "createSocket.hpp"
-typedef std::vector<createSocket>	vector;
 class server
 {
 	private:
-		fd_set						current_sockets;
-		int							max_fd;
-		vector						sockets;
-		std::string					_requset;
-		std::string					_response;
+		String 				_root;
+		String 				_serverName;
+		String 				_host;
+		Set					_locations;
+		int                 _maxBodySize;
+		std::vector<int>	_ports;
+		Map					_errorPages;
 	public:
-		server(/* args */);
-		void			create_requset(int connection);
-		createSocket	getSocket(int fd);
-		void            setSocket(vector & s);
-		void            acceptConnection(createSocket _socket);
-		void 			listen();
+		server();
+		server(String, String, String, Set, int, std::vector<int>, Map);
 		~server();
 };
 
