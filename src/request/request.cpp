@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/27 11:31:48 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/01 03:22:35 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 /*-----------------------------Consructors Destructors------------------------------------*/
 
+request::request()
+{
+
+}
 request::request(std::string _req)
 {
     std::stringstream reqstream(_req);
@@ -75,7 +79,7 @@ void request::parseReqMethods(std::string line)
 
 /*--------------------------------------Getters-------------------------------------------*/
 
-std::string request::getHeaderValue(std::string &key)
+std::string request::getHeaderValue(std::string key)
 {
     try
     {
@@ -106,4 +110,22 @@ std::string request::getReqPath()
 std::string request::getReqBody()
 {
     return this->req_body;
+}
+
+std::string request::getReqPort()
+{
+    std::string port = getHeaderValue("Host");
+    std::size_t found;
+
+    if((found = port.find_first_of(":") != std::string::npos))
+        port = port.substr(found + 1, port.length() - 1);
+}
+
+std::string request::getReqHost()
+{
+    std::string host = getHeaderValue("Host");
+    std::size_t found;
+
+    if((found = host.find_first_of(":") != std::string::npos))
+        host = host.substr(0, found - 1);
 }

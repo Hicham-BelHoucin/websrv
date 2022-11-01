@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/27 18:16:54 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/01 03:08:45 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ class parsing
 	private:
 		Data			data;
 		Map				info;
-		LocationMap			locationsInfo;
+		LocationMap		locationsInfo;
 		Set				locations;
 		unsigned int	_size;
 	public:
@@ -65,6 +65,7 @@ class parsing
 		void		skipWhiteSpaces(const std::string &  line, int & index);
 		std::string	readFile(std::string filename);
 		parsing(std::string filename);
+		parsing();
 		~parsing();
 };
 

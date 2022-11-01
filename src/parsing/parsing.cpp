@@ -3,16 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/27 18:28:01 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/01 03:08:46 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parsing.hpp"
 
 //////////////////////////////////// [tools] /////////////////////////////////////
+parsing::parsing()
+{
+
+}
 
 Data	parsing::getData(void) const
 {
