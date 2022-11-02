@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/31 17:12:56 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/02 10:48:16 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "common.h"
 #include "utils.h"
+class server;
 class parsing
 {
 	private:
@@ -45,7 +46,7 @@ class parsing
             const char * what() const throw ();
         };
 		Data				getData(void) const;
-		std::string 		getHost(Map data) const{
+		std::string 		getHost(Map data) const {
 			return data.find("host")->second;
 		};
 		std::vector<int> 	getPorts(Map data) const
@@ -130,5 +131,8 @@ class parsing
 		~parsing();
 };
 
+std::vector<int>	getallPorts(Data data, parsing obj);
+std::vector<createSocket>	createSockets(Data data, parsing obj);
+std::vector<server> createServers(Data data, parsing obj);
 
 #endif //PARSING_HPP

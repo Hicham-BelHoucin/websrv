@@ -6,27 +6,28 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/31 17:39:52 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/02 15:29:58 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <iostream>
-#include <unistd.h>
-#include <iostream>
-#include <vector>
-#include <map>
-#include <set>
-#include <stack>
-#include <cstring>
-#include <fstream>
-#include <ostream>
-#include <sstream>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <iostream>
+# include <unistd.h>
+# include <iostream>
+# include <vector>
+# include <map>
+# include <set>
+# include <stack>
+# include <cstring>
+# include <fstream>
+# include <ostream>
+# include <sstream>
+# include <poll.h>
 
 # define ERROR404 "/Users/hbel-hou/Desktop/websrv/src/error/error_404.html"
 # define ERROR403 "/Users/hbel-hou/Desktop/websrv/src/error/error_403.html"
@@ -70,5 +71,6 @@ typedef	struct s_data
 } t_data;
 
 typedef	std::vector<t_data>													Data;
+std::string		readFile(std::string filename);
 
 #endif // COMMON_H

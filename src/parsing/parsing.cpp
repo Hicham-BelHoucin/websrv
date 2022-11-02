@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/27 18:28:01 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/02 11:10:57 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ Pair	parsing::parseLine(std::string line)
 	skipWhiteSpaces(line, start);
 	end = line.find_first_of(";", start);
 	value = line.substr(start, end - start);
-	if (keyWord[0] != '#' && keyWord != "return" && value.find_first_of(WHITESPACES) != std::string::npos)
+	if (keyWord[0] != '#' && keyWord != "return" && keyWord != "server_name" && value.find_first_of(WHITESPACES) != std::string::npos)
 		throw std::runtime_error("error in this line => " + value);
 	return std::make_pair(keyWord, value);
 }
