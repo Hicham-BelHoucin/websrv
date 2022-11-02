@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/02 16:02:57 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/02 16:57:22 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void webserv::setUpServer(void) {
 		ready = poll(fds, nfds, -1);
 		for (nfds_t i = 0; i < sockets.size(); i++)
 		{
-			if (fds[i].revents = 0)
+			if (fds[i].revents == 0)
 				continue ;
 			else
 			{
