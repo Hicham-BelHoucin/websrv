@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 14:38:20 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/01 03:52:47 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,33 @@
 # define RESPONSE_HPP
 # include "ResponseUtils.h"
 # include "common.h"
+# include "request.hpp"
+# include "parsing.hpp"
+
+class request;
 
 class response
 {
 private:
-    /* data */
+    std::string _response;
+    std::string _body;
+    std::size_t _ContentLenght;
+    request req;
+    ResponseIUtils::METHODS method;
+    ResponseIUtils::CODES _status_code;
+    parsing conf;
+    Map headers;
 public:
-    response(/* args */);
+    response();
     ~response();
+    response(request &_req, parsing &_conf);
+    void setHeaders();
+    void setBody();
+    void setStatusCode();
+    void ResponseBuilder();
+    void ClearResponse();
+    
+
 };
-
-response::response(/* args */)
-{
-}
-
-response::~response()
-{
-}
 
 #endif // !RESPONSE_HPP

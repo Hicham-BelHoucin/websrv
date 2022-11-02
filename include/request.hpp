@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 14:41:33 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/01 03:52:55 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,18 @@ class request
         int error;
     public:
         request(std::string _req);
+        request();
         ~request();
         void        parseReqLine(std::string line);
         void        parseReqMethods(std::string line);
         void        parseReqBody(std::string reqbody);
-        std::string getHeaderValue(std::string &key);
+        std::string getHeaderValue(std::string key);
         std::string getReqMethod();    
         std::string getReqVersion();
         std::string getReqPath();
         std::string getReqBody();
+        std::string getReqPort();
+        std::string getReqHost();
+        void        ClearRequest();
 };
 #endif
