@@ -6,7 +6,7 @@
 #    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/10/29 16:05:16 by obeaj            ###   ########.fr        #
+#    Updated: 2022/11/02 11:32:00 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,9 @@ NAME = Webserv
 
 CC = c++
 
-# CFLAGS = -Wall -Wextra -Werror -std=c++98
+# CFLAGS = -g
 
-SRCS = src/parsing/parsing.cpp src/request/request.cpp  src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp src/utils/utils.cpp
+SRCS = src/parsing/parsing.cpp src/request/request.cpp src/utils/utils.cpp src/response/response.cpp src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp src/main.cpp
 
 SRCOBJ = $(SRCS:.cpp=.o)
 

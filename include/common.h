@@ -6,33 +6,35 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/10/27 17:55:44 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/02 15:29:58 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <iostream>
-#include <unistd.h>
-#include <iostream>
-#include <vector>
-#include <map>
-#include <set>
-#include <stack>
-#include <cstring>
-#include <fstream>
-#include <ostream>
-#include <sstream>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <iostream>
+# include <unistd.h>
+# include <iostream>
+# include <vector>
+# include <map>
+# include <set>
+# include <stack>
+# include <cstring>
+# include <fstream>
+# include <ostream>
+# include <sstream>
+# include <poll.h>
 
 # define ERROR404 "/Users/hbel-hou/Desktop/websrv/src/error/error_404.html"
 # define ERROR403 "/Users/hbel-hou/Desktop/websrv/src/error/error_403.html"
 # define ERROR500 "/Users/hbel-hou/Desktop/websrv/src/error/error_500.html"
 # define ERROR502 "/Users/hbel-hou/Desktop/websrv/src/error/error_502.html"
-# define CLINETMAXBODYSIZE "1m"
+# define CONFIGFILE "/Users/hbel-hou/Desktop/websrv/conf/config.conf"
+# define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
 
 typedef enum s_type
@@ -60,9 +62,7 @@ typedef std::pair<std::string, std::string>						Pair;
 typedef	std::multimap<std::string , std::string>				Map;
 typedef	std::map<std::string , Methods>							LocationMap;
 typedef std::map<std::string, LocationMap>						Set;
-typedef	std::map<std::string , std::string >::iterator			Iter;
-
-void			printLogs(const std::string & line);
+typedef	std::string												String;
 
 typedef	struct s_data
 {
@@ -71,5 +71,6 @@ typedef	struct s_data
 } t_data;
 
 typedef	std::vector<t_data>													Data;
+std::string		readFile(std::string filename);
 
 #endif // COMMON_H

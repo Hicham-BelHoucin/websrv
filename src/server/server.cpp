@@ -6,111 +6,20 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:50 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/29 16:16:34 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/10/31 16:37:07 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
-static std::string readFile(std::string name)
-{
-    std::ifstream   in_file(name);
-    std::string     text;
-    std::string     line;
 
-    if (in_file.is_open())
-    {
-        while (getline(in_file, line, '\0'))
-            text += line;
-    }
-    else
-        std::cout << "error" << std::endl;
-    return text;
-}
-
-server::server() : max_fd(FD_SETSIZE)
-{
-	FD_ZERO(&current_sockets);
-}
-
-void	server::create_requset(int connection)
-{
-	char            buff[100000];
-	int            baytesread;
-
-    baytesread = read(connection, buff, 100000);
-	_requset = std::string(buff);
-	system("clear");
-	std::cout << "requset : " << _requset << std::endl;
-	// std::cout << baytesread << std::endl;
-}
-
-void server::setSocket(vector&	s)
-{
-	for (int i = 0; i < s.size(); i++)
-	{
-		s[i]._connect();
-		FD_SET(s[i].getSockfd(), &current_sockets);
-		if (max_fd < s[i].getSockfd())
-			max_fd = s[i].getSockfd();
-	}
-	this->sockets = s;
-}
-
-createSocket server::getSocket(int fd)
-{
-	for (int i = 0; i < sockets.size(); i++)
-	{
-		if (sockets[i].getSockfd() == fd)
-			return sockets[i];
-	}
-	return sockets[0];
-}
-
-void	server::acceptConnection(createSocket _socket)
-{
-	int             connection;
-    std::string 	response;
-	char            buff[1024];
-
-	response =
-        "HTTP/1.1 200 OK\n"
-        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-        "Server: Apache/2.2.3\n"
-        "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
-        "ETag: \"56d-9989200-1132c580\"\n"
-        "Content-Type: text/html\n"
-        "Content-Length: 1900\n"
-        "Accept-Ranges: bytes\n"
-        "Connection: Keep Alive\n"
-        "\n";
-    response += readFile("./src/page.html");
-	response += "\r\n";
-    connection = _socket._accept();
-    if (connection == -1)
-        std::cout << "error accepting connection" << std::endl;
-	create_requset(connection);
-	send(connection, response.c_str(), response.size(), 0);
-    close(connection);
-}
-
-void	server::listen()
-{
-	fd_set ready_sockets;
-	while (1337)
-	{
-		ready_sockets = current_sockets;
-		if (select(max_fd, &ready_sockets,NULL, NULL, NULL) == -1)
-			perror("select");
-		for (int i = 0; i < max_fd; i++)
-		{
-			if (FD_ISSET(i, &ready_sockets))
-			{
-				acceptConnection(getSocket(i));
-			}
-		}
-	}
-}
-
-server::~server()
-{
-}
+server::server() {}
+server::~server() {}
+server::server(String root, String host, String serverName, Set locations, int maxBodySize, std::vector<int> ports, Map errorPages)
+	: _root(root)
+    , _host(host)
+	, _serverName(serverName)
+	, _locations(locations)
+    , _maxBodySize(maxBodySize)
+	, _ports(ports)
+    , _errorPages(errorPages)
+{}
