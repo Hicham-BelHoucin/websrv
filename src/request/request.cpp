@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/01 03:22:35 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/03 16:08:31 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ request::request(std::string _req)
         req_body += stringtrim(line);
         req_body += "\n";
     }
-
     std::cout << req_method << "\t" << req_path << "\t" << req_version << "\n";
     for (Map::iterator itr = req_headers.begin(); itr !=req_headers.end(); ++itr) {
         if(itr->first != "" && itr->second != "")

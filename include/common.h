@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/03 00:50:32 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/03 15:58:57 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@
 # include <sstream>
 # include <poll.h>
 
-# define ERROR404 "/Users/hbel-hou/Desktop/websrv/src/error/error_404.html"
-# define ERROR403 "/Users/hbel-hou/Desktop/websrv/src/error/error_403.html"
-# define ERROR500 "/Users/hbel-hou/Desktop/websrv/src/error/error_500.html"
-# define ERROR502 "/Users/hbel-hou/Desktop/websrv/src/error/error_502.html"
-# define CONFIGFILE "/Users/hbel-hou/Desktop/websrv/conf/config.conf"
+# define ERROR404 "/Users/obeaj/websrv/src/error/error_404.html"
+# define ERROR403 "/Users/obeaj/websrv/src/error/error_403.html"
+# define ERROR500 "/Users/obeaj/websrv/src/error/error_500.html"
+# define ERROR502 "/Users/obeaj/websrv/src/error/error_502.html"
+# define CONFIGFILE "/Users/obeaj/websrv/conf/config.conf"
 # define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
 

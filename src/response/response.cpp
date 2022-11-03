@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 04:46:27 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/03 20:07:45 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,21 @@ server response::selectServer(std::vector<server> servers, std::string host, std
     return elected;
 }
 
-
+LocationMap response::locationMatch(Set locations, String path)
+{
+    Set::iterator it = locations.begin();
+    while(it != locations.end())
+    {
+        if(it->first == path)
+            return it->second;
+        
+        it++;
+    }
+    if (it == locations.end())9
+    {
+        
+    }
+}
 
 response::response(request _req, parsing _conf)
 {
@@ -59,14 +73,14 @@ response::response(request _req, parsing _conf)
     server  serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
     // matching the path location
     _path = serv.getRootPath() + req.getReqPath();
-    /*locationMatch(serv.getlocations(), req.getReqPath());*/
+    LocationMap _location = locationMatch(serv.getlocations(), req.getReqPath());
     
     //
 }
 
-void response::setHeaders()
+void response::setHeaders(Pair header)
 {
-
+    
 }
 void response::setBody()
 {
@@ -74,7 +88,7 @@ void response::setBody()
 }
 void response::setStatusCode()
 {
-
+    _status_code = ResponseIUtils::CODES::OK;
 }
 void response::ResponseBuilder()
 {

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 00:35:37 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/03 15:57:24 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ class server
 		String getRootPath();
 		String getHost();
 		Set getlocations();
-		String getRootPath();
 		String getServerName();
 		std::vector<int> getPorts();
 		Map getErrorPages();

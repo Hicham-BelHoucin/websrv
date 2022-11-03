@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 02:28:52 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/03 19:56:32 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,13 @@ public:
     response();
     ~response();
     response(request _req, parsing _conf);
-    void    setHeaders();
-    void    setBody();
-    void    setStatusCode();
-    void    ResponseBuilder();
-    void    ClearResponse();
-    server  selectServer(std::vector<server> servers, std::string host, std::string port);
+    void        setHeaders(Pair header);
+    void        setBody();
+    void        setStatusCode();
+    void        ResponseBuilder();
+    void        ClearResponse();
+    server      selectServer(std::vector<server> servers, std::string host, std::string port);
+    LocationMap locationMatch(Set locations, String path);
 };
 
 #endif // !RESPONSE_HPP
