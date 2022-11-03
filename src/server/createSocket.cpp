@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   createSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/02 16:01:20 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/02 16:55:23 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	 createSocket::_send(int connection)
         "Accept-Ranges: bytes\n"
         "Connection: Keep Alive\n"
         "\n";
-    response += readFile("/Users/hbel-hou/Desktop/websrv/src/page.html");
+    response += readFile("./src/page.html");
 	response += "\r\n";
     send(connection, response.c_str(), response.size(), 0);
     close(connection);

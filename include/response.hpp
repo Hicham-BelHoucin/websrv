@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/01 03:52:47 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/03 02:28:52 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ private:
     std::string _body;
     std::size_t _ContentLenght;
     request req;
+    std::string _path;
     ResponseIUtils::METHODS method;
     ResponseIUtils::CODES _status_code;
     parsing conf;
@@ -33,14 +34,13 @@ private:
 public:
     response();
     ~response();
-    response(request &_req, parsing &_conf);
-    void setHeaders();
-    void setBody();
-    void setStatusCode();
-    void ResponseBuilder();
-    void ClearResponse();
-    
-
+    response(request _req, parsing _conf);
+    void    setHeaders();
+    void    setBody();
+    void    setStatusCode();
+    void    ResponseBuilder();
+    void    ClearResponse();
+    server  selectServer(std::vector<server> servers, std::string host, std::string port);
 };
 
 #endif // !RESPONSE_HPP
