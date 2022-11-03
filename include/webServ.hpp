@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/26 14:39:09 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/02 12:55:28 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERV_HPP  
+#ifndef WEBSERV_HPP
 #define WEBSERV_HPP
 
 #include "common.h"
@@ -20,8 +20,15 @@
 
 class webserv
 {
+	private:
+		std::vector<createSocket>	sockets;
+		Data						data;
+		pollfd						*fds;
     public:
         webserv();
+        webserv(String);
+		void	setUpServer(void);
         ~webserv();
 };
-#endif
+
+#endif // WEBSERV_HPP

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
+#    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/10/24 10:30:16 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/11/02 11:32:00 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,13 +14,13 @@ NAME = Webserv
 
 CC = c++
 
-# CFLAGS = -Wall -Wextra -Werror -std=c++98
+# CFLAGS = -g
 
-SRCS = src/parsing/parsing.cpp src/request/request.cpp src/response/response.cpp src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp
+SRCS = src/parsing/parsing.cpp src/request/request.cpp src/utils/utils.cpp src/response/response.cpp src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp src/main.cpp
 
 SRCOBJ = $(SRCS:.cpp=.o)
 
-INCLUDE = include/createSocket.hpp include/parsing.hpp include/request.hpp include/server.hpp include/webServ.hpp
+INCLUDE = include/createSocket.hpp include/parsing.hpp include/request.hpp include/server.hpp include/webServ.hpp include/utils.h
 
 all: $(NAME)
 

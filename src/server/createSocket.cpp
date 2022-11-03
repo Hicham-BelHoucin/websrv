@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/10/16 13:32:08 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/02 16:01:20 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,56 @@ createSocket::createSocket()
 
 }
 
-int createSocket::init(int domaine, int type, int protocol, std::string ip, int port)
+int	 createSocket::getSockfd(void)
 {
-    sockfd = socket(domaine, type, protocol);
-    address.sin_family = domaine;
-	this->port = port;
-	this->ip = ip;
-	if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)
-		perror("inet_aton");
-    address.sin_port = htons(port);
-    addrlen = sizeof(address);
-    return sockfd;
+	return sockfd;
+}
+
+int	 createSocket::_read(int connection)
+{
+	char 	buff[100] = {0};
+	ssize_t	i = 1;
+	String 	str;
+
+	while (i)
+	{
+		i = recv(connection, buff, 99, 0);
+		if (i == -1)
+			perror("recv");
+		str += buff;
+		if (i < 99)
+			break;
+	}
+	std::cout << str << std::endl;
+	return sockfd;
+}
+
+int	 createSocket::_send(int connection)
+{
+    std::string response;
+	response =
+        "HTTP/1.1 200 OK\n"
+        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+        "Server: Apache/2.2.3\n"
+        "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+        "ETag: \"56d-9989200-1132c580\"\n"
+        "Content-Type: text/html\n"
+        "Content-Length: 1900\n"
+        "Accept-Ranges: bytes\n"
+        "Connection: Keep Alive\n"
+        "\n";
+    response += readFile("/Users/hbel-hou/Desktop/websrv/src/page.html");
+	response += "\r\n";
+    send(connection, response.c_str(), response.size(), 0);
+    close(connection);
+	return sockfd;
+}
+
+int	 createSocket::_connect(void)
+{
+	if (_bind() == -1)
+		perror("bind");
+	return _listen();
 }
 
 int createSocket::_close(void)
@@ -53,17 +92,18 @@ int createSocket::_listen(void)
     return (0);
 }
 
-createSocket::createSocket(int domaine, int type, int protocol, std::string ip, int port)
+createSocket::createSocket(std::string ip, int port)
 {
-    if ((sockfd = socket(domaine, type, protocol)) < 0)
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         throw std::runtime_error("Error: Socket cannot be created ! \n");
-    address.sin_family = domaine;
+    address.sin_family = AF_INET;
     if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)
 		perror("inet_aton");
     address.sin_port = htons(port);
     addrlen = sizeof(address);
 	this->port = port;
 	this->ip = ip;
+	_connect();
 }
 
 createSocket::~createSocket()
