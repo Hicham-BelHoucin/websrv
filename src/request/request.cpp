@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 16:08:31 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/05 16:19:23 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ request::request()
 {
 
 }
+
 request::request(std::string _req)
 {
     std::stringstream reqstream(_req);
@@ -118,6 +119,7 @@ std::string request::getReqPort()
 
     if((found = port.find_first_of(":") != std::string::npos))
         port = port.substr(found + 1, port.length() - 1);
+	return port;
 }
 
 std::string request::getReqHost()
@@ -127,4 +129,5 @@ std::string request::getReqHost()
 
     if((found = host.find_first_of(":") != std::string::npos))
         host = host.substr(0, found - 1);
+	return host;
 }

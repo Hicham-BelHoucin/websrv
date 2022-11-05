@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 16:07:07 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/05 16:19:32 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,21 @@ int	 createSocket::getSockfd(void)
 
 int	 createSocket::_read(int connection)
 {
-	char 	buff[100] = {0};
+	char 	buff[1001] = {0};
 	ssize_t	i = 1;
 	String 	str;
 
 	while (i)
 	{
-		i = recv(connection, buff, 99, 0);
+		i = recv(connection, buff, 1000, 0);
 		if (i == -1)
 			perror("recv");
 		str += buff;
-		if (i < 99)
+		if (i < 1000)
 			break;
 	}
 	std::cout << str << std::endl;
-	return sockfd;
+	return 0;
 }
 
 int	 createSocket::_send(int connection)
@@ -57,9 +57,7 @@ int	 createSocket::_send(int connection)
         "\n";
     response += readFile("./src/page.html");
 	response += "\r\n";
-    send(connection, response.c_str(), response.size(), 0);
-    close(connection);
-	return sockfd;
+	return send(connection, response.c_str(), response.size(), 0);
 }
 
 int	 createSocket::_connect(void)
@@ -71,11 +69,14 @@ int	 createSocket::_connect(void)
 
 int createSocket::_close(void)
 {
-    return shutdown(sockfd, SHUT_RDWR);;
+	shutdown(sockfd, SHUT_RDWR);
+    return close(sockfd);
 }
 
 int createSocket::_bind(void)
 {
+	int yes = 1;
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
     return bind(sockfd, (struct sockaddr*)&address, sizeof(address));
 }
 
@@ -92,10 +93,24 @@ int createSocket::_listen(void)
     return (0);
 }
 
+createSocket::createSocket(int connection, std::string ip, int port)
+{
+	// fcntl(sockfd, F_SETFL, O_NONBLOCK);
+	sockfd = connection;
+    address.sin_family = AF_INET;
+    if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)
+		perror("inet_aton");
+    address.sin_port = htons(port);
+    addrlen = sizeof(address);
+	this->port = port;
+	this->ip = ip;
+}
+
 createSocket::createSocket(std::string ip, int port)
 {
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         throw std::runtime_error("Error: Socket cannot be created ! \n");
+	fcntl(sockfd, F_SETFL, O_NONBLOCK);
     address.sin_family = AF_INET;
     if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)
 		perror("inet_aton");

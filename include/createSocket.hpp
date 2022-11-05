@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:54:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/02 16:01:24 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 11:29:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "common.h"
 class createSocket
 {
-    private:
+    public:
         int                 sockfd;
         int                 addrlen;
 		int					port;
@@ -24,6 +24,7 @@ class createSocket
         struct sockaddr_in  address;
     public:
         createSocket();
+        createSocket(int sockfd, std::string ip, int port);
         createSocket(std::string ip, int port);
         int _bind(void);
         int _listen(void);

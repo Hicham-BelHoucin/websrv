@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/02 11:10:57 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 14:23:35 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,15 @@ parsing::parsing(std::string filename) : _size(0)
 	checkBrackets(text);
 	// checkSemicolon(text);
 	if (!_size)
-		throw Usage();
+		throw Parseerror("Usage : \n \
+		server  \n\
+		{  \n\
+			server properties ; \n \
+			location /  \n\
+			{  \n\
+				location properties ; \n \
+			} \n\
+		}");
 	i = 0;
 	end = 0;
 	if (_size)
@@ -139,7 +147,7 @@ parsing::parsing(std::string filename) : _size(0)
 		}
 		checkKeyWords();
 	}
-	printLogs("file parsed successfully");
+	printLogs(_displayTimestamp() + "file parsed successfully");
 }
 
 parsing::~parsing() {}
@@ -434,7 +442,7 @@ void	parsing::checkBrackets(std::string text)
 	{
 		if ((text[i] == '}' || text[i] == ']') && s.empty())
 		{
-			throw UnclosedBrakets();
+			throw Parseerror("Error: You Have an Unclosed Bracket !");
 			return ;
 		}
 		if (text[i] == '{' || text[i] == '[')
@@ -445,17 +453,17 @@ void	parsing::checkBrackets(std::string text)
 			s.pop();
 		else if (text[i] == '}' && s.top() != '{')
 		{
-			throw UnclosedBrakets();
+			throw Parseerror("Error: You Have an Unclosed Bracket !");
 			return ;
 		}
 		else if (text[i] == ']' && s.top() != '[')
 		{
-			throw UnclosedBrakets();
+			throw Parseerror("Error: You Have an Unclosed Bracket !");
 			return ;
 		}
 	}
 	if (!s.empty())
-		throw UnclosedBrakets();
+		throw Parseerror("Error: You Have an Unclosed Bracket !");
 }
 
 
@@ -474,13 +482,13 @@ void parsing::checkSemicolon(std::string text)
 			!strchr(line.c_str(), '}') && !strchr(line.c_str(), '{') && line[index] != '#')
 		{
 			std::cout << line << std::endl;
-			throw Nosemicolon();
+			throw Parseerror("Error: A semicolon is missing !");
 		}
 		else if ((((l.substr(0,6) == "server" && l.substr(0,7) != "server_") || l.substr(0,8) == "location" || line[index] == '{' ||
 			line[index] == '}') && line[line.length() - 1] == ';') || l == ";")
 		{
 			std::cout << line << std::endl;
-			throw Extrasemicolon();
+			throw Parseerror("Error: An extra semicolon found !");
 		}
 		else if ((strchr(line.c_str(),'{') || strchr(line.c_str(),'}')))
 		{
@@ -489,7 +497,7 @@ void parsing::checkSemicolon(std::string text)
 			{
 				if (!strchr("\n\t\v\f\r ", line[i]) && line[i] != '}' && line[i] != '{')
 				{
-					throw Nobarcket();
+					throw Parseerror("Error: The curly braket should be in a single line !");
 				}
 				i++;
 			}
@@ -499,37 +507,9 @@ void parsing::checkSemicolon(std::string text)
 
 //////////////////////////////////// [exeptions] /////////////////////////////////////
 
-const char * parsing::Usage::what() const throw ()
+const char * parsing::Parseerror::what() const throw ()
 {
-	return "Usage : \n \
-		server  \n\
-		{  \n\
-			server properties ; \n \
-			location /  \n\
-			{  \n\
-				location properties ; \n \
-			} \n\
-		}";
-}
-
-const char * parsing::UnclosedBrakets::what() const throw ()
-{
-	return "Error: You Have an Unclosed Bracket !";
-}
-
-const char * parsing::Nosemicolon::what() const throw ()
-{
-	return "Error: A semicolon is missing !";
-}
-
-const char * parsing::Extrasemicolon::what() const throw ()
-{
-	return "Error: An extra semicolon found !";
-}
-
-const char * parsing::Nobarcket::what() const throw ()
-{
-	return "Error: The curly braket should be in a single line !";
+	return error;
 }
 
 //////////////////////////////////// [parse allow methods] /////////////////////////////////////
