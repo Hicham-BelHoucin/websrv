@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/02 10:48:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 14:23:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,26 +25,15 @@ class parsing
 		Set					locations;
 		unsigned int		_size;
 	public:
-		class Usage : public std::exception
+		class Parseerror : public std::exception
         {
-            const char * what() const throw ();
+			private:
+				const char * error;
+			public:
+				Parseerror(std::string error) : error(error.c_str()) {};
+				const char * what() const throw ();
         };
-		class UnclosedBrakets : public std::exception
-        {
-            const char * what() const throw ();
-        };
-		class Nosemicolon : public std::exception
-        {
-            const char * what() const throw ();
-        };
-		class Extrasemicolon : public std::exception
-        {
-            const char * what() const throw ();
-        };
-		class Nobarcket : public std::exception
-        {
-            const char * what() const throw ();
-        };
+
 		Data				getData(void) const;
 		std::string 		getHost(Map data) const {
 			return data.find("host")->second;
