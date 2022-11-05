@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 12:28:07 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 13:24:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,6 @@ void			printLogs(const std::string & line);
 int				checkExtansion(String filename);
 pollfd			*getfds(std::vector<createSocket> & sockets);
 int 			getsocket(std::vector<createSocket> sockets, int fd);
+std::string		_displayTimestamp( void );
 
 #endif // !UTILS_H

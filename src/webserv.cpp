@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 12:57:14 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 14:43:54 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ webserv::webserv()
 {}
 
 webserv::~webserv() {
-	// if (fds)
-	// 	delete [] fds;
+
 }
 
 void webserv::init(String filename)
@@ -45,7 +44,10 @@ webserv::webserv(String filename)
 {
 	try
 	{
+		printLogs("\n\n\n\n---------------------------------[" + _displayTimestamp() + " start new web server session]---------------------------------");
 		init(filename);
+		printLogs(_displayTimestamp() + "server initialized successfully");
+		printLogs(_displayTimestamp() + "start listing ... ");
 		setUpServer();
 	}
 	catch(const std::exception& e)
@@ -54,7 +56,7 @@ webserv::webserv(String filename)
 	}
 }
 
-void	webserv::handleInputEvent(createSocket _socket, pollfd & fd)
+void	webserv::handleInputEvent(createSocket & _socket, pollfd & fd)
 {
 	int		connection;
 	pollfd	new_connection;
@@ -72,8 +74,8 @@ void	webserv::handleInputEvent(createSocket _socket, pollfd & fd)
 	}
 	else
 	{
-		_socket._read(_socket.getSockfd());
-		fd.events = POLLOUT;
+		_socket._read(fd.fd);
+		fd.events = POLLIN | POLLOUT;
 	}
 }
 
@@ -84,17 +86,19 @@ void	webserv::eraseSocket(int _index, int index)
 	listning_fds.erase(listning_fds.begin() + index);
 }
 
-void	webserv::handleOutputEvent(createSocket _socket, pollfd & fd)
+void	webserv::handleOutputEvent(createSocket & _socket, pollfd & fd)
 {
 	_socket._send(_socket.getSockfd());
-	fd.events = POLLIN | POLLOUT;
+	fd.events = POLLIN;
+	// _socket._close();
+	std::cout << "sent successfully" << std::endl;
+	// fd.revents = 0;
 }
 
 void webserv::setUpServer(void) {
 	nfds_t 	nfds;
 	nfds_t 	ready;
 	int 	index;
-	std::map <int, int> client;
 
 	while (1337)
 	{
@@ -110,6 +114,8 @@ void webserv::setUpServer(void) {
 			else
 			{
 				index = getsocket(sockets, listning_fds[i].fd);
+				if (index == -1)
+					continue ;
 				if (listning_fds[i].revents & POLLERR || listning_fds[i].revents & POLLHUP)
 					eraseSocket(index, i);
 				if (listning_fds[i].revents & POLLIN)

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 12:27:43 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 14:35:33 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ std::string&    stringtrim(std::string &str)
     return(ltrim(rtrim(str, WHITESPACES), WHITESPACES));
 }
 
+std::string	_displayTimestamp( void )
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer [80];
+
+	time (&rawtime);
+	timeinfo = localtime (&rawtime);
+
+	strftime (buffer, 80, "[%d/%m/%Y  %H:%M:%S] ", timeinfo);
+	return buffer;
+}
+
 // print logs in the log file
 void			printLogs(const std::string & line)
 {
@@ -40,7 +53,7 @@ void			printLogs(const std::string & line)
 	logfile.open("werserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
-		logfile << line << std::endl;
+		logfile << "" << line << std::endl;
 		logfile.close();
 	}
 }
@@ -109,7 +122,7 @@ int	getsocket(std::vector<createSocket> sockets, int fd)
 	for (int i = 0; i < sockets.size(); i++)
 		if (sockets[i].getSockfd() == fd)
 			return i;
-	return 0;
+	return -1;
 }
 
 int	checkExtansion(String filename)
@@ -140,4 +153,5 @@ std::string	readFile(std::string filename)
     //     throw std::runtime_error("cannot open file " + filename);
     return text;
 }
+
 

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/02 17:54:39 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 14:32:25 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ request::request()
 {
 
 }
+
 request::request(std::string _req)
 {
     std::stringstream reqstream(_req);
