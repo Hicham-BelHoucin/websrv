@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/02 15:29:24 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 12:27:43 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,25 +104,12 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 	return sockets;
 }
 
-pollfd	*getfds(std::vector<createSocket> & sockets)
-{
-	pollfd            *fds;
-
-	fds = new pollfd[sockets.size()];
-	for (int i = 0; i < sockets.size(); i++)
-	{
-		fds[i].fd = sockets[i].getSockfd();
-		fds[i].events = POLL_IN;
-	}
-	return fds;
-}
-
-createSocket &	getsocket(std::vector<createSocket> sockets, int fd)
+int	getsocket(std::vector<createSocket> sockets, int fd)
 {
 	for (int i = 0; i < sockets.size(); i++)
 		if (sockets[i].getSockfd() == fd)
-			return sockets[i];
-	return sockets[0];
+			return i;
+	return 0;
 }
 
 int	checkExtansion(String filename)
@@ -153,3 +140,4 @@ std::string	readFile(std::string filename)
     //     throw std::runtime_error("cannot open file " + filename);
     return text;
 }
+

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/02 15:29:58 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/04 16:54:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,17 @@
 # include <fstream>
 # include <ostream>
 # include <sstream>
+# include <fcntl.h>
 # include <poll.h>
 
-# define ERROR404 "/Users/hbel-hou/Desktop/websrv/src/error/error_404.html"
-# define ERROR403 "/Users/hbel-hou/Desktop/websrv/src/error/error_403.html"
-# define ERROR500 "/Users/hbel-hou/Desktop/websrv/src/error/error_500.html"
-# define ERROR502 "/Users/hbel-hou/Desktop/websrv/src/error/error_502.html"
-# define CONFIGFILE "/Users/hbel-hou/Desktop/websrv/conf/config.conf"
+# define ERROR404 "./src/error/error_404.html"
+# define ERROR403 "./src/error/error_403.html"
+# define ERROR500 "./src/error/error_500.html"
+# define ERROR502 "./src/error/error_502.html"
+# define CONFIGFILE "./conf/config.conf"
 # define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
+
 
 typedef enum s_type
 {

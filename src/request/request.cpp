@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/01 03:22:35 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/02 17:54:39 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ std::string request::getReqPort()
 
     if((found = port.find_first_of(":") != std::string::npos))
         port = port.substr(found + 1, port.length() - 1);
+	return port;
 }
 
 std::string request::getReqHost()
@@ -128,4 +129,5 @@ std::string request::getReqHost()
 
     if((found = host.find_first_of(":") != std::string::npos))
         host = host.substr(0, found - 1);
+	return host;
 }

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/02 12:55:28 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 12:54:40 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,17 @@ class webserv
 {
 	private:
 		std::vector<createSocket>	sockets;
+		std::vector<pollfd>			listning_fds;
+		std::vector<int>			master_fds;
 		Data						data;
-		pollfd						*fds;
     public:
+        void init(String);
+		void handleInputEvent(createSocket, pollfd &);
+		void handleOutputEvent(createSocket, pollfd &);
+		void eraseSocket(int, int);
+		void setUpServer(void);
         webserv();
         webserv(String);
-		void	setUpServer(void);
         ~webserv();
 };
 
