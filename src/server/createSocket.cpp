@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 13:15:12 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/08 08:57:50 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,44 +20,6 @@ createSocket::createSocket()
 int	 createSocket::getSockfd(void)
 {
 	return sockfd;
-}
-
-int	 createSocket::_read(int connection)
-{
-	char 	buff[1001] = {0};
-	ssize_t	i = 1;
-	String 	str;
-
-	while (i)
-	{
-		i = recv(connection, buff, 1000, 0);
-		if (i == -1)
-			perror("recv");
-		str += buff;
-		if (i < 1000)
-			break;
-	}
-	std::cout << str << std::endl;
-	return 0;
-}
-
-int	 createSocket::_send(int connection)
-{
-    std::string response;
-	response =
-        "HTTP/1.1 200 OK\n"
-        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-        "Server: Apache/2.2.3\n"
-        "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
-        "ETag: \"56d-9989200-1132c580\"\n"
-        "Content-Type: text/html\n"
-        "Content-Length: 1900\n"
-        "Accept-Ranges: bytes\n"
-        "Connection: Keep Alive\n"
-        "\n";
-    response += readFile("./src/page.html");
-	response += "\r\n";
-	return send(connection, response.c_str(), response.size(), 0);
 }
 
 int	 createSocket::_connect(void)
@@ -87,7 +49,7 @@ int createSocket::_accept(void)
 
 int createSocket::_listen(void)
 {
-	if (listen(sockfd, 5) == -1)
+	if (listen(sockfd, 1000) == -1)
 		return (-1);
 	std::cout << "listing on port: " << ip << ":" << port << std::endl;
     return (0);
@@ -95,7 +57,6 @@ int createSocket::_listen(void)
 
 createSocket::createSocket(int connection, std::string ip, int port)
 {
-	// fcntl(sockfd, F_SETFL, O_NONBLOCK);
 	sockfd = connection;
     address.sin_family = AF_INET;
     if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)

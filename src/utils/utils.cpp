@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 14:35:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/08 11:00:34 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void			printLogs(const std::string & line)
 	logfile.open("werserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
-		logfile << "" << line << std::endl;
+		logfile << "" << line  << std::endl;
 		logfile.close();
 	}
 }
@@ -149,9 +149,14 @@ std::string	readFile(std::string filename)
 			}
 		}
 	}
-    // else
-    //     throw std::runtime_error("cannot open file " + filename);
     return text;
 }
 
-
+void check(int condition)
+{
+	if (condition)
+	{
+		// printLogs(strerror(errno));
+		print(strerror(errno));
+	}
+}

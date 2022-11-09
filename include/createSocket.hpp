@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:54:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 11:29:32 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/07 16:46:38 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ class createSocket
         int _accept(void);
         int _close(void);
 		int _connect(void);
-		int _read(int);
-		int _send(int);
         ~createSocket();
         int getSockfd();
 };

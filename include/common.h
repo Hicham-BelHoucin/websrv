@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/04 16:54:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/06 16:30:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,11 @@
 # define CONFIGFILE "./conf/config.conf"
 # define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
+
+# define print(msg)                            \
+    {                                          \
+        std::cout << msg << std::endl;         \
+    }
 
 
 typedef enum s_type
