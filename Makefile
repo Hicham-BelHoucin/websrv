@@ -6,7 +6,7 @@
 #    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/05 11:41:11 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/11/05 15:31:19 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC = c++
 
 CFLAGS = -g
 
-SRCS = src/parsing/parsing.cpp src/request/request.cpp src/utils/utils.cpp src/response/response.cpp src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp src/main.cpp
+SRCS = src/parsing/parsing.cpp src/request/request.cpp src/client/client.cpp src/utils/utils.cpp src/response/response.cpp src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp src/main.cpp
 
 SRCOBJ = $(SRCS:.cpp=.o)
 

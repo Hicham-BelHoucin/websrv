@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 14:32:25 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/06 17:20:16 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,25 @@
 request::request()
 {
 
+}
+
+request::request(const request & obj)
+{
+	*this = obj;
+}
+
+request & request::operator=(const request & obj)
+{
+	if (&obj != this)
+	{
+		this->req_method = obj.req_method;
+		this->req_path = obj.req_path;
+		this->req_version = obj.req_version;
+		this->req_body = obj.req_body;
+		this->req_headers = obj.req_headers;
+		this->error = obj.error;
+	}
+	return *this;
 }
 
 request::request(std::string _req)
@@ -63,6 +82,7 @@ void request::parseReqLine(std::string line)
     std::getline(str, value);
     req_headers.insert(Pair(stringtrim(key),stringtrim(value)));
 }
+
 void request::parseReqMethods(std::string line)
 {
     std::stringstream str(line);

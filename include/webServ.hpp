@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 14:39:21 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/05 15:31:03 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "createSocket.hpp"
 #include "parsing.hpp"
 #include "server.hpp"
+#include "client.hpp"
 
 class webserv
 {
@@ -24,6 +25,7 @@ class webserv
 		std::vector<createSocket>	sockets;
 		std::vector<pollfd>			listning_fds;
 		std::vector<int>			master_fds;
+		std::map<int, client>		clients;
 		Data						data;
     public:
         void init(String);
