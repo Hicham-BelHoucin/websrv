@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/08 11:11:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/12 14:11:24 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ void	webserv::handleOutputEvent(createSocket & _socket, pollfd & fd)
 	if (c.isDone() == true)
 	{
 		request &req = c.getReq();
+		req = request(c.getReqString());
 		connection = req.getHeaderValue("Connection");
 		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;
