@@ -6,25 +6,25 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 16:19:44 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/11 22:45:42 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webServ.hpp"
 
 webserv::webserv()
-	: sockets()
-	, data()
-{}
+	: sockets(), data()
+{
+}
 
-webserv::~webserv() {
-
+webserv::~webserv()
+{
 }
 
 void webserv::init(String filename)
 {
-	parsing		obj(filename);
-	pollfd		new_fd;
+	parsing obj(filename);
+	pollfd new_fd;
 
 	data = obj.getData();
 	sockets = createSockets(data, obj);
@@ -39,8 +39,7 @@ void webserv::init(String filename)
 }
 
 webserv::webserv(String filename)
-	: sockets()
-	, data()
+	: sockets(), data()
 {
 	try
 	{
@@ -50,16 +49,16 @@ webserv::webserv(String filename)
 		printLogs(_displayTimestamp() + "start listing ... ");
 		setUpServer();
 	}
-	catch(const std::exception& e)
+	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
 	}
 }
 
-void	webserv::handleInputEvent(createSocket & _socket, pollfd & fd)
+void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 {
-	int		connection;
-	pollfd	new_connection;
+	int connection;
+	pollfd new_connection;
 
 	if (std::find(master_fds.begin(), master_fds.end(), _socket.getSockfd()) != master_fds.end())
 	{
@@ -79,14 +78,14 @@ void	webserv::handleInputEvent(createSocket & _socket, pollfd & fd)
 	}
 }
 
-void	webserv::eraseSocket(int _index, int index)
+void webserv::eraseSocket(int _index, int index)
 {
 	sockets[_index]._close();
 	sockets.erase(sockets.begin() + _index);
 	listning_fds.erase(listning_fds.begin() + index);
 }
 
-void	webserv::handleOutputEvent(createSocket & _socket, pollfd & fd)
+void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 {
 	_socket._send(_socket.getSockfd());
 	fd.events = POLLIN;
@@ -95,10 +94,11 @@ void	webserv::handleOutputEvent(createSocket & _socket, pollfd & fd)
 	// fd.revents = 0;
 }
 
-void webserv::setUpServer(void) {
-	nfds_t 	nfds;
-	nfds_t 	ready;
-	int 	index;
+void webserv::setUpServer(void)
+{
+	nfds_t nfds;
+	nfds_t ready;
+	int index;
 
 	while (1337)
 	{
@@ -106,20 +106,16 @@ void webserv::setUpServer(void) {
 		if (ready < 0)
 			std::cout << strerror(errno) << std::endl;
 		if (ready == 0)
-			continue ;
+			continue;
 		for (nfds_t i = 0; i < listning_fds.size(); i++)
 		{
-<<<<<<< HEAD
-			if (fds[i].revents == 0)
-=======
 			if (listning_fds[i].revents == 0)
->>>>>>> 6f909abbf5a7a796a6119515b35428d967c84ec5
-				continue ;
+				continue;
 			else
 			{
 				index = getsocket(sockets, listning_fds[i].fd);
 				if (index == -1)
-					continue ;
+					continue;
 				if (listning_fds[i].revents & POLLERR || listning_fds[i].revents & POLLHUP)
 					eraseSocket(index, i);
 				if (listning_fds[i].revents & POLLIN)

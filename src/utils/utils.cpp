@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 14:35:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/12 15:23:01 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
+#include "../../include/utils.h"
 
 // trim from end of string (right)
 std::string& rtrim(std::string& str, const std::string &ws)
@@ -49,7 +49,7 @@ std::string	_displayTimestamp( void )
 void			printLogs(const std::string & line)
 {
 	std::ofstream	logfile;
-
+	
 	logfile.open("werserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
@@ -154,4 +154,107 @@ std::string	readFile(std::string filename)
     return text;
 }
 
+bool	isMatch(String pattern, String str)
+{
+	if (pattern.empty() && str.empty())
+		return (true);
+	if (pattern.at(0) == '?' && str.empty())
+		return (false);
+	if (!pattern.substr(1).empty())
+	{
+		if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
+			return (false);
+	}
+	if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
+		return (isMatch(pattern.substr(1), str.substr(1)));
+	if (pattern.at(0) == '*')
+		return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
+	return (false);
+}
 
+ResponseIUtils::PATHMODE	checkPathMode(std::string path)
+{
+	struct stat  st;
+	
+	if(stat(path.c_str(), &st) == 0)
+	{
+		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
+			return	ResponseIUtils::D_ALL;
+		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
+			return    ResponseIUtils::D_RW;
+		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
+			return    ResponseIUtils::D_WX;
+		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IXUSR)
+			return    ResponseIUtils::D_RX;
+		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR)
+			return    ResponseIUtils::D_READ;
+		else if (st.st_mode & S_IFDIR && st.st_mode & S_IWUSR)
+			return    ResponseIUtils::D_WRITE;
+		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR)
+			return    ResponseIUtils::D_EXEC;
+		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
+			return	ResponseIUtils::F_ALL;
+		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
+			return    ResponseIUtils::F_RW;
+		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
+			return    ResponseIUtils::F_WX;
+		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IXUSR)
+			return    ResponseIUtils::F_RX;
+		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR)
+			return    ResponseIUtils::F_READ;
+		else if (st.st_mode & S_IFREG && st.st_mode & S_IWUSR)
+			return    ResponseIUtils::F_WRITE;
+		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR)
+			return    ResponseIUtils::F_EXEC;
+		else if (st.st_mode & S_IFDIR)
+			return    ResponseIUtils::DIR;
+		else if (st.st_mode & S_IFREG)
+			return	  ResponseIUtils::FILE;
+		else
+			return (ResponseIUtils::NONE);
+	}
+    return (ResponseIUtils::NONE);
+}
+
+String checkExtension(String filename)
+{
+	if (filename.empty())
+        return ("");
+	size_t found = filename.find_last_of(".");
+	if (found == std::string::npos)
+        return (filename);
+	return (filename.substr(found + 1));
+}
+
+String dirListing(String dirname)
+{
+	DIR *dr;
+	struct dirent *en;
+	String body;
+	dr = opendir(dirname.c_str()); //open all directory
+	if (dr) 
+	{
+		while ((en = readdir(dr)) != NULL) \
+		{
+			if (en->d_name[0]!= '.')
+			{
+				body.append(en->d_name);
+				body.append("\n");
+			}
+		}
+		closedir(dr); //close all directory
+	}
+	return(0);
+}
+
+
+String getDate()
+{
+	char m_time[50];
+	
+	time_t now = time(0);
+	tm *ltm = gmtime(&now);
+	strftime(m_time, sizeof(m_time), "%a, %d %b %Y %H:%M:%S GMT", ltm);
+	String s(m_time);
+	return (s);
+}

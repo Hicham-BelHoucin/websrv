@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 19:56:32 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/13 02:38:17 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@ private:
     std::string _response;
     std::string _body;
     std::size_t _ContentLenght;
-    request req;
+    std::string _reqMethod;
+    server      _serv;
+    String      _rootpath;
+    Set         _ServerLocations;
+    LocationMap _location;
     std::string _path;
     ResponseIUtils::METHODS method;
     ResponseIUtils::CODES _status_code;
@@ -35,13 +39,18 @@ public:
     response();
     ~response();
     response(request _req, parsing _conf);
-    void        setHeaders(Pair header);
-    void        setBody();
-    void        setStatusCode();
+    void        setHeaders(request req);
     void        ResponseBuilder();
     void        ClearResponse();
+    String      MethodGet(LocationMap location, String path, String body);
+    String      MethodPost(LocationMap location, String path, String body);
+    String      MethodPut(LocationMap location, String path, String body);
+    String      MethodDelete(LocationMap location, String path, String body);
+    String      MethodNotAllowed(LocationMap location, String path, String body);
+    String      writeContent(String path, String body);
     server      selectServer(std::vector<server> servers, std::string host, std::string port);
     LocationMap locationMatch(Set locations, String path);
+    String      MethodCheck(LocationMap location, String method, String path, String body);
 };
 
 #endif // !RESPONSE_HPP

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/05 16:19:32 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/12 13:59:54 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	 createSocket::_send(int connection)
     std::string response;
 	response =
         "HTTP/1.1 200 OK\n"
-        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+        "Date: Sat Jan  8 20:07:41 2011\n"
         "Server: Apache/2.2.3\n"
         "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
         "ETag: \"56d-9989200-1132c580\"\n"
