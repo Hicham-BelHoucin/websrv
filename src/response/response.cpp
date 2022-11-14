@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/13 02:44:55 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/13 20:14:48 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ String	response::writeContent(String path, String body)
 {
 	std::ofstream	file;
     ResponseIUtils::PATHMODE mode;
-    String body = "";
     mode = checkPathMode(path);
 	if (mode &  ResponseIUtils::ISFILE)
 	{
@@ -32,7 +31,7 @@ String	response::writeContent(String path, String body)
 		file << body;
 		file.close();
 		_status_code = ResponseIUtils::NO_CONTENT;
-        return body;
+        return "";
 	}
 	else
 	{
@@ -45,7 +44,7 @@ String	response::writeContent(String path, String body)
 		file << body;
 		file.close();
 		_status_code = ResponseIUtils::CREATED;
-        return body;
+        return "";
 	}
     
 }
@@ -116,7 +115,7 @@ String response::MethodNotAllowed(LocationMap location, String path, String body
 String response::MethodGet(LocationMap location, String path, String body)
 {
     bool isautoindex;
-    String body = "";
+    // String body = "";
     ResponseIUtils::PATHMODE mode;
     std::vector<String> indexes;
     DIR *Dir;
@@ -171,7 +170,7 @@ String response::MethodGet(LocationMap location, String path, String body)
             if (mode & ResponseIUtils::F_READ)
             {
                 _status_code = ResponseIUtils::OK;
-                body = readFile(path);
+                return (readFile(path));
             }
             else
             {
@@ -191,7 +190,7 @@ String response::MethodGet(LocationMap location, String path, String body)
 
 String response::MethodPost(LocationMap location, String path, String body)
 {
-    String body;
+    // String body;
     return body;
 }
 
@@ -205,7 +204,7 @@ String response::MethodDelete(LocationMap location, String path, String body)
 {
     (void)location;
     ResponseIUtils::PATHMODE mode;
-    String body = "";
+
     mode = checkPathMode(path);
     if (mode & ResponseIUtils::ISFILE)
     {
@@ -222,7 +221,7 @@ String response::MethodDelete(LocationMap location, String path, String body)
         _status_code = ResponseIUtils::NOT_FOUND;
         return readFile(ERROR404);
     }
-    return body;
+    return "";
 }
 
 typedef String (response::*MethodCall)(LocationMap location, String path, String body);
