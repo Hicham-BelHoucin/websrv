@@ -4,11 +4,7 @@
 /*   createSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obeaj <obeaj@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/12 15:54:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/09 21:03:23 by obeaj            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*                                              
 
 #ifndef CREATESOCKET_HPP
 #define CREATESOCKET_HPP
@@ -31,8 +27,6 @@ class createSocket
         int _accept(void);
         int _close(void);
 		int _connect(void);
-		int _read(int);
-		int _send(int);
         ~createSocket();
         int getSockfd();
 };

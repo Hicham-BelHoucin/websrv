@@ -4,9 +4,7 @@
 /*   createSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/12 15:58:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/13 20:19:20 by obeaj            ###   ########.fr       */
+/*     
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +85,7 @@ int createSocket::_accept(void)
 
 int createSocket::_listen(void)
 {
-	if (listen(sockfd, 5) == -1)
+	if (listen(sockfd, 1000) == -1)
 		return (-1);
 	std::cout << "listing on port: " << ip << ":" << port << std::endl;
     return (0);
@@ -95,7 +93,6 @@ int createSocket::_listen(void)
 
 createSocket::createSocket(int connection, std::string ip, int port)
 {
-	// fcntl(sockfd, F_SETFL, O_NONBLOCK);
 	sockfd = connection;
     address.sin_family = AF_INET;
     if (inet_aton(ip.c_str(), &(address.sin_addr)) == -1)

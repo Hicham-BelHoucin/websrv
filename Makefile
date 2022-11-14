@@ -16,6 +16,7 @@ CC = c++
 
 CFLAGS = -g
 
+
 SRCS = src/parsing/parsing.cpp src/request/request.cpp src/utils/utils.cpp src/server/createSocket.cpp src/server/server.cpp src/webserv.cpp src/main.cpp	src/response/response.cpp
 
 SRCOBJ = $(SRCS:.cpp=.o)

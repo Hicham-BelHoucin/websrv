@@ -6,7 +6,6 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/12 15:23:01 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +52,7 @@ void			printLogs(const std::string & line)
 	logfile.open("werserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
-		logfile << "" << line << std::endl;
+		logfile << "" << line  << std::endl;
 		logfile.close();
 	}
 }
@@ -149,8 +148,6 @@ std::string	readFile(std::string filename)
 			}
 		}
 	}
-    // else
-    //     throw std::runtime_error("cannot open file " + filename);
     return text;
 }
 
@@ -258,3 +255,13 @@ String getDate()
 	String s(m_time);
 	return (s);
 }
+
+void check(int condition)
+{
+	if (condition)
+	{
+		// printLogs(strerror(errno));
+		print(strerror(errno));
+	}
+}
+

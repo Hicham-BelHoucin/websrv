@@ -5,8 +5,6 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/12 19:15:46 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +40,11 @@
 # define CONFIGFILE "./conf/config.conf"
 # define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
+
+# define print(msg)                            \
+    {                                          \
+        std::cout << msg << std::endl;         \
+    }
 
 
 typedef enum s_type
