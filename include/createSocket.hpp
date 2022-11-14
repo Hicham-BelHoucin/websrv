@@ -3,12 +3,8 @@
 /*                                                        :::      ::::::::   */
 /*   createSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/12 15:54:09 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/07 16:46:38 by hbel-hou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*   By: obeaj <obeaj@student.42.fr>                +#+  +:+       +#+        */
+/*                                              
 
 #ifndef CREATESOCKET_HPP
 #define CREATESOCKET_HPP

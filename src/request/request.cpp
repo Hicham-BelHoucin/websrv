@@ -1,12 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   request.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/19 10:53:39 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/06 17:20:16 by hbel-hou         ###   ########.fr       */
+
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +48,6 @@ request::request(std::string _req)
         req_body += stringtrim(line);
         req_body += "\n";
     }
-
     std::cout << req_method << "\t" << req_path << "\t" << req_version << "\n";
     for (Map::iterator itr = req_headers.begin(); itr !=req_headers.end(); ++itr) {
         if(itr->first != "" && itr->second != "")

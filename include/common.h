@@ -3,10 +3,8 @@
 /*                                                        :::      ::::::::   */
 /*   common.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/25 13:06:51 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/06 16:30:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +27,14 @@
 # include <sstream>
 # include <fcntl.h>
 # include <poll.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <dirent.h>
+# include <algorithm>
 
 # define ERROR404 "./src/error/error_404.html"
 # define ERROR403 "./src/error/error_403.html"
+# define ERROR405 "./src/error/error_405.html"
 # define ERROR500 "./src/error/error_500.html"
 # define ERROR502 "./src/error/error_502.html"
 # define CONFIGFILE "./conf/config.conf"
@@ -70,6 +73,7 @@ typedef	std::multimap<std::string , std::string>				Map;
 typedef	std::map<std::string , Methods>							LocationMap;
 typedef std::map<std::string, LocationMap>						Set;
 typedef	std::string												String;
+typedef std::vector<std::string>::iterator                   	VecIterator;
 
 typedef	struct s_data
 {

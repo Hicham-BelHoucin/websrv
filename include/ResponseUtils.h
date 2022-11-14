@@ -6,22 +6,26 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:18:08 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/01 03:59:32 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/13 02:12:15 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RESPONSEUTILS_H
 #define RESPONSEUTILS_H
 
+
 namespace ResponseIUtils
 {
+    // Map status;
+    
     typedef enum S_METHODS 
     {
         GET = 1 << 0,
         DELETE = 1 << 1,
         POST = 1 << 2,
-        UNKNOWN = 1 << 3,
-        ALLOWED = GET | DELETE | POST
+        PUT =  1 << 3,
+        UNKNOWN = 1 << 4,
+        ALLOWED = GET | DELETE | POST | PUT
     } METHODS;
 
     typedef enum S_STATUSCODE
@@ -46,6 +50,32 @@ namespace ResponseIUtils
         NON_SUPPORTED_HTTPVERSION = 505
 
     } CODES;
+    
+    typedef enum S_PATHMODE {
+        DIR = 1 << 0,
+        FILE = 1 << 1,
+        // READ = 1 << 2,
+        // WRITE = 1 << 3,
+        // EXEC = 1 << 4,
+        NONE = 1 << 5,
+        D_READ = 1 << 6 ,
+        D_WRITE = 1<< 7,
+        D_EXEC = 1 << 8,
+        D_RW = 1 << 9,
+        D_RX = 1 << 10,
+        D_WX = 1 << 11,
+        D_ALL = 1 << 12,
+        F_READ = 1 << 13,
+        F_WRITE = 1 << 14,
+        F_EXEC = 1 << 15,
+        F_RW = 1 << 16,
+        F_RX = 1 << 17,
+        F_WX = 1 << 18,
+        F_ALL = 1 << 19,
+        ISDIR = DIR | D_ALL | D_READ | D_WRITE | D_EXEC | D_RW | D_RX | D_WX,
+        ISFILE = FILE | F_EXEC | F_RW | F_RX | F_WX | F_ALL | F_ALL | F_WRITE
+        
+    } PATHMODE;
 };
 
 #endif
