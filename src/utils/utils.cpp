@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/18 18:49:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/18 19:03:45 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,16 @@ std::vector<server> createServers(Data data, parsing obj)
 	return servers;
 }
 
+int			hexToDecimal(std::string str)
+{
+	std::stringstream stream;
+	int 				ret;
+
+	stream << str;
+	stream >> std::hex >> ret;
+	return ret;
+}
+
 std::vector<createSocket>	createSockets(Data data, parsing obj)
 {
 	std::vector<createSocket>					sockets;
@@ -102,6 +112,7 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 	createSocket								socket;
 	String										host;
 
+	print(hexToDecimal("7b"));
 	for (int i = 0; i < data.size(); i++)
 	{
 		ret = data[i].data.equal_range("listen");
