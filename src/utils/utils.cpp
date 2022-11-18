@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/14 14:30:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/18 18:49:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,11 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 		while (ret.first != ret.second)
 		{
 			int port = std::stoi(ret.first->second);
-			socket = createSocket(host, port);
-			sockets.push_back(socket);
+			if (std::find(sockets.begin(), sockets.end(), createSocket(0, host, port)) == sockets.end())
+			{
+				socket = createSocket(host, port);
+				sockets.push_back(socket);
+			}
 			ret.first++;
 		}
 	}

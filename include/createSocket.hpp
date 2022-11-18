@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:32:09 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/14 14:32:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/18 18:43:43 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ class createSocket
 		int _connect(void);
         ~createSocket();
         int getSockfd();
+        bool operator==(const createSocket & obj){
+            return this->port == obj.port;
+        };
 };
 
 #endif
