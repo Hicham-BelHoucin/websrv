@@ -3,9 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
+/*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
+/*   Updated: 2022/11/14 14:30:53 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +49,7 @@ std::string	_displayTimestamp( void )
 void			printLogs(const std::string & line)
 {
 	std::ofstream	logfile;
-	
+
 	logfile.open("werserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
@@ -172,7 +173,7 @@ bool	isMatch(String pattern, String str)
 ResponseIUtils::PATHMODE	checkPathMode(std::string path)
 {
 	struct stat  st;
-	
+
 	if(stat(path.c_str(), &st) == 0)
 	{
 		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
@@ -229,7 +230,7 @@ String dirListing(String dirname)
 	struct dirent *en;
 	String body;
 	dr = opendir(dirname.c_str()); //open all directory
-	if (dr) 
+	if (dr)
 	{
 		while ((en = readdir(dr)) != NULL) \
 		{
@@ -248,7 +249,7 @@ String dirListing(String dirname)
 String getDate()
 {
 	char m_time[50];
-	
+
 	time_t now = time(0);
 	tm *ltm = gmtime(&now);
 	strftime(m_time, sizeof(m_time), "%a, %d %b %Y %H:%M:%S GMT", ltm);

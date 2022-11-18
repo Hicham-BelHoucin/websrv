@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/13 20:14:48 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/14 14:30:10 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ String	response::writeContent(String path, String body)
 		_status_code = ResponseIUtils::CREATED;
         return "";
 	}
-    
+
 }
 
 server response::selectServer(std::vector<server> servers, std::string host, std::string port)

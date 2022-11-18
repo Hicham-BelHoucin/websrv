@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/08 11:27:50 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:23:46 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ int	client::_read(int connection)
 			return -1;
 		req_string += static_cast<std::string>(buff);
 		if (ret < 999)
+		{
 			this->donereading = true;
+			print(req_string);
+		}
 	}
 	return ret;
 }
