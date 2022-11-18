@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/05 14:23:35 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/18 11:04:14 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,20 +331,21 @@ void	parsing::checkKeyWords(void)
 void	parsing::checkMethodsKeyWords(LocationMap locations)
 {
 	LocationMap::iterator		begin;
-	std::string names[7] = {
+	std::string names[8] = {
 		"upload_enable",
 		"upload_store",
 		"allow_methods",
 		"autoindex" ,
 		"index",
 		"return",
-		"fastcgi_pass"
+		"fastcgi_pass",
+		"root"
 	};
 
 	begin = locations.begin();
 	while (begin != locations.end())
 	{
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			if (begin->first == "upload_enable" || begin->first == "autoindex")
 			{
@@ -356,7 +357,7 @@ void	parsing::checkMethodsKeyWords(LocationMap locations)
 			}
 			else if (names[i] == begin->first)
 				break;
-			else if (i == 6 && names[i] != begin->first)
+			else if (i == 7 && names[i] != begin->first)
 			{
 				throw std::runtime_error("unknown key word " + begin->first);
 				return ;
