@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:36:26 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 16:38:00 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class request
         std::string getReqPort();
         std::string getReqHost();
         std::map<std::string, std::string> getHeaders();
-        std::string getReqQuery();94f6ccec0a62fc1b1ce153eac49926490cabc60e
+        std::string getReqQuery();
         void        ClearRequest();
         void        setservers(const std::vector<server> & obj) {servers = obj;};
 };

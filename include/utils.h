@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:36:57 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 16:39:47 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ String                      checkExtension(String filename);
 String                      dirListing(String dirname);
 String                      getDate();
 String                      HtmlCompose(String htmlbody, String htmltitle);
-
+server selectServer(std::vector<server> servers, std::string host, std::string port);
 std::string&                stringtrim(std::string &str);
 void		            	printLogs(const std::string & line);
 int	            			checkExtansion(String filename);

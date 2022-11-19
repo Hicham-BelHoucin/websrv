@@ -3,15 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-<<<<<<< HEAD
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 02:57:53 by obeaj            ###   ########.fr       */
-=======
-/*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 13:19:11 by hbel-hou         ###   ########.fr       */
->>>>>>> 94f6ccec0a62fc1b1ce153eac49926490cabc60e
+/*   Updated: 2022/11/19 16:42:23 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +278,6 @@ void check(int condition)
 	}
 }
 
-<<<<<<< HEAD
 std::map<int, std::string> setStatusPhrases()
 {
 	std::map<int, std::string> status;
@@ -339,7 +333,6 @@ String	getContentType(String path)
 		return "text/plain";
 }
 
-=======
 bool isNumber(const std::string& s)
 {
     return s.find_first_not_of("0123456789") == std::string::npos;
@@ -383,8 +376,7 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
         }
         it++;
     }
-	if (elected.getServerName() == "")
+	if (elected.getHost() == "")
 		elected = servers[0];
     return elected;
 }
->>>>>>> 94f6ccec0a62fc1b1ce153eac49926490cabc60e
