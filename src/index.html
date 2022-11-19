@@ -5,14 +5,99 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>webserver</title>
-	<link rel="stylesheet" href="main.css" />
+	<style>
+		body {
+			background-color: white;
+		}
+
+		h1 {
+			font-weight: 500;
+			font-size:50px;
+		}
+		
+		.name {
+			padding: 2.5rem;
+		}
+
+		.root {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+			height: 100%;
+			width: 100%;
+			column-gap: 1.25rem;
+			row-gap: 1.25rem;
+		}
+
+		.Card {
+			padding: 1rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			row-gap: 1.5rem;
+			column-gap: 1.25rem;
+			width: 30rem;
+			height: 35rem;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 1rem;
+		}
+
+		.profile-img {
+			border-radius: 50%;
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+		}
+	</style>
 </head>
 <body>
 	<div class="container">
 		<h1>This Project Made By: </h1>
 		<div id="root" class="root">
+		</div>
 	</div>
-	</div>
-	<script src="index.js" ></script>
+	<script>
+		const data = [
+			{
+				id: 1,
+				githubName: 'Hicham-BelHoucin',
+				fullname: 'Hicham Bel houcin',
+			},
+			{
+				id: 2,
+				githubName: 'BEAJousama',
+				fullname: 'Ousama Beaj',
+			},
+			{
+				id: 3,
+				githubName: 'imabid99',
+				fullname: 'Imad Abid',
+			}
+		]
+		function appendContributors(fullname, githubName)
+		{
+			const container = document.createElement('div')
+			const child = document.createElement("img");
+			const span = document.createElement("span");
+
+			span.setAttribute('class', 'name')
+			span.innerText = fullname
+			container.setAttribute('class', 'Card')
+			child.setAttribute('src', `https://github.com/${githubName}.png`)
+			child.setAttribute('class', 'profile-img')
+
+			const el = document.getElementById("root");
+			container.appendChild(child)
+			container.appendChild(span)
+			el.appendChild(container);
+		}
+		data.map(item => appendContributors(item.fullname, item.githubName))
+	</script>
 </body>
 </html>
