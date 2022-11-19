@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/14 14:30:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/18 19:03:45 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,16 @@ std::vector<server> createServers(Data data, parsing obj)
 	return servers;
 }
 
+int			hexToDecimal(std::string str)
+{
+	std::stringstream stream;
+	int 				ret;
+
+	stream << str;
+	stream >> std::hex >> ret;
+	return ret;
+}
+
 std::vector<createSocket>	createSockets(Data data, parsing obj)
 {
 	std::vector<createSocket>					sockets;
@@ -102,6 +112,7 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 	createSocket								socket;
 	String										host;
 
+	print(hexToDecimal("7b"));
 	for (int i = 0; i < data.size(); i++)
 	{
 		ret = data[i].data.equal_range("listen");
@@ -109,8 +120,11 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 		while (ret.first != ret.second)
 		{
 			int port = std::stoi(ret.first->second);
-			socket = createSocket(host, port);
-			sockets.push_back(socket);
+			if (std::find(sockets.begin(), sockets.end(), createSocket(0, host, port)) == sockets.end())
+			{
+				socket = createSocket(host, port);
+				sockets.push_back(socket);
+			}
 			ret.first++;
 		}
 	}
