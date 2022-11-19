@@ -116,7 +116,6 @@ int request::parseHeaders()
         server obj;
 
         obj = selectServer(servers, getReqHost(), getReqPort());
-        print("max body size : " + std::to_string(obj.getMaxBodySize()));
         if(!isNumber(it->second))
         {
             return ResponseIUtils::BAD_REQUEST;
