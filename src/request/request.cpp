@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:37:50 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 18:43:15 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ int request::parseHeaders()
             return ResponseIUtils::BAD_REQUEST;
         }
         if(std::stoi(it->second) > obj.getMaxBodySize())
-            return REQUEST_ENTITY_TOO_LARGE;
+            return ResponseIUtils::LARGE_PAYLOAD;
     }
     if(!req.empty())
         req_body = req;
@@ -175,7 +175,7 @@ int request::parseReqMethods()
         if(r_all == "HTTP/1.1")
             req_version = r_all;
         else
-            return HTTP_VERSOIN_NOT_SUPPORTED;
+            return ResponseIUtils::NON_SUPPORTED_HTTPVERSION;
     }
     req = req.substr(req.find("\r\n") + 2,req.length());
     return 0;
