@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 11:33:21 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 16:38:00 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class request
         std::string getReqBody();
         std::string getReqPort();
         std::string getReqHost();
+        std::map<std::string, std::string> getHeaders();
         std::string getReqQuery();
         void        ClearRequest();
         void        setservers(const std::vector<server> & obj) {servers = obj;};

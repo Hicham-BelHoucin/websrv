@@ -5,6 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
+/*   Updated: 2022/11/19 02:50:41 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +31,25 @@
 # include <poll.h>
 # include <sys/stat.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <dirent.h>
 # include <algorithm>
 
 # define ERROR404 "./src/error/error_404.html"
 # define ERROR403 "./src/error/error_403.html"
+# define ERROR413 "./src/error/error_413.html"
 # define ERROR405 "./src/error/error_405.html"
 # define ERROR500 "./src/error/error_500.html"
 # define ERROR502 "./src/error/error_502.html"
 # define CONFIGFILE "./conf/config.conf"
+
+# define CGI_BUFSIZE 65536
+// Colors
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define YELLOW "\033[33m"
+# define RESET "\033[0m"
+
 # define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"
 

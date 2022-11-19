@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   request.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
+/*   Updated: 2022/11/19 16:37:50 by obeaj            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "request.hpp"
 #include "utils.h"
 
@@ -182,6 +194,11 @@ std::string request::getHeaderValue(std::string key)
         return "NoValue";
     }
 
+}
+
+std::map<std::string, std::string> request::getHeaders()
+{
+    return req_headers;
 }
 
 std::string request::getReqMethod()

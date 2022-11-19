@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 11:34:40 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 16:38:50 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,8 +180,10 @@ String response::MethodGet(LocationMap location, String path, String body)
         }
         else
         {
-            // Call for the appropriate CGI
-            //  return(cgi(location,filename))
+            headers.erase("content-type");
+            isCgiBody = true;
+            cgi cgiHandler(path, __req);
+            return(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0]));
         }
     }
     _status_code = ResponseIUtils::NOT_FOUND;
@@ -190,8 +192,80 @@ String response::MethodGet(LocationMap location, String path, String body)
 
 String response::MethodPost(LocationMap location, String path, String body)
 {
-    // String body;
-    return body;
+   bool isautoindex;
+    // String body = "";
+    ResponseIUtils::PATHMODE mode;
+    std::vector<String> indexes;
+    DIR *Dir;
+    struct dirent *DirEntry;
+    VecIterator it;
+
+    mode = checkPathMode(path);
+    if (mode & ResponseIUtils::ISDIR)
+    {
+        indexes = location.find("index")->second;
+        isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second[0] == "on");
+        it = indexes.begin();
+        if (mode & (ResponseIUtils::D_READ))
+        {
+            Dir = opendir(path.c_str());
+            while ((DirEntry = readdir(Dir)))
+            {
+                // Search for index in directory
+                if ((it = std::find(indexes.begin(), indexes.end(), DirEntry->d_name)) != indexes.end())
+                {
+                    // if index.html or index.htm found
+                    if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
+                    {
+                        _status_code = ResponseIUtils::OK;
+                        return (readFile(path + *it));
+                    }
+                    else
+                    {
+                        _location = locationMatch(_ServerLocations, *it);
+                        return (MethodCheck(_location, _reqMethod, path + *it, body));
+                    }
+                }
+            }
+            if (isautoindex)
+            {
+                _status_code = ResponseIUtils::OK;
+                // directory listing autoindex
+                return dirListing(path);
+            }
+        }
+        else
+        {
+            _status_code = ResponseIUtils::FORBIDDEN;
+            return readFile(ERROR403);
+        }
+    }
+    else if (mode & ResponseIUtils::ISFILE)
+    {
+        // if the file is a regulat html file
+        if (checkExtension(*it) != "php" || checkExtension(*it) != "py")
+        {
+            if (mode & ResponseIUtils::F_READ)
+            {
+                _status_code = ResponseIUtils::OK;
+                return (readFile(path));
+            }
+            else
+            {
+                _status_code = ResponseIUtils::FORBIDDEN;
+                return readFile(ERROR403);
+            }
+        }
+        else
+        {
+            headers.erase("content-type");
+            isCgiBody = true;
+            cgi cgiHandler(path, __req);
+            return(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0]));
+        }
+    }
+    _status_code = ResponseIUtils::NOT_FOUND;
+    return (readFile(ERROR404));
 }
 
 String response::MethodPut(LocationMap location, String path, String body)
@@ -237,6 +311,14 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     methodsMap["PUT"] = &response::MethodPut;
     methodsMap["NotAllowed"] = &response::MethodNotAllowed;
     it = methodsMap.begin();
+    
+    // TODO: Add checking for the body size;
+    if (std::stoi(location.find("max_body_size")->second[0]) < body.size())
+    {
+       _status_code = ResponseIUtils::LARGE_PAYLOAD;
+       return(readFile(ERROR413));
+    }
+    
     while (it != methodsMap.end())
     {
         if (method == it->first)
@@ -249,8 +331,10 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     return "";
 }
 
-response::response(request req, parsing conf)
+response::response(request req, parsing conf):__req(req)
 {
+
+    statusPhrases = setStatusPhrases();
     // selecting a server
     _serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
     // matching the path location
@@ -260,26 +344,53 @@ response::response(request req, parsing conf)
     _path = req.getReqPath();
     _location = locationMatch(_ServerLocations, _path);
     _body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
-    // headers =  setHeaders(req, _status_code);
-    // ResponseBuilder();
+    setHeaders(req);
+    ResponseBuilder();
 }
 
 void response::setHeaders(request req)
 {
-    // headers.insert(Pair());
     headers.insert(std::make_pair("server", "Webserv IHO-0.1"));
     headers.insert(std::make_pair("date", getDate() + "\r\n"));
     // headers["last-modified"] = getLastModified();
-    headers.insert(std::make_pair("connection", req.getHeaderValue("Connection") + "\r\n"));
-    // headers.insert(std::make_pair("keep-alive", req.getHeaderValue("Connection") + "\r\n"));
+    if (req.getHeaderValue("Connection") != "")
+        headers.insert(std::make_pair("connection", req.getHeaderValue("Connection") + "\r\n"));
+    if (headers.find("connection")->second == "Keep-Alive")
+        headers.insert(std::make_pair("keep-alive", "timeout=5, max=1000\r\n"));
     headers.insert(std::make_pair("content-length", std::to_string(_body.length()) + "\r\n"));
-    // headers.insert(std::make_pair("content-type", getType(_body)));
+    headers.insert(std::make_pair("content-type", getContentType(_body)));
+    headers.insert(std::make_pair("content-location", req.getReqPath()));
+}
+
+void    response::checkAndAppend(Map &map, String &str, String key)
+{
+	if (map.find(key) != map.end())
+		str.append(map.find(key)->first + ": " + map.find(key)->second + "\r\n");
 }
 
 void response::ResponseBuilder()
 {
-    // _response.append("HTTP/1.1 " + std::to_string(_status_code) + code[_status_code] + "\r\n");
+    _response.append("HTTP/1.1 " + std::to_string(_status_code) + statusPhrases[_status_code] + "\r\n");
+    checkAndAppend(headers, _response, "connection");
+    _response.append(headers.find("connection")->first + ": " + headers.find("connection")->second);
+    checkAndAppend(headers,_response,"content-length");
+    checkAndAppend(headers,_response,"content-location");
+    checkAndAppend(headers,_response,"content-type");
+    checkAndAppend(headers,_response,"date");
+    checkAndAppend(headers,_response,"keep-alive");
+    checkAndAppend(headers,_response,"last-modified");
+    checkAndAppend(headers,_response,"server");
+    checkAndAppend(headers,_response,"content-location");
+    if (!isCgiBody)
+        _response.append("\r\n");
+    _response.append(_body);
 }
+
 void response::ClearResponse()
 {
+    headers.clear();
+    _body = "";
+    _response = "";
+    _location.clear();
+    //...
 }

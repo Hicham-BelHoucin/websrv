@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 13:19:11 by hbel-hou         ###   ########.fr       */
+/*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
+/*   Updated: 2022/11/19 16:42:23 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/utils.h"
+#include "utils.h"
 
-// trim from end of string (right)
 std::string& rtrim(std::string& str, const std::string &ws)
 {
     str.erase(str.find_last_not_of(WHITESPACES) + 1);
@@ -255,7 +254,7 @@ String dirListing(String dirname)
 		}
 		closedir(dr); //close all directory
 	}
-	return(0);
+	return(body);
 }
 
 
@@ -277,6 +276,61 @@ void check(int condition)
 		// printLogs(strerror(errno));
 		print(strerror(errno));
 	}
+}
+
+std::map<int, std::string> setStatusPhrases()
+{
+	std::map<int, std::string> status;
+	
+	status[200] = "OK";
+	status[201] = "Created";
+	status[202] = "Accepted";
+	status[203] = "Non-Authoritative Information";
+	status[204] = "No Content";
+	status[205] = "Reset Content";
+	status[206] = "Partial Content";
+	status[300] = "Multiple Choices";
+	status[301] = "Moved Permanently";
+	status[302] = "Found";
+	status[303] = "See Other";
+	status[304] = "Not Modified";
+	status[305] = "Use Proxy";
+	status[308] = "Permanent Redirect";
+	status[400] = "Bad Request";
+	status[401] = "Unauthorized";
+	status[403] = "Forbidden";
+	status[404] = "Not Found";
+	status[405] = "Method Not Allowed";
+	status[406] = "Not Acceptable";
+	status[410] = "Gone";
+	status[411] = "Length Required";
+	status[500] = "Internal Server Error";
+	status[501] = "Not Implemented";
+	status[502] = "Bad Gateway";
+	status[505] = "HTTP Version Not Supported";	
+	
+	return status;
+}
+
+String	getContentType(String path)
+{
+	String type = checkExtension(path);
+	if (type == "html")
+		return("text/html");
+	else if (type == "css")
+		return "text/css";
+	else if (type == "js")
+		return "text/javascript";
+	else if (type == "jpeg" || type == "jpg")
+		return "image/jpeg";
+	else if (type == "png")
+		return "image/png";
+	else if (type == "bmp")
+		return "image/bmp";
+	else if (type == "json")
+		return "application/json";
+	else
+		return "text/plain";
 }
 
 bool isNumber(const std::string& s)
@@ -322,7 +376,7 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
         }
         it++;
     }
-	if (elected.getServerName() == "")
+	if (elected.getHost() == "")
 		elected = servers[0];
     return elected;
 }

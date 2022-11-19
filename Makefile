@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
+#    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/14 14:38:24 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/11/19 16:36:40 by obeaj            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,19 +17,29 @@ CC = c++
 CFLAGS = -g
 
 
-SRCS =  src/client/client.cpp \
-		src/parsing/parsing.cpp \
-		src/request/request.cpp \
-		src/response/response.cpp \
-		src/server/createSocket.cpp \
-		src/server/server.cpp \
-		src/utils/utils.cpp \
-		src/main.cpp \
-		src/webserv.cpp \
+SRCS = src/parsing/parsing.cpp \
+	   src/request/request.cpp \
+	   src/utils/utils.cpp \
+	   src/server/createSocket.cpp \
+	   src/server/server.cpp \
+	   src/webserv.cpp \
+	   src/main.cpp \
+	   src/response/response.cpp \
+	   src/client/client.cpp \
+	   src/cgi/cgi.cpp
 
 SRCOBJ = $(SRCS:.cpp=.o)
 
-INCLUDE = include/createSocket.hpp include/parsing.hpp include/request.hpp include/server.hpp include/webServ.hpp include/utils.h include/response.hpp include/ResponseUtils.h
+INCLUDE =	include/createSocket.hpp \
+			include/parsing.hpp \
+			include/request.hpp \
+			include/server.hpp \
+			include/webServ.hpp \
+			include/utils.h \
+			include/response.hpp \
+			include/ResponseUtils.h \
+			include/client.hpp \
+			include/cgi.hpp
 
 all: $(NAME)
 
