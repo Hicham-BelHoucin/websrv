@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/01 03:52:47 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/15 19:57:58 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
-# include "ResponseUtils.h"
+// # include "ResponseUtils.h"
 # include "common.h"
 # include "request.hpp"
 # include "parsing.hpp"
@@ -26,8 +26,8 @@ private:
     std::string _body;
     std::size_t _ContentLenght;
     request req;
-    ResponseIUtils::METHODS method;
-    ResponseIUtils::CODES _status_code;
+    // ResponseIUtils::METHODS method;
+    // ResponseIUtils::CODES _status_code;
     parsing conf;
     Map headers;
 public:

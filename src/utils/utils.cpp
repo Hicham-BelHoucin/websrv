@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/08 11:00:34 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 10:09:51 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,4 +159,21 @@ void check(int condition)
 		// printLogs(strerror(errno));
 		print(strerror(errno));
 	}
+}
+
+bool isNumber(const std::string& s)
+{
+    return s.find_first_not_of("0123456789") == std::string::npos;
+}
+
+int line_countword(std::string line)
+{
+    int c = 0;
+    for(int i = 0 ; i < line.size() ;i++)
+    {
+        if(line[i] == ' ')
+           c++;
+    }
+    c = c + 1;
+    return c;
 }

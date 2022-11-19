@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:03:33 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/12 14:11:24 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 10:51:21 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ void	webserv::handleOutputEvent(createSocket & _socket, pollfd & fd)
 	if (c.isDone() == true)
 	{
 		request &req = c.getReq();
-		req = request(c.getReqString());
+		req = request(); 
+		req.requestCheck(c.getReqString());
 		connection = req.getHeaderValue("Connection");
 		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;

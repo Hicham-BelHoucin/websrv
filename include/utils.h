@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/08 11:00:56 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 10:11:13 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "parsing.hpp"
 #include "server.hpp"
 
+bool isNumber(const std::string& s);
+int line_countword(std::string line);
 std::string&    stringtrim(std::string &str);
 void			printLogs(const std::string & line);
 int				checkExtansion(String filename);
