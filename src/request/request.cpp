@@ -1,7 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-
+/*   request.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
+/*   Updated: 2022/11/18 02:06:51 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +110,11 @@ std::string request::getHeaderValue(std::string key)
         return "NoValue";
     }
 
+}
+
+std::map<std::string, std::string> request::getHeaders()
+{
+    return req_headers;
 }
 
 std::string request::getReqMethod()

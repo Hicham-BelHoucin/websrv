@@ -6,18 +6,17 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:18:08 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/13 02:12:15 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/18 18:41:35 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RESPONSEUTILS_H
 #define RESPONSEUTILS_H
 
+#include "common.h"
 
 namespace ResponseIUtils
-{
-    // Map status;
-    
+{    
     typedef enum S_METHODS 
     {
         GET = 1 << 0,
@@ -45,6 +44,7 @@ namespace ResponseIUtils
         NOT_FOUND =  404,
         NOT_ALLOWED = 405,
         NOT_ACCEPTABLE = 406,
+        LARGE_PAYLOAD = 413,
         SERVER_ERROR = 500,
         NOT_IMPLEMENTED = 501,
         NON_SUPPORTED_HTTPVERSION = 505

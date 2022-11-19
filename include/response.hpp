@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/13 02:38:17 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 02:44:31 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,13 @@
 # include "common.h"
 # include "request.hpp"
 # include "parsing.hpp"
-
+# include "cgi.hpp"
 class request;
 
 class response
 {
 private:
+    request __req;
     std::string _response;
     std::string _body;
     std::size_t _ContentLenght;
@@ -31,8 +32,10 @@ private:
     Set         _ServerLocations;
     LocationMap _location;
     std::string _path;
+    std::map<int,std::string> statusPhrases;
     ResponseIUtils::METHODS method;
     ResponseIUtils::CODES _status_code;
+    bool isCgiBody;
     parsing conf;
     Map headers;
 public:
@@ -51,6 +54,7 @@ public:
     server      selectServer(std::vector<server> servers, std::string host, std::string port);
     LocationMap locationMatch(Set locations, String path);
     String      MethodCheck(LocationMap location, String method, String path, String body);
+    void        checkAndAppend(Map &map, String &str, String key);
 };
 
 #endif // !RESPONSE_HPP
