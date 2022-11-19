@@ -3,10 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
+<<<<<<< HEAD
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
 /*   Updated: 2022/11/19 02:57:53 by obeaj            ###   ########.fr       */
+=======
+/*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
+/*   Updated: 2022/11/19 13:19:11 by hbel-hou         ###   ########.fr       */
+>>>>>>> 94f6ccec0a62fc1b1ce153eac49926490cabc60e
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +52,14 @@ std::string	_displayTimestamp( void )
 // print logs in the log file
 void			printLogs(const std::string & line)
 {
-	std::ofstream	logfile;
-	
-	logfile.open("werserver.logs", std::ifstream::app);
-	if (logfile.is_open())
-	{
-		logfile << "" << line  << std::endl;
-		logfile.close();
-	}
+	// std::ofstream	logfile;
+
+	// logfile.open("werserver.logs", std::ifstream::app);
+	// if (logfile.is_open())
+	// {
+	// 	logfile << "" << line  << std::endl;
+	// 	logfile.close();
+	// }
 }
 
 std::vector<int>	getallPorts(Data data, parsing obj)
@@ -94,6 +99,16 @@ std::vector<server> createServers(Data data, parsing obj)
 	return servers;
 }
 
+int			hexToDecimal(std::string str)
+{
+	std::stringstream stream;
+	int 				ret;
+
+	stream << str;
+	stream >> std::hex >> ret;
+	return ret;
+}
+
 std::vector<createSocket>	createSockets(Data data, parsing obj)
 {
 	std::vector<createSocket>					sockets;
@@ -108,8 +123,11 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 		while (ret.first != ret.second)
 		{
 			int port = std::stoi(ret.first->second);
-			socket = createSocket(host, port);
-			sockets.push_back(socket);
+			if (std::find(sockets.begin(), sockets.end(), createSocket(0, host, port)) == sockets.end())
+			{
+				socket = createSocket(host, port);
+				sockets.push_back(socket);
+			}
 			ret.first++;
 		}
 	}
@@ -172,7 +190,7 @@ bool	isMatch(String pattern, String str)
 ResponseIUtils::PATHMODE	checkPathMode(std::string path)
 {
 	struct stat  st;
-	
+
 	if(stat(path.c_str(), &st) == 0)
 	{
 		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
@@ -229,7 +247,7 @@ String dirListing(String dirname)
 	struct dirent *en;
 	String body;
 	dr = opendir(dirname.c_str()); //open all directory
-	if (dr) 
+	if (dr)
 	{
 		while ((en = readdir(dr)) != NULL) \
 		{
@@ -248,7 +266,7 @@ String dirListing(String dirname)
 String getDate()
 {
 	char m_time[50];
-	
+
 	time_t now = time(0);
 	tm *ltm = gmtime(&now);
 	strftime(m_time, sizeof(m_time), "%a, %d %b %Y %H:%M:%S GMT", ltm);
@@ -265,6 +283,7 @@ void check(int condition)
 	}
 }
 
+<<<<<<< HEAD
 std::map<int, std::string> setStatusPhrases()
 {
 	std::map<int, std::string> status;
@@ -320,3 +339,52 @@ String	getContentType(String path)
 		return "text/plain";
 }
 
+=======
+bool isNumber(const std::string& s)
+{
+    return s.find_first_not_of("0123456789") == std::string::npos;
+}
+
+int line_countword(std::string line)
+{
+    int c = 0;
+    for(int i = 0 ; i < line.size() ;i++)
+    {
+        if(line[i] == ' ')
+           c++;
+    }
+    c = c + 1;
+    return c;
+}
+
+server selectServer(std::vector<server> servers, std::string host, std::string port)
+{
+    std::vector<server>::iterator it = servers.begin();
+    std::vector<server> selected;
+    server elected;
+    while (it != servers.end())
+    {
+        std::vector<int> ports = (*it).getPorts();
+        if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
+        {
+            selected.push_back(*it);
+        }
+        it++;
+    }
+    it = selected.begin();
+    while (it != selected.end())
+    {
+        std::stringstream s((*it).getServerName());
+        std::string servername;
+        while (std::getline(s, servername, ' '))
+        {
+            if (servername == host)
+                elected = *it;
+        }
+        it++;
+    }
+	if (elected.getServerName() == "")
+		elected = servers[0];
+    return elected;
+}
+>>>>>>> 94f6ccec0a62fc1b1ce153eac49926490cabc60e

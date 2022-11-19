@@ -3,7 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/* 
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
+/*   Updated: 2022/11/19 11:27:39 by imabid           ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "webServ.hpp"
@@ -32,6 +36,7 @@ void webserv::init(String filename)
 		listning_fds.push_back(new_fd);
 		master_fds.push_back(sockets[i].getSockfd());
 	}
+	servers = createServers(data, obj);
 }
 
 webserv::webserv(String filename)
@@ -97,7 +102,10 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 	std::string connection;
 	if (c.isDone() == true)
 	{
-		request &req = c.getReq();
+		request req;
+		req = request();
+		req.setservers(servers);
+		req.requestCheck(c.getReqString());
 		connection = req.getHeaderValue("Connection");
 		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;

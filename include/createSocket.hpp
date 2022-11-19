@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 16:32:40 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/14 16:35:54 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 16:36:04 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ class createSocket
         int _send(int connection);
         ~createSocket();
         int getSockfd();
+        bool operator==(const createSocket & obj){
+            return this->port == obj.port;
+        };
 };
 
 #endif

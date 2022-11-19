@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 02:58:14 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 16:36:57 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "server.hpp"
 #include "ResponseUtils.h"
 
+bool isNumber(const std::string& s);
+int line_countword(std::string line);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);
 void			            printLogs(const std::string & line);
