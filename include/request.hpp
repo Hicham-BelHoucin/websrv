@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/06 17:20:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 11:33:21 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,32 @@
 # define REQUEST_HPP
 #include "utils.h"
 
+#define REQUEST_ENTITY_TOO_LARGE 413
+#define HTTP_VERSOIN_NOT_SUPPORTED 505
+
 class request
 {
     private:
+        std::string 						req;
         std::string 						req_method;
         std::string 						req_path;
         std::string 						req_version;
         std::string 						req_body;
+        std::string 						req_query;
+        int                                 status;
         std::map<std::string, std::string> 	req_headers;
         int									error;
+        std::vector<server>                 servers;
     public:
         request(std::string _req);
         request();
         request(const request & obj);
         request & operator=(const request & obj);
         ~request();
-        void        parseReqLine(std::string line);
-        void        parseReqMethods(std::string line);
+        int         parseHeaders();
+        int         requestCheck(std::string _req);
+        void        requestPrint();
+        int         parseReqMethods();
         void        parseReqBody(std::string reqbody);
         std::string getHeaderValue(std::string key);
         std::string getReqMethod();
@@ -39,6 +48,8 @@ class request
         std::string getReqBody();
         std::string getReqPort();
         std::string getReqHost();
+        std::string getReqQuery();
         void        ClearRequest();
+        void        setservers(const std::vector<server> & obj) {servers = obj;};
 };
 #endif

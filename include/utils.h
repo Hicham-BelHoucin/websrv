@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:29:53 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/14 14:32:19 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 11:36:34 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include "server.hpp"
 #include "ResponseUtils.h"
 
+bool isNumber(const std::string& s);
+int line_countword(std::string line);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);
 void			            printLogs(const std::string & line);
@@ -39,5 +41,6 @@ pollfd						*getfds(std::vector<createSocket> & sockets);
 int 						getsocket(std::vector<createSocket> sockets, int fd);
 std::string					_displayTimestamp( void );
 void 						check(int condition);
+server selectServer(std::vector<server> servers, std::string host, std::string port);
 
 #endif // !UTILS_H

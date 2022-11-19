@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/03 15:57:24 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/19 11:55:40 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,26 @@ class server
 	public:
 		server();
 		server(String, String, String, Set, int, std::vector<int>, Map);
+		server & operator=(const server & obj) {
+			_root = obj._root;
+			_serverName = obj._serverName;
+			_host = obj._host;
+			_locations = obj._locations;
+			_maxBodySize = obj._maxBodySize;
+			_ports = obj._ports;
+			_errorPages = obj._errorPages;
+			return *this;
+		}
 		String getRootPath();
 		String getHost();
 		Set getlocations();
 		String getServerName();
 		std::vector<int> getPorts();
 		Map getErrorPages();
+		int getMaxBodySize() {
+			// fix this later
+			return _maxBodySize * 1000000;
+		}
 		~server();
 };
 
