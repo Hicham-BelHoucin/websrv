@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/14 14:30:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 11:51:55 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,3 +266,50 @@ void check(int condition)
 	}
 }
 
+bool isNumber(const std::string& s)
+{
+    return s.find_first_not_of("0123456789") == std::string::npos;
+}
+
+int line_countword(std::string line)
+{
+    int c = 0;
+    for(int i = 0 ; i < line.size() ;i++)
+    {
+        if(line[i] == ' ')
+           c++;
+    }
+    c = c + 1;
+    return c;
+}
+
+server selectServer(std::vector<server> servers, std::string host, std::string port)
+{
+    std::vector<server>::iterator it = servers.begin();
+    std::vector<server> selected;
+    server elected;
+    while (it != servers.end())
+    {
+        std::vector<int> ports = (*it).getPorts();
+        if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
+        {
+            selected.push_back(*it);
+        }
+        it++;
+    }
+    it = selected.begin();
+    while (it != selected.end())
+    {
+        std::stringstream s((*it).getServerName());
+        std::string servername;
+        while (std::getline(s, servername, ' '))
+        {
+            if (servername == host)
+                elected = *it;
+        }
+        it++;
+    }
+	if (elected.getServerName() == "")
+		elected = servers[0];
+    return elected;
+}
