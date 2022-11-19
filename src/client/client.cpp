@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/16 16:23:46 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 13:05:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ client::client(/* args */) : donereading(false)
         "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
         "ETag: \"56d-9989200-1132c580\"\n"
         "Content-Type: text/html\n"
-        "Content-Length: 1900\n"
+        "Content-Length: 3000\n"
         "Accept-Ranges: bytes\n"
         "Connection: Keep Alive\n"
         "\n";
-    res_string += readFile("./src/page.html");
+    res_string += readFile("./src/index.html");
 	res_string += "\r\n";
 }
 
@@ -63,7 +63,6 @@ int	client::_read(int connection)
 		if (ret < 999)
 		{
 			this->donereading = true;
-			print(req_string);
 		}
 	}
 	return ret;

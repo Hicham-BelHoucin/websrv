@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:51:55 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 13:09:37 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,16 @@ std::vector<server> createServers(Data data, parsing obj)
 	return servers;
 }
 
+int			hexToDecimal(std::string str)
+{
+	std::stringstream stream;
+	int 				ret;
+
+	stream << str;
+	stream >> std::hex >> ret;
+	return ret;
+}
+
 std::vector<createSocket>	createSockets(Data data, parsing obj)
 {
 	std::vector<createSocket>					sockets;
@@ -109,8 +119,11 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 		while (ret.first != ret.second)
 		{
 			int port = std::stoi(ret.first->second);
-			socket = createSocket(host, port);
-			sockets.push_back(socket);
+			if (std::find(sockets.begin(), sockets.end(), createSocket(0, host, port)) == sockets.end())
+			{
+				socket = createSocket(host, port);
+				sockets.push_back(socket);
+			}
 			ret.first++;
 		}
 	}
