@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:29:53 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/14 14:32:19 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 11:10:16 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include "server.hpp"
 #include "ResponseUtils.h"
 
+bool isNumber(const std::string& s);
+int line_countword(std::string line);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);
 void			            printLogs(const std::string & line);
