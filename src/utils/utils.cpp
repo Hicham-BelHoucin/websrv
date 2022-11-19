@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 13:09:37 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/19 13:19:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ std::string	_displayTimestamp( void )
 // print logs in the log file
 void			printLogs(const std::string & line)
 {
-	std::ofstream	logfile;
+	// std::ofstream	logfile;
 
-	logfile.open("werserver.logs", std::ifstream::app);
-	if (logfile.is_open())
-	{
-		logfile << "" << line  << std::endl;
-		logfile.close();
-	}
+	// logfile.open("werserver.logs", std::ifstream::app);
+	// if (logfile.is_open())
+	// {
+	// 	logfile << "" << line  << std::endl;
+	// 	logfile.close();
+	// }
 }
 
 std::vector<int>	getallPorts(Data data, parsing obj)
