@@ -51,7 +51,8 @@ void    request::requestPrint()
 	{
 		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
 	}
-    std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    if(!req_body.empty())
+        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
@@ -112,11 +113,15 @@ int request::parseHeaders()
     }
     if((it = req_headers.find("Content-Length") )!= req_headers.end())
     {
+        server obj;
+
+        obj = selectServer(servers, getReqHost(), getReqPort());
+        print("max body size : " + std::to_string(obj.getMaxBodySize()));
         if(!isNumber(it->second))
         {
             return ResponseIUtils::BAD_REQUEST;
         }
-        if(std::stoi(it->second) > 400)
+        if(std::stoi(it->second) > obj.getMaxBodySize())
             return REQUEST_ENTITY_TOO_LARGE;
     }
     if(!req.empty())
@@ -210,8 +215,8 @@ std::string request::getReqPort()
     std::string port = getHeaderValue("Host");
     std::size_t found;
 
-    if((found = port.find_first_of(":") != std::string::npos))
-        port = port.substr(found + 1, port.length() - 1);
+    if((found = port.find_first_of(":")) != std::string::npos)
+        port = port.substr(found + 1, port.length());
 	return port;
 }
 
@@ -220,7 +225,7 @@ std::string request::getReqHost()
     std::string host = getHeaderValue("Host");
     std::size_t found;
 
-    if((found = host.find_first_of(":") != std::string::npos))
-        host = host.substr(0, found - 1);
+    if((found = host.find_first_of(":")) != std::string::npos)
+        host = host.substr(0, found);
 	return host;
 }

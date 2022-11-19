@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:29:53 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:10:16 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 11:36:34 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,6 @@ pollfd						*getfds(std::vector<createSocket> & sockets);
 int 						getsocket(std::vector<createSocket> sockets, int fd);
 std::string					_displayTimestamp( void );
 void 						check(int condition);
+server selectServer(std::vector<server> servers, std::string host, std::string port);
 
 #endif // !UTILS_H

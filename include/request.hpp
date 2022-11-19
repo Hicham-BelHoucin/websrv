@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 11:15:36 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 11:33:21 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class request
         int                                 status;
         std::map<std::string, std::string> 	req_headers;
         int									error;
+        std::vector<server>                 servers;
     public:
         request(std::string _req);
         request();
@@ -49,5 +50,6 @@ class request
         std::string getReqHost();
         std::string getReqQuery();
         void        ClearRequest();
+        void        setservers(const std::vector<server> & obj) {servers = obj;};
 };
 #endif

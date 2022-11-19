@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:32 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:09:43 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 11:51:55 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,3 +283,33 @@ int line_countword(std::string line)
     return c;
 }
 
+server selectServer(std::vector<server> servers, std::string host, std::string port)
+{
+    std::vector<server>::iterator it = servers.begin();
+    std::vector<server> selected;
+    server elected;
+    while (it != servers.end())
+    {
+        std::vector<int> ports = (*it).getPorts();
+        if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
+        {
+            selected.push_back(*it);
+        }
+        it++;
+    }
+    it = selected.begin();
+    while (it != selected.end())
+    {
+        std::stringstream s((*it).getServerName());
+        std::string servername;
+        while (std::getline(s, servername, ' '))
+        {
+            if (servername == host)
+                elected = *it;
+        }
+        it++;
+    }
+	if (elected.getServerName() == "")
+		elected = servers[0];
+    return elected;
+}
