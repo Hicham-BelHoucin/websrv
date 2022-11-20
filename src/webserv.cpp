@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:27:39 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 15:48:05 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,12 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 	}
 }
 
-void webserv::eraseSocket(int _index, int index)
+void webserv::eraseSocket(int _index, int index, int fd)
 {
 	sockets[_index]._close();
 	sockets.erase(sockets.begin() + _index);
 	listning_fds.erase(listning_fds.begin() + index);
+	clients.erase(fd);
 }
 
 void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
@@ -106,8 +107,10 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 		req = request();
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
+		c.setResString(req.getReqPath().substr(1));
+		print(req.getReqPath());
 		connection = req.getHeaderValue("Connection");
-		if (c._send(fd.fd) < 0 || connection == "close")
+		if (c._send(fd.fd) < 0 || connection != "close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;
 		c.clean();
@@ -136,13 +139,13 @@ void webserv::setUpServer(void)
 				if (index == -1)
 					continue;
 				if (listning_fds[i].revents & POLLERR || listning_fds[i].revents & POLLHUP)
-					eraseSocket(index, i);
+					eraseSocket(index, i, listning_fds[i].fd);
 				if (listning_fds[i].revents & POLLIN)
 					handleInputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLOUT)
 					handleOutputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLNVAL)
-					eraseSocket(index, i);
+					eraseSocket(index, i, listning_fds[i].fd);
 			}
 		}
 	}

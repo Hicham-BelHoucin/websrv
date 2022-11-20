@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:29:53 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:36:34 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 14:43:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 bool isNumber(const std::string& s);
 int line_countword(std::string line);
+std::string generateErrorPage(int number, std::string description);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);
 void			            printLogs(const std::string & line);

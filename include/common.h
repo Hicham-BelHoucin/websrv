@@ -32,11 +32,11 @@
 # include <dirent.h>
 # include <algorithm>
 
-# define ERROR404 "./src/error/error_404.html"
-# define ERROR403 "./src/error/error_403.html"
-# define ERROR405 "./src/error/error_405.html"
-# define ERROR500 "./src/error/error_500.html"
-# define ERROR502 "./src/error/error_502.html"
+# define ERROR404 "./src/errors/error_404.html"
+# define ERROR403 "./src/errors/error_403.html"
+# define ERROR405 "./src/errors/error_405.html"
+# define ERROR500 "./src/errors/error_500.html"
+# define ERROR502 "./src/errors/error_502.html"
 # define CONFIGFILE "./conf/config.conf"
 # define CLINETMAXBODYSIZE 1
 # define SEVRERNAME "exmaple.com"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 11:26:50 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 13:37:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class webserv
         void init(String);
 		void handleInputEvent(createSocket &, pollfd &);
 		void handleOutputEvent(createSocket &, pollfd &);
-		void eraseSocket(int, int);
+		void eraseSocket(int, int, int);
 		void setUpServer(void);
         webserv();
         webserv(String);
