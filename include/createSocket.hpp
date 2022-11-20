@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   createSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/14 14:32:09 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/18 18:43:43 by hbel-hou         ###   ########.fr       */
+/*   Created: 2022/10/14 16:32:40 by obeaj             #+#    #+#             */
+/*   Updated: 2022/11/19 16:36:04 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ class createSocket
         int _accept(void);
         int _close(void);
 		int _connect(void);
+        int _read(int connection);
+        int _send(int connection);
         ~createSocket();
         int getSockfd();
         bool operator==(const createSocket & obj){
