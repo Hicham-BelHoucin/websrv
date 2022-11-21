@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 13:17:44 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/21 09:11:55 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 client::client(/* args */) : donereading(false)
 {
+	std::string data = readFile("./src/index.html");
 	res_string =
         "HTTP/1.1 200 OK\n"
         "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
@@ -21,11 +22,11 @@ client::client(/* args */) : donereading(false)
         "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
         "ETag: \"56d-9989200-1132c580\"\n"
         "Content-Type: text/html\n"
-        "Content-Length: 3000\n"
+        "Content-Length: " + std::to_string(data.length()) + "\n"
         "Accept-Ranges: bytes\n"
         "Connection: Keep Alive\n"
         "\n";
-    res_string += readFile("./src/index.html");
+    res_string += data;
 	res_string += "\r\n";
 }
 
@@ -58,12 +59,13 @@ int	client::_read(int connection)
 		ret = recv(connection, buff, 999, 0);
 		buff[ret] = '\0';
 		if (ret < 0)
-			return -1;
-		req_string += static_cast<std::string>(buff);
-		if (ret < 999)
 		{
-			this->donereading = true;
+			print(ret);
+			return -1;
 		}
+		if (ret == 0 || ret < 999)
+			this->donereading = true;
+		req_string += static_cast<std::string>(buff);
 	}
 	return ret;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:42:23 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/20 11:54:08 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ void check(int condition)
 std::map<int, std::string> setStatusPhrases()
 {
 	std::map<int, std::string> status;
-	
+
 	status[200] = "OK";
 	status[201] = "Created";
 	status[202] = "Accepted";
@@ -307,8 +307,8 @@ std::map<int, std::string> setStatusPhrases()
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
 	status[502] = "Bad Gateway";
-	status[505] = "HTTP Version Not Supported";	
-	
+	status[505] = "HTTP Version Not Supported";
+
 	return status;
 }
 
@@ -379,4 +379,35 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
 	if (elected.getHost() == "")
 		elected = servers[0];
     return elected;
+}
+
+std::string generateErrorPage(int number, std::string description)
+{
+	return (
+		"<!DOCTYPE html> \n \
+		<html lang=\"en\"> \n \
+		<head> \n \
+			<title>Document</title> \n \
+			<style> \n \
+				.container { \n \
+					display: flex; \n \
+					height: 100vh; \n \
+					width: 100vw; \n \
+					flex-direction:column; \n \
+					justify-content: center; \n \
+					align-items: center; \n \
+				} \n \
+				div { \n \
+					color: black; \n \
+					font-weight: 800; \n \
+					font-size: 5rem; \n \
+				} \n \
+			</style> \n \
+		</head> \n \
+		<body class=\"container\"> \n \
+			<div>Error " + std::to_string(number) + "</div> \n \
+			<div>" + description + "</div> \n \
+		</body> \n \
+		</html>"
+	);
 }
