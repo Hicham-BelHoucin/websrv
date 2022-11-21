@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 20:28:11 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 15:12:25 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class webserv
         void init(String);
 		void handleInputEvent(createSocket &, pollfd &);
 		void handleOutputEvent(createSocket &, pollfd &);
-		void eraseSocket(int, int);
+		void eraseSocket(int, int, int);
 		void setUpServer(void);
         webserv();
         webserv(String);

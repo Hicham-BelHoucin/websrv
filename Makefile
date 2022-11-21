@@ -6,7 +6,7 @@
 #    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/21 11:02:38 by obeaj            ###   ########.fr        #
+#    Updated: 2022/11/21 15:13:27 by obeaj            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,9 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g
+CFLAGS = -g 
 
+OBEJECTDIR = ./objects
 
 SRCS = src/parsing/parsing.cpp \
 	   src/request/request.cpp \
@@ -29,6 +30,7 @@ SRCS = src/parsing/parsing.cpp \
 	   src/cgi/cgi.cpp
 
 SRCOBJ = $(SRCS:.cpp=.o)
+SRCOBJ := $(addprefix $(OBEJECTDIR)/, $(SRCOBJ))
 
 INCLUDE =	include/createSocket.hpp \
 			include/parsing.hpp \
@@ -44,13 +46,18 @@ INCLUDE =	include/createSocket.hpp \
 all: $(NAME)
 
 $(NAME) : $(INCLUDE) $(SRCOBJ)
-	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME) -g
+	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME) 
 
 %.o : %.cpp $(INCLUDE)
-	$(CC) $(CFLAGS) -I include -o $@  -c $< -g
+	$(CC) $(CFLAGS) -I include -o $@  -c $< 
+
+$(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I include  -o $@  -c $<
 
 clean:
-	@rm -f $(SRCOBJ)
+	@rm -rf $(SRCOBJ)
+	@rm -rf $(OBEJECTDIR)
 
 fclean: clean
 	@rm -f $(NAME)

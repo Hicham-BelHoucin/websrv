@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 14:21:57 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 15:12:23 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 bool isNumber(const std::string& s);
 int line_countword(std::string line);
+std::string generateErrorPage(int number, std::string description);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);
 void			            printLogs(const std::string & line);
