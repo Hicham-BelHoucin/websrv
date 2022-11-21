@@ -6,7 +6,7 @@
 #    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/20 11:54:00 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/11/21 10:20:56 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g
+CFLAGS = -g 
 
 OBEJECTDIR = ./objects
 
@@ -43,22 +43,13 @@ INCLUDE =	include/createSocket.hpp \
 			include/client.hpp \
 			include/cgi.hpp
 
-all: $(OBEJECTDIR) $(NAME)
+all: $(NAME)
 
 $(NAME) : $(INCLUDE) $(SRCOBJ)
 	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME)
 
-$(OBEJECTDIR) :
-	@mkdir -p $(OBEJECTDIR)/src/parsing/
-	@mkdir -p $(OBEJECTDIR)/src/client/
-	@mkdir -p $(OBEJECTDIR)/src/request/
-	@mkdir -p $(OBEJECTDIR)/src/response/
-	@mkdir -p $(OBEJECTDIR)/src/server/
-	@mkdir -p $(OBEJECTDIR)/src/server/
-	@mkdir -p $(OBEJECTDIR)/src/utils/
-	@mkdir -p $(OBEJECTDIR)/src/
-
 $(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I include  -o $@  -c $<
 
 clean:

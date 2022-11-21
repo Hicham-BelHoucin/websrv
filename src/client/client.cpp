@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 15:56:10 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/21 09:11:55 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,16 @@ int	client::_read(int connection)
 	bzero(buff + 0, 1001);
 	if (!isDone())
 	{
-		print("/*************************************************************/")
 		ret = recv(connection, buff, 999, 0);
-		print(buff)
-		print("/*************************************************************/")
 		buff[ret] = '\0';
 		if (ret < 0)
+		{
+			print(ret);
 			return -1;
-		req_string += static_cast<std::string>(buff);
-		if (ret < 999)
+		}
+		if (ret == 0 || ret < 999)
 			this->donereading = true;
+		req_string += static_cast<std::string>(buff);
 	}
 	return ret;
 }
@@ -91,4 +91,4 @@ int	client::_send(int connection)
 
 client::~client()
 {
-} 
+}

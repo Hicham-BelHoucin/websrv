@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 15:48:05 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/21 09:15:29 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,16 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		listning_fds.push_back(new_connection);
 		fd.events = POLLIN | POLLOUT;
 		fd.revents = 0;
-		clients.insert(std::make_pair(fd.fd, c));
+		clients.insert(std::make_pair(new_connection.fd, c));
+
 	}
 	else
 	{
 		int ret;
 		client & c = clients[fd.fd];
 		ret = c._read(fd.fd);
-		// if (ret == -1)
-		// 	fd.revents = POLLNVAL;
+		if (ret == -1)
+			fd.revents = POLLNVAL;
 		fd.events = POLLIN | POLLOUT;
 	}
 }
@@ -108,9 +109,8 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
 		c.setResString(req.getReqPath().substr(1));
-		print(req.getReqPath());
 		connection = req.getHeaderValue("Connection");
-		if (c._send(fd.fd) < 0 || connection != "close")
+		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;
 		c.clean();

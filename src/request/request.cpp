@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:37:50 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/20 12:48:05 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,28 +45,28 @@ request & request::operator=(const request & obj)
 }
 request::request(std::string _req)
 {
-    
+
 }
 
 /*---------------------------------Member functions----------------------------------------*/
 
 void    request::requestPrint()
 {
-    std::cout << "----------------------------------------Request---------------------------------------------------"<< std::endl;
-    
-    std::cout << "\e[1;35mMethod :\e[1;36m " << req_method <<"\e[1;33m"<< std::endl;
-    std::cout << "\e[1;35mUrl :\e[1;36m " << req_path <<"\e[1;33m"<< std::endl;
-    std::cout << "\e[1;35mVersion :\e[1;36m " << req_version <<"\e[1;33m"<< std::endl;
-    if(!req_query.empty())
-        std::cout << "\e[1;35mQuery :\e[1;36m " << req_query <<"\e[1;33m"<< std::endl;
-    for(std::map<std::string ,std::string>::iterator it = req_headers.begin(); it != req_headers.end() ; it++)
-	{
-		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
-	}
-    if(!req_body.empty())
-        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    // std::cout << "----------------------------------------Request---------------------------------------------------"<< std::endl;
 
-    std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
+    // std::cout << "\e[1;35mMethod :\e[1;36m " << req_method <<"\e[1;33m"<< std::endl;
+    // std::cout << "\e[1;35mUrl :\e[1;36m " << req_path <<"\e[1;33m"<< std::endl;
+    // std::cout << "\e[1;35mVersion :\e[1;36m " << req_version <<"\e[1;33m"<< std::endl;
+    // if(!req_query.empty())
+    //     std::cout << "\e[1;35mQuery :\e[1;36m " << req_query <<"\e[1;33m"<< std::endl;
+    // for(std::map<std::string ,std::string>::iterator it = req_headers.begin(); it != req_headers.end() ; it++)
+	// {
+	// 	std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
+	// }
+    // if(!req_body.empty())
+    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+
+    // std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
 
 int request::requestCheck(std::string _req)
@@ -76,7 +76,7 @@ int request::requestCheck(std::string _req)
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
         status = st;
-        return status;   
+        return status;
     }
     requestPrint();
     return 0;
@@ -92,8 +92,8 @@ int request::parseHeaders()
     int lt_of_head;
     std::string key;
     std::string value;
-    
-    while ((lt_of_head = req.find("\r\n")) != std::string::npos)  
+
+    while ((lt_of_head = req.find("\r\n")) != std::string::npos)
     {
         if(lt_of_head == 0)
         {
@@ -165,11 +165,11 @@ int request::parseReqMethods()
                 req_query = r_all.substr(r_all.find('?') + 1);
             }
             else
-                req_path = r_all;    
+                req_path = r_all;
             r_all = r_line.substr(r_all.find(' ') + 1,r_line.find('\r'));
         }
         else
-            return ResponseIUtils::BAD_REQUEST; 
+            return ResponseIUtils::BAD_REQUEST;
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         if(r_all == "HTTP/1.1")
