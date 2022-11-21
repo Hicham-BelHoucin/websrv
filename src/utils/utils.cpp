@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:52 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 19:33:15 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,9 +323,7 @@ String	getContentType(String path, ResponseIUtils::CODES status)
 	String type = checkExtension(path);
 	if (status != ResponseIUtils::OK)
 		return	"text/html";
-	if (type == "html")
-		return("text/html");
-	else if (type == "css")
+	if (type == "css")
 		return "text/css";
 	else if (type == "js")
 		return "text/javascript";
@@ -338,7 +336,7 @@ String	getContentType(String path, ResponseIUtils::CODES status)
 	else if (type == "json")
 		return "application/json";
 	else
-		return "text/plain";
+		return "text/html";
 }
 
 bool isNumber(const std::string& s)

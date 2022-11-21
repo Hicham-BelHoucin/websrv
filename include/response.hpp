@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/20 13:22:24 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 19:26:54 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class response
 {
 private:
     request __req;
+    std::string _filetype;
     std::string _response;
     std::string _body;
     std::size_t _ContentLenght;

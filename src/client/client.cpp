@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:30 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 16:44:48 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	client::_read(int connection)
 		buff[ret] = '\0';
 		if (ret < 0)
 		{
-			print(ret);
+			// print(ret);
 			return -1;
 		}
 		if (ret == 0 || ret < 999)
@@ -70,14 +70,14 @@ int	client::_read(int connection)
 	return ret;
 }
 
-int	client::_send(int connection, String response)
+int	client::_send(int connection)
 {
 	char *buffptr;
 	int rv;
 	int len;
 
-	len = response.length();
-	buffptr = (char *)response.c_str();
+	len = res_string.length();
+	buffptr = (char *)res_string.c_str();
 	while (len > 0)
 	{
 		rv = send(connection, buffptr, len, 0);
