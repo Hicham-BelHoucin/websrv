@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/07 16:47:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/21 14:54:03 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class client
 		response	res;
 	public:
 		int		_read(int);
-		int		_send(int);
+		int		_send(int, String);
 		bool	isDone(void);
 		void	clean(void);
 		std::string getReqString(void) const;

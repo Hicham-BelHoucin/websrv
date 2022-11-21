@@ -6,7 +6,7 @@
 #    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/19 16:36:40 by obeaj            ###   ########.fr        #
+#    Updated: 2022/11/21 11:02:38 by obeaj            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,10 +44,10 @@ INCLUDE =	include/createSocket.hpp \
 all: $(NAME)
 
 $(NAME) : $(INCLUDE) $(SRCOBJ)
-	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME)
+	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME) -g
 
 %.o : %.cpp $(INCLUDE)
-	$(CC) $(CFLAGS) -I include -o $@  -c $<
+	$(CC) $(CFLAGS) -I include -o $@  -c $< -g
 
 clean:
 	@rm -f $(SRCOBJ)

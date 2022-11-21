@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 13:17:44 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:03:48 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ client::client(/* args */) : donereading(false)
 {
 	res_string =
         "HTTP/1.1 200 OK\n"
-        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-        "Server: Apache/2.2.3\n"
-        "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+        "date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+        "derver: Apache/2.2.3\n"
+        "last-modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
         "ETag: \"56d-9989200-1132c580\"\n"
         "Content-Type: text/html\n"
         "Content-Length: 3000\n"
@@ -68,14 +68,14 @@ int	client::_read(int connection)
 	return ret;
 }
 
-int	client::_send(int connection)
+int	client::_send(int connection, String response)
 {
 	char *buffptr;
 	int rv;
 	int len;
 
-	len = res_string.length();
-	buffptr = (char *)res_string.c_str();
+	len = response.length();
+	buffptr = (char *)response.c_str();
 	while (len > 0)
 	{
 		rv = send(connection, buffptr, len, 0);

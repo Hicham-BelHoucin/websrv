@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 11:26:50 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/19 20:28:11 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class webserv
 		std::map<int, client>		clients;
 		Data						data;
 		std::vector<server>			servers;
+		parsing 					config;
     public:
         void init(String);
 		void handleInputEvent(createSocket &, pollfd &);

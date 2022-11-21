@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:27:39 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/21 14:53:14 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ webserv::~webserv()
 void webserv::init(String filename)
 {
 	parsing obj(filename);
+	this->config = obj;
 	pollfd new_fd;
 
 	data = obj.getData();
@@ -99,15 +100,19 @@ void webserv::eraseSocket(int _index, int index)
 void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 {
 	client &c = clients[fd.fd];
-	std::string connection;
+	std::string connection = "";
 	if (c.isDone() == true)
 	{
 		request req;
 		req = request();
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
+		response res(req, config);
+		std::cout << res.getResponse() << std::endl;
+		res.ClearResponse();
+		// Test
 		connection = req.getHeaderValue("Connection");
-		if (c._send(fd.fd) < 0 || connection == "close")
+		if (c._send(fd.fd, res.getResponse()) < 0 || connection == "close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;
 		c.clean();

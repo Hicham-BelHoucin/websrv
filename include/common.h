@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 02:50:41 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 13:39:15 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@
 # include <dirent.h>
 # include <algorithm>
 
-# define ERROR404 "./src/error/error_404.html"
-# define ERROR403 "./src/error/error_403.html"
-# define ERROR413 "./src/error/error_413.html"
-# define ERROR405 "./src/error/error_405.html"
-# define ERROR500 "./src/error/error_500.html"
-# define ERROR502 "./src/error/error_502.html"
+# define ERROR404 "./src/errors/error_404.html"
+# define ERROR403 "./src/errors/error_403.html"
+# define ERROR413 "./src/errors/error_413.html"
+# define ERROR405 "./src/errors/error_405.html"
+# define ERROR500 "./src/errors/error_500.html"
+# define ERROR502 "./src/errors/error_502.html"
 # define CONFIGFILE "./conf/config.conf"
 
 # define CGI_BUFSIZE 65536

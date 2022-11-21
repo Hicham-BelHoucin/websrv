@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:42:23 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 14:23:03 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,15 +170,18 @@ bool	isMatch(String pattern, String str)
 		return (true);
 	if (pattern.at(0) == '?' && str.empty())
 		return (false);
-	if (!pattern.substr(1).empty())
+	if (pattern.c_str()[1])
 	{
-		if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
-			return (false);
+		if (!pattern.substr(1).empty())
+		{
+			if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
+				return (false);
+		}
+		if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
+			return (isMatch(pattern.substr(1), str.substr(1)));
+		if (pattern.at(0) == '*')
+			return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
 	}
-	if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
-		return (isMatch(pattern.substr(1), str.substr(1)));
-	if (pattern.at(0) == '*')
-		return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
 	return (false);
 }
 
@@ -233,7 +236,10 @@ String checkExtension(String filename)
 	size_t found = filename.find_last_of(".");
 	if (found == std::string::npos)
         return (filename);
-	return (filename.substr(found + 1));
+	if(found + 1 < filename.length())
+		return (filename.substr(found + 1));
+	else
+		return (filename);
 }
 
 String dirListing(String dirname)
@@ -312,9 +318,11 @@ std::map<int, std::string> setStatusPhrases()
 	return status;
 }
 
-String	getContentType(String path)
+String	getContentType(String path, ResponseIUtils::CODES status)
 {
 	String type = checkExtension(path);
+	if (status != ResponseIUtils::OK)
+		return	"text/html";
 	if (type == "html")
 		return("text/html");
 	else if (type == "css")

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/18 11:04:14 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/20 11:49:16 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,16 @@
 parsing::parsing()
 {
 
+}
+
+parsing &parsing::operator=(const parsing & obj)
+{
+	if (&obj == this) return *this;
+	this->data = obj.data;
+	this->locations = obj.locations;
+	this ->_size = obj._size;
+	this->locationsInfo = obj.locationsInfo;
+	return *this;
 }
 
 Data	parsing::getData(void) const

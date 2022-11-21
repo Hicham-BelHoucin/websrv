@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/05 14:23:51 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/20 11:45:39 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ class parsing
 		void		skipWhiteSpaces(const std::string &  line, int & index);
 		std::string	readFile(std::string filename);
 		parsing(std::string filename);
+		parsing & operator=(const parsing & obj);
 		parsing();
 		~parsing();
 };

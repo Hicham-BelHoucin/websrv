@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:37:50 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 13:18:02 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,8 +232,8 @@ std::string request::getReqPort()
     std::size_t found;
 
     if((found = port.find_first_of(":")) != std::string::npos)
-        port = port.substr(found + 1, port.length());
-	return port;
+        port = port.substr(found + 1);
+	return "3000";
 }
 
 std::string request::getReqHost()
@@ -244,4 +244,17 @@ std::string request::getReqHost()
     if((found = host.find_first_of(":")) != std::string::npos)
         host = host.substr(0, found);
 	return host;
+}
+
+void        request::ClearRequest()
+{
+    req = "";
+    req_method = "";
+    req_path = "";
+    req_version = "";
+    req_body = "";
+    req_query = "";
+    status = 0;
+    req_headers.clear();
+    error = 0;
 }
