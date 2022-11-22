@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:23 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/22 14:57:05 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int 		            	getsocket(std::vector<createSocket> sockets, int fd);
 std::string                 _displayTimestamp( void );
 ResponseIUtils::PATHMODE    checkPathMode(std::string path);
 String                      checkExtension(String filename);
-String                      dirListing(String dirname);
+// String                      dirListing(String dirname);
 String                      getDate();
 String                      HtmlCompose(String htmlbody, String htmltitle);
 server selectServer(std::vector<server> servers, std::string host, std::string port);

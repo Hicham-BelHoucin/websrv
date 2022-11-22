@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 19:26:54 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/22 14:58:57 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ public:
     String      MethodCheck(LocationMap location, String method, String path, String body);
     void        checkAndAppend(Map &map, String &str, String key);
     String      getResponse();
+    String      dirListing(String dirname);
 };
 
 #endif // !RESPONSE_HPP

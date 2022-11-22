@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 03:02:04 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/22 21:26:14 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,10 @@ String cgi::executeCgi(String script, String cgi_pass)
 
 		dup2(fdIn, STDIN_FILENO);
 		dup2(fdOut, STDOUT_FILENO);
-		execve(script.c_str(), args, envv);
+		execve(cgi_pass.c_str(), args, envv);
 		std::cerr <<"Execve crashed !!" << std::endl;
 		write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+		exit(0);
 	}
 	else
 	{
@@ -115,11 +116,10 @@ String cgi::executeCgi(String script, String cgi_pass)
 	close(fdOut);
 	close(saveStdin);
 	close(saveStdout);
-
+	
 	for (size_t i = 0; envv[i]; i++)
 		delete[] envv[i];
 	delete[] envv;
-
 	return (newBody);
 }
 

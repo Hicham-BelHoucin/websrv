@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 09:15:45 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/22 21:21:37 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ LocationMap response::locationMatch(Set locations, String path)
             // check if location contain a root
             if ((it->second).find("root") != it->second.end())
                 _rootpath = (it->second.find("root")->second)[0];
+            std::cout<<it->first<<"\n";
             return it->second;
         }
         it++;
@@ -67,11 +68,15 @@ LocationMap response::locationMatch(Set locations, String path)
 
     if (it == locations.end())
     {
+        return locations.find("*.py")->second;
         Set::iterator it1 = locations.begin();
         while (it1 != locations.end())
         {
-            if (((it1->first).find("*") || (it1->first).find("?")) && isMatch(it1->first, path))
+            if (isMatch(it1->first, path))
+            {
+                std::cout<<it1->first<<"\n";
                 return it1->second;
+            }
             it1++;
         }
     }
@@ -98,8 +103,8 @@ String response::MethodGet(LocationMap location, String path, String body)
     mode = checkPathMode(path);
     if (mode & ResponseIUtils::ISDIR)
     {
-                std::cout << "heloooooooooooooooo\n";
-        indexes = location.find("index")->second;
+        if (location.find("index") != location.end())
+            indexes = location.find("index")->second;
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
         if (mode & (ResponseIUtils::D_RD))
@@ -139,8 +144,8 @@ String response::MethodGet(LocationMap location, String path, String body)
     }
     else if (mode & ResponseIUtils::ISFILE)
     {
-        // if the file is a regulat html file
-        if (checkExtension(path) != "php" || checkExtension(path) != "py" || checkExtension(path) != ".cgi")
+        // if the file is a regular html file
+        if (checkExtension(path) != "php" && checkExtension(path) != "py" && checkExtension(path) != "cgi")
         {
             if (mode & ResponseIUtils::F_RD)
             {
@@ -155,10 +160,12 @@ String response::MethodGet(LocationMap location, String path, String body)
         }
         else
         {
+            _status_code = ResponseIUtils::OK;
             headers.erase("content-type");
             isCgiBody = true;
             cgi cgiHandler(path, __req);
-            return(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0]));
+            if (location.find("fastcgi_pass") != location.end())
+                return(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0]));
         }
     }
     _status_code = ResponseIUtils::NOT_FOUND;
@@ -387,4 +394,43 @@ void response::ClearResponse()
 String      response::getResponse()
 {
     return _response;
+}
+
+String response::dirListing(String dirname)
+{
+	DIR *dr;
+	struct dirent *en;
+	String body;
+	dr = opendir(dirname.c_str()); //open all directory
+    body += "<html>\n";
+    body += "<head><title>Index of ";
+    body += __req.getReqPath();
+    body += "</title></head>\n";
+	body += "<body>\n";
+    body += "<h1>Index of ";
+    body+= __req.getReqPath();
+    body+= " : </h1>\n";
+	body += "<hr>\n";
+	body += "<pre>\n";
+	if (dr)
+	{
+		while ((en = readdir (dr)) != NULL)
+		{
+			body += "<a href=\"";
+			if(dirname[dirname.length() - 1] == '/')
+				body += (__req.getReqPath() + en->d_name);
+			else
+			    body += (__req.getReqPath() + "/" + en->d_name);
+			body += "\">";
+			body += en->d_name;
+			body += "</a>\n";
+            body += "<br>\n";
+		}
+		body += "</pre>\n";
+		body += "<hr>\n";
+		body += "</body>\n";
+		body += "</html>\n";
+		closedir(dr); //close all directory
+	}
+	return(body);
 }

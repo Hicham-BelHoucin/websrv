@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 08:59:00 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/22 21:05:34 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,28 +245,6 @@ String checkExtension(String filename)
 	else
 		return (filename);
 }
-
-String dirListing(String dirname)
-{
-	DIR *dr;
-	struct dirent *en;
-	String body;
-	dr = opendir(dirname.c_str()); //open all directory
-	if (dr)
-	{
-		while ((en = readdir(dr)) != NULL) \
-		{
-			if (en->d_name[0]!= '.')
-			{
-				body.append(en->d_name);
-				body.append("\n");
-			}
-		}
-		closedir(dr); //close all directory
-	}
-	return(body);
-}
-
 
 String getDate()
 {
