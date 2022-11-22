@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 18:43:15 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/20 13:41:28 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int request::parseHeaders()
     }
     std::map<std::string,std::string>::iterator it;
     std::string port;
-    if((it = req_headers.find("Host") ) != req_headers.end())
+    if((it = req_headers.find("Host")) != req_headers.end())
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
         if(!isNumber(port))

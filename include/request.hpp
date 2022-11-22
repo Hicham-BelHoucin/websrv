@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 18:43:21 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/20 13:40:22 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define REQUEST_HPP
 #include "utils.h"
 
-
+#define hh "\e[1;35m"
 class request
 {
     private:
