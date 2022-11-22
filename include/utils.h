@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/20 11:54:19 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/20 11:54:26 by hbel-hou         ###   ########.fr       */
+/*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
+/*   Updated: 2022/11/21 15:12:23 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,5 @@ int 			            getsocket(std::vector<createSocket> sockets, int fd);
 std::string		            _displayTimestamp( void );
 std::map<int, std::string>  setStatusPhrases();
 void                        check(int condition);
-String                      getContentType(String path);
+String                      getContentType(String path, ResponseIUtils::CODES status);
 #endif // !UTILS_H

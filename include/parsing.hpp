@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 10:46:10 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:12:17 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class parsing
 		std::string			readFile(std::string filename);
 		int					IsSpecialKey(std::string);
 		parsing(std::string filename);
+		parsing & operator=(const parsing & obj);
 		parsing();
 		~parsing();
 };

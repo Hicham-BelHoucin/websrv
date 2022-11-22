@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:38:00 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/20 13:40:22 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 # define REQUEST_HPP
 #include "utils.h"
 
-#define REQUEST_ENTITY_TOO_LARGE 413
-#define HTTP_VERSOIN_NOT_SUPPORTED 505
-
+#define hh "\e[1;35m"
 class request
 {
     private:
