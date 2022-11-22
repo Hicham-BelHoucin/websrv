@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 11:27:39 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/22 09:16:10 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ webserv::~webserv()
 void webserv::init(String filename)
 {
 	parsing obj(filename);
+	this->config = obj;
 	pollfd new_fd;
 
 	data = obj.getData();
@@ -76,7 +77,8 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		listning_fds.push_back(new_connection);
 		fd.events = POLLIN | POLLOUT;
 		fd.revents = 0;
-		clients.insert(std::make_pair(fd.fd, c));
+		clients.insert(std::make_pair(new_connection.fd, c));
+
 	}
 	else
 	{
@@ -89,24 +91,31 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 	}
 }
 
-void webserv::eraseSocket(int _index, int index)
+void webserv::eraseSocket(int _index, int index, int fd)
 {
 	sockets[_index]._close();
 	sockets.erase(sockets.begin() + _index);
 	listning_fds.erase(listning_fds.begin() + index);
+	clients.erase(fd);
 }
 
 void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 {
 	client &c = clients[fd.fd];
-	std::string connection;
+	std::string connection = "";
 	if (c.isDone() == true)
 	{
 		request req;
 		req = request();
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
-		connection = req.getHeaderValue("Connection");
+		response res(req, config);
+		// std::cout << res.getResponse() << std::endl;
+		c.setResString(res.getResponse());
+		res.ClearResponse();
+		// Test
+		// connection = req.getHeaderValue("Connection");
+		print(c.getReqString());
 		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;
@@ -136,13 +145,13 @@ void webserv::setUpServer(void)
 				if (index == -1)
 					continue;
 				if (listning_fds[i].revents & POLLERR || listning_fds[i].revents & POLLHUP)
-					eraseSocket(index, i);
+					eraseSocket(index, i, listning_fds[i].fd);
 				if (listning_fds[i].revents & POLLIN)
 					handleInputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLOUT)
 					handleOutputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLNVAL)
-					eraseSocket(index, i);
+					eraseSocket(index, i, listning_fds[i].fd);
 			}
 		}
 	}

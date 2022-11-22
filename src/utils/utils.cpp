@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:42:23 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/22 08:59:00 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,19 +166,26 @@ std::string	readFile(std::string filename)
 
 bool	isMatch(String pattern, String str)
 {
-	if (pattern.empty() && str.empty())
-		return (true);
-	if (pattern.at(0) == '?' && str.empty())
-		return (false);
-	if (!pattern.substr(1).empty())
+	try
 	{
-		if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
+		if (pattern.empty() && str.empty())
+			return (true);
+		if (pattern.at(0) == '?' && str.empty())
 			return (false);
+		if (pattern.c_str()[1])
+		{
+			if (!pattern.substr(1).empty())
+			{
+				if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
+					return (false);
+			}
+			if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
+				return (isMatch(pattern.substr(1), str.substr(1)));
+			if (pattern.at(0) == '*')
+				return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
+		}
 	}
-	if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
-		return (isMatch(pattern.substr(1), str.substr(1)));
-	if (pattern.at(0) == '*')
-		return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
+	catch(const std::exception& e){}
 	return (false);
 }
 
@@ -233,7 +240,10 @@ String checkExtension(String filename)
 	size_t found = filename.find_last_of(".");
 	if (found == std::string::npos)
         return (filename);
-	return (filename.substr(found + 1));
+	if(found + 1 < filename.length())
+		return (filename.substr(found + 1));
+	else
+		return (filename);
 }
 
 String dirListing(String dirname)
@@ -281,7 +291,7 @@ void check(int condition)
 std::map<int, std::string> setStatusPhrases()
 {
 	std::map<int, std::string> status;
-	
+
 	status[200] = "OK";
 	status[201] = "Created";
 	status[202] = "Accepted";
@@ -307,17 +317,17 @@ std::map<int, std::string> setStatusPhrases()
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
 	status[502] = "Bad Gateway";
-	status[505] = "HTTP Version Not Supported";	
-	
+	status[505] = "HTTP Version Not Supported";
+
 	return status;
 }
 
-String	getContentType(String path)
+String	getContentType(String path, ResponseIUtils::CODES status)
 {
 	String type = checkExtension(path);
-	if (type == "html")
-		return("text/html");
-	else if (type == "css")
+	if (status != ResponseIUtils::OK)
+		return	"text/html";
+	if (type == "css")
 		return "text/css";
 	else if (type == "js")
 		return "text/javascript";
@@ -330,7 +340,7 @@ String	getContentType(String path)
 	else if (type == "json")
 		return "application/json";
 	else
-		return "text/plain";
+		return "text/html";
 }
 
 bool isNumber(const std::string& s)
@@ -379,4 +389,35 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
 	if (elected.getHost() == "")
 		elected = servers[0];
     return elected;
+}
+
+std::string generateErrorPage(int number, std::string description)
+{
+	return (
+		"<!DOCTYPE html> \n \
+		<html lang=\"en\"> \n \
+		<head> \n \
+			<title>Document</title> \n \
+			<style> \n \
+				.container { \n \
+					display: flex; \n \
+					height: 100vh; \n \
+					width: 100vw; \n \
+					flex-direction:column; \n \
+					justify-content: center; \n \
+					align-items: center; \n \
+				} \n \
+				div { \n \
+					color: black; \n \
+					font-weight: 800; \n \
+					font-size: 5rem; \n \
+				} \n \
+			</style> \n \
+		</head> \n \
+		<body class=\"container\"> \n \
+			<div>Error " + std::to_string(number) + "</div> \n \
+			<div>" + description + "</div> \n \
+		</body> \n \
+		</html>"
+	);
 }

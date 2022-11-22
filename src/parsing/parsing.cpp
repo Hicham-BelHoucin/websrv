@@ -3,30 +3,110 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/18 11:04:14 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/22 09:13:22 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parsing.hpp"
 
-//////////////////////////////////// [tools] /////////////////////////////////////
-parsing::parsing()
-{
+//////////////////////////////////// [Getters] /////////////////////////////////////
 
+std::string 		parsing::getHost(Map data) const {
+	return data.find("host")->second;
+};
+
+std::vector<int> 	parsing::getPorts(Map data) const
+{
+	std::vector<int>    					ports;
+	std::pair<Map::iterator, Map::iterator>	ret;
+	int 									port;
+
+	ret = data.equal_range("listen");
+	while (ret.first != ret.second)
+	{
+		port = std::stoi(ret.first->second);
+		ports.push_back(port);
+		ret.first ++;
+	}
+	return ports;
+};
+
+Map					parsing::getErrorPages(Map data)
+{
+	Map errorPages;
+
+	if (data.find("error_page_403") != data.end())
+		errorPages.insert(*data.find("error_page_403"));
+	else
+		errorPages.insert(std::make_pair("error_page_403", ERROR403));
+	if (data.find("error_page_403") != data.end())
+		errorPages.insert(*data.find("error_page_404"));
+	else
+		errorPages.insert(std::make_pair("error_page_404", ERROR404));
+	if (data.find("error_page_500") != data.end())
+		errorPages.insert(*data.find("error_page_500"));
+	else
+		errorPages.insert(std::make_pair("error_page_500", ERROR500));
+	if (data.find("error_page_502") != data.end())
+		errorPages.insert(*data.find("error_page_502"));
+	else
+		errorPages.insert(std::make_pair("error_page_502", ERROR502));
+	return errorPages;
 }
+
+parsing &parsing::operator=(const parsing & obj)
+{
+	if (&obj == this) return *this;
+	this->data = obj.data;
+	this->locations = obj.locations;
+	this ->_size = obj._size;
+	this->locationsInfo = obj.locationsInfo;
+	return *this;
+}
+std::string			parsing::getServerName(Map data) const
+{
+	Map::iterator it;
+
+	it = data.find("server_name");
+	if (it == data.end())
+		return SEVRERNAME;
+	return it->second;
+};
+
+int					parsing::getMaxBodySize(Map data) const
+{
+	Map::iterator it;
+
+	it = data.find("max_body_size");
+	if (it == data.end())
+		return CLINETMAXBODYSIZE;
+	return std::stoi(it->second);
+};
+
+std::string			parsing::getRoot(Map data) const
+{
+	return data.find("root")->second;
+};
 
 Data	parsing::getData(void) const
 {
 	return data;
 }
 
+//////////////////////////////////// [tools] /////////////////////////////////////
+
+parsing::parsing()
+{
+
+}
+
 int	parsing::countSize(std::string text)
 {
 	size_t index;
-	size_t __size;
+	int __size;
 
 	index = 0;
 	__size = 0;
@@ -41,14 +121,14 @@ int	parsing::countSize(std::string text)
 	return __size;
 }
 
-void	parsing::skip(const std::string & line, int & index)
+void	parsing::skip(const std::string & line, size_t & index)
 {
 	index = line.find_first_of(SPECIAL, index);
 	if (index == std::string::npos)
 		index = line.size();
 }
 
-void	parsing::skipWhiteSpaces(const std::string & line, int & index)
+void	parsing::skipWhiteSpaces(const std::string & line, size_t & index)
 {
 	while (line[index] && strchr(WHITESPACES, line[index]))
 		index++;
@@ -108,14 +188,14 @@ parsing::parsing(std::string filename) : _size(0)
 	std::string text;
 	std::string	subText;
 	t_data		__data;
-	int			i;
+	unsigned int			i;
 	int			start;
-	int			end;
+	size_t			end;
 
 	text = readFile(filename);
 	_size = countSize(text);
 	checkBrackets(text);
-	// checkSemicolon(text);
+	checkSemicolon(text);
 	if (!_size)
 		throw Parseerror("Usage : \n \
 		server  \n\
@@ -154,11 +234,11 @@ parsing::~parsing() {}
 
 //////////////////////////////////// [parse file ] /////////////////////////////////////
 
-void	parsing::parseFile(std::string text, int start)
+void	parsing::parseFile(std::string text, size_t start)
 {
 	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
 	Pair	conf;
-	int		end;
+	size_t		end;
 
 	end = text.find_first_of(";\n", start);
 	if (end == std::string::npos)
@@ -223,8 +303,8 @@ Pair	parsing::parseLine(std::string line)
 {
 	std::string keyWord;
 	std::string value;
-	int			start;
-	int			end;
+	size_t			start;
+	size_t			end;
 
 	start = 0;
 	end = line.find_first_of(" ", start);
@@ -245,7 +325,7 @@ void	parsing::checkHost(Pair conf)
 	if (conf.second.find_first_not_of("0123456789.") != std::string::npos)
 		throw	std::runtime_error("host value must composed only from digits ! ");
 	int j = 0;
-	for (int i = 0; i < conf.second.size(); i++)
+	for (unsigned long i = 0; i < conf.second.size(); i++)
 	{
 		if (conf.second[i] == '.' && !std::isdigit(conf.second[i + 1]))
 			throw std::runtime_error("host value must be an ip address ! => 0.0.0.0");
@@ -303,7 +383,7 @@ int        parsing::checkDuplicateKwywords(Map data, std::string keys[])
 
 void	parsing::checkKeyWords(void)
 {
-	int				i;
+	unsigned long				i;
 	std::string keywords[10] = {
 		"listen",
 		"host",
@@ -387,12 +467,12 @@ int	parsing::checkPath(std::string text)
 	return (0);
 }
 
-void	parsing::parseLocation(std::string text, int start)
+void	parsing::parseLocation(std::string text, size_t start)
 {
 	std::string line;
 	Methods		methods;
 	Pair	conf;
-	int		end;
+	size_t		end;
 
 	end = text.find_first_of(";\n", start);
 	if (end == std::string::npos)
@@ -439,7 +519,7 @@ void	parsing::checkBrackets(std::string text)
 {
 	std::stack<char> s;
 
-	for (int i = 0; i < text.size(); i++)
+	for (unsigned long i = 0; i < text.size(); i++)
 	{
 		if ((text[i] == '}' || text[i] == ']') && s.empty())
 		{
@@ -467,42 +547,42 @@ void	parsing::checkBrackets(std::string text)
 		throw Parseerror("Error: You Have an Unclosed Bracket !");
 }
 
+int parsing::IsSpecialKey(std::string line)
+{
+	size_t	index = 0;
+
+	skipWhiteSpaces(line, index);
+	if (line == "server" || line[index] == '{' || line[index] == '}' || line.compare(index, 8, "location") == 0 || line[index] == '#')
+	{
+		if (line.find(';') != std::string::npos && line[index] != '#')
+			throw std::runtime_error("extra semicolone !" + line);
+		return (1);
+	}
+	return (0);
+}
 
 void parsing::checkSemicolon(std::string text)
 {
 	std::stringstream str(text);
 	std::string line;
+	size_t index = 0;
+	size_t pos = 0;
+
 	while (std::getline(str, line, '\n'))
 	{
-		std::stringstream ln(line);
-		int index = 0;
-		std::string l;
-		ln >> l;
+		index = 0;
 		skipWhiteSpaces(line, index);
-		if ( l != "server" && l != "location" && line[line.length() - 1] != ';' &&
-			!strchr(line.c_str(), '}') && !strchr(line.c_str(), '{') && line[index] != '#')
-		{
-			std::cout << line << std::endl;
-			throw Parseerror("Error: A semicolon is missing !");
-		}
-		else if ((((l.substr(0,6) == "server" && l.substr(0,7) != "server_") || l.substr(0,8) == "location" || line[index] == '{' ||
-			line[index] == '}') && line[line.length() - 1] == ';') || l == ";")
-		{
-			std::cout << line << std::endl;
-			throw Parseerror("Error: An extra semicolon found !");
-		}
-		else if ((strchr(line.c_str(),'{') || strchr(line.c_str(),'}')))
-		{
-			int i = 0;
-			while(line[i] != '\0')
-			{
-				if (!strchr("\n\t\v\f\r ", line[i]) && line[i] != '}' && line[i] != '{')
-				{
-					throw Parseerror("Error: The curly braket should be in a single line !");
-				}
-				i++;
-			}
-		}
+		pos = line.find(';');
+		if (IsSpecialKey(line) == 1)
+			continue;
+		else if (line[line.size() - 1] != ';')
+			throw std::runtime_error("missing semicolone !" + line);
+		else if (pos != std::string::npos && line[pos] == ';' && line[pos + 1] == ';')
+			throw std::runtime_error("extra semicolone !" + line);
+		else if (line[index] == ';')
+			throw std::runtime_error("extra semicolone !" + line);
+		else if (line[pos] ==';' && line.find(';', pos + 1) != std::string::npos)
+			throw std::runtime_error("extra semicolone !" + line);
 	}
 }
 
@@ -517,7 +597,7 @@ const char * parsing::Parseerror::what() const throw ()
 
 void	parsing::checkMethods(std::vector<std::string>  & methods)
 {
-	for (int i = 0; i < methods.size(); i++)
+	for (unsigned long i = 0; i < methods.size(); i++)
 	{
 		if ((methods[i] != "GET" ) && ( methods[i] != "POST" ) && ( methods[i] != "DELETE" ))
 		{
@@ -531,7 +611,6 @@ std::vector <std::string >	parsing::parseArray(const std::string & line)
 {
 	std::stringstream				string(line.substr(1, line.size() - 2));
 	std::vector <std::string >		methods;
-	int 							start;
 	std::string						method;
 
 	while (getline(string, method, ','))

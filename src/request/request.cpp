@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/20 13:41:28 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/22 08:24:58 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ request & request::operator=(const request & obj)
 }
 request::request(std::string _req)
 {
-    
+
 }
 
 /*---------------------------------Member functions----------------------------------------*/
@@ -53,7 +53,7 @@ request::request(std::string _req)
 void    request::requestPrint()
 {
     std::cout << "----------------------------------------Request---------------------------------------------------"<< std::endl;
-    
+
     std::cout << "\e[1;35mMethod :\e[1;36m " << req_method <<"\e[1;33m"<< std::endl;
     std::cout << "\e[1;35mUrl :\e[1;36m " << req_path <<"\e[1;33m"<< std::endl;
     std::cout << "\e[1;35mVersion :\e[1;36m " << req_version <<"\e[1;33m"<< std::endl;
@@ -76,7 +76,7 @@ int request::requestCheck(std::string _req)
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
         status = st;
-        return status;   
+        return status;
     }
     requestPrint();
     return 0;
@@ -92,8 +92,8 @@ int request::parseHeaders()
     int lt_of_head;
     std::string key;
     std::string value;
-    
-    while ((lt_of_head = req.find("\r\n")) != std::string::npos)  
+
+    while ((lt_of_head = req.find("\r\n")) != std::string::npos)
     {
         if(lt_of_head == 0)
         {
@@ -165,11 +165,11 @@ int request::parseReqMethods()
                 req_query = r_all.substr(r_all.find('?') + 1);
             }
             else
-                req_path = r_all;    
+                req_path = r_all;
             r_all = r_line.substr(r_all.find(' ') + 1,r_line.find('\r'));
         }
         else
-            return ResponseIUtils::BAD_REQUEST; 
+            return ResponseIUtils::BAD_REQUEST;
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         if(r_all == "HTTP/1.1")
@@ -232,8 +232,8 @@ std::string request::getReqPort()
     std::size_t found;
 
     if((found = port.find_first_of(":")) != std::string::npos)
-        port = port.substr(found + 1, port.length());
-	return port;
+        port = port.substr(found + 1);
+	return "3000";
 }
 
 std::string request::getReqHost()
@@ -244,4 +244,17 @@ std::string request::getReqHost()
     if((found = host.find_first_of(":")) != std::string::npos)
         host = host.substr(0, found);
 	return host;
+}
+
+void        request::ClearRequest()
+{
+    req = "";
+    req_method = "";
+    req_path = "";
+    req_version = "";
+    req_body = "";
+    req_query = "";
+    status = 0;
+    req_headers.clear();
+    error = 0;
 }
