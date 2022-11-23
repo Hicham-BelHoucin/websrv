@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 21:26:14 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/23 17:27:45 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ void cgi::cgiEnvInit(String path, request req)
 	this->env["CONTENT_TYPE"] = headers["Content-Type"];
 	this->env["PATH_INFO"] = req.getReqPath();
 	this->env["PATH_TRANSLATED"] = req.getReqPath();
-	// this->env["QUERY_STRING"] = req.getQuery();
+	this->env["QUERY_STRING"] = req.getReqQuery();
 	this->env["REMOTE_IDENT"] = headers["Authorization"];
 	this->env["REMOTE_USER"] = headers["Authorization"];
-	// this->env["REQUEST_URI"] = req.getReqPath() + req.getQuery();
-	if (headers.find("Hostname") != headers.end())
-		this->env["SERVER_NAME"] = headers["Hostname"];
+	this->env["REQUEST_URI"] = req.getReqPath() + req.getReqQuery();
+	if (headers.find("Host") != headers.end())
+		this->env["SERVER_NAME"] = headers["Host"];
 	else
 		this->env["SERVER_NAME"] = "";
 	this->env["SERVER_PROTOCOL"] = "HTTP/1.1";
@@ -58,6 +58,7 @@ String cgi::executeCgi(String script, String cgi_pass)
 	pid_t		pid;
 	int			saveStdin;
 	int			saveStdout;
+	
 	char		**envv;
 	std::string	newBody;
 
@@ -90,7 +91,6 @@ String cgi::executeCgi(String script, String cgi_pass)
 		execve(cgi_pass.c_str(), args, envv);
 		std::cerr <<"Execve crashed !!" << std::endl;
 		write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
-		exit(0);
 	}
 	else
 	{
@@ -116,10 +116,11 @@ String cgi::executeCgi(String script, String cgi_pass)
 	close(fdOut);
 	close(saveStdin);
 	close(saveStdout);
-	
 	for (size_t i = 0; envv[i]; i++)
 		delete[] envv[i];
 	delete[] envv;
+	if (!pid)
+		exit(0);
 	return (newBody);
 }
 

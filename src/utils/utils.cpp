@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 21:05:34 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/23 17:18:12 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,71 +166,64 @@ std::string	readFile(std::string filename)
 
 bool	isMatch(String pattern, String str)
 {
-	try
+	if (*pattern.c_str() == '\0' && *str.c_str() == '\0')
+		return (true);
+	if (*pattern.c_str() == '?' && *str.c_str() == '\0')
+		return (false);
+	if (pattern.c_str() + 1)
 	{
-		if (pattern.empty() && str.empty())
-			return (true);
-		if (pattern.at(0) == '?' && str.empty())
+		if ((*pattern.c_str() == '*' || *pattern.c_str() == '?') && *(pattern.c_str() + 1) != '\0' && *str.c_str() == '\0')
 			return (false);
-		if (pattern.c_str()[1])
-		{
-			if (!pattern.substr(1).empty())
-			{
-				if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
-					return (false);
-			}
-			if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
-				return (isMatch(pattern.substr(1), str.substr(1)));
-			if (pattern.at(0) == '*')
-				return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
-		}
 	}
-	catch(const std::exception& e){}
+	if (*pattern.c_str() == '?' || *pattern.c_str() == *str.c_str())
+		return (isMatch(pattern.c_str() + 1, str.c_str() + 1));
+	if (*pattern.c_str() == '*')
+		return (isMatch(pattern.c_str() + 1, str.c_str()) || isMatch(pattern.c_str(), str.c_str() + 1));
 	return (false);
 }
 
-ResponseIUtils::PATHMODE	checkPathMode(std::string path)
+PATHMODE	checkPathMode(std::string path)
 {
 	struct stat  st;
 
 	if(stat(path.c_str(), &st) == 0)
 	{
 		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
-			return	ResponseIUtils::D_ALL;
+			return	D_ALL;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::D_RW;
+			return    D_RW;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::D_WX;
+			return    D_WX;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::D_RX;
+			return    D_RX;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR)
-			return    ResponseIUtils::D_READ;
+			return    D_READ;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::D_WRITE;
+			return    D_WRITE;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::D_EXEC;
+			return    D_EXEC;
 		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
-			return	ResponseIUtils::F_ALL;
+			return	F_ALL;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::F_RW;
+			return    F_RW;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::F_WX;
+			return    F_WX;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::F_RX;
+			return    F_RX;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR)
-			return    ResponseIUtils::F_READ;
+			return    F_READ;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::F_WRITE;
+			return    F_WRITE;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::F_EXEC;
+			return    F_EXEC;
 		else if (st.st_mode & S_IFDIR)
-			return    ResponseIUtils::DIR;
+			return    _DIR;
 		else if (st.st_mode & S_IFREG)
-			return	  ResponseIUtils::FILE;
+			return	  _FILE;
 		else
-			return (ResponseIUtils::NONE);
+			return (_NONE_);
 	}
-    return (ResponseIUtils::NONE);
+    return (_NONE_);
 }
 
 String checkExtension(String filename)
@@ -300,10 +293,10 @@ std::map<int, std::string> setStatusPhrases()
 	return status;
 }
 
-String	getContentType(String path, ResponseIUtils::CODES status)
+String	getContentType(String path, CODES status)
 {
 	String type = checkExtension(path);
-	if (status != ResponseIUtils::OK)
+	if (status != OK)
 		return	"text/html";
 	if (type == "css")
 		return "text/css";

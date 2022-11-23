@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/22 21:13:12 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/23 17:44:50 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,7 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 		c.setResString(res.getResponse());
 		res.ClearResponse();
 		// Test
-		// connection = req.getHeaderValue("Connection");
-		print(c.getReqString());
+		connection = req.getHeaderValue("Connection");
 		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;

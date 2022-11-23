@@ -9,13 +9,12 @@ name = form.getvalue('name')
 # to get the data from fields
 email = form.getvalue('email')   
   
-print ("Content-type:text/html\n")
 print ("<html>")
 print ("<head>")
 print ("<title>First CGI Program</title>")
 print ("</head>")
 print ("<body>")
-print ("<h2>Hello, %s is working in %s</h2>" 
+print ("<h2>Hello, %s %s</h2>" 
        % (name, email))
   
 print ("</body>")

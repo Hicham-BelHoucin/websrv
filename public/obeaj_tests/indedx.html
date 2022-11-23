@@ -98,15 +98,15 @@ span.psw {
 
 <p>Click on the "Choose File" button to upload a file:</p>
 
-<form method="post" enctype="multipart/form-data" action="/action_page.php">
-    <div>
-      <label for="file">Choose file to upload</label>
-      <input type="file" id="file" name="file" multiple />
-    </div>
-    <div>
-      <button>Submit</button>
-    </div>
-  </form>
+<html>
+<body>
+   <form enctype = "multipart/form-data" 
+                     action = "save_file.py" method = "post">
+   <p>File: <input type = "file" name = "filename" /></p>
+   <p><input type = "submit" value = "Upload" /></p>
+   </form>
+</body>
+</html>
   
 
 </body>

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 14:57:05 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/23 17:11:12 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int				            checkExtansion(String filename);
 pollfd			            *getfds(std::vector<createSocket> & sockets);
 int 		            	getsocket(std::vector<createSocket> sockets, int fd);
 std::string                 _displayTimestamp( void );
-ResponseIUtils::PATHMODE    checkPathMode(std::string path);
+PATHMODE    checkPathMode(std::string path);
 String                      checkExtension(String filename);
 // String                      dirListing(String dirname);
 String                      getDate();
@@ -44,5 +44,5 @@ int 			            getsocket(std::vector<createSocket> sockets, int fd);
 std::string		            _displayTimestamp( void );
 std::map<int, std::string>  setStatusPhrases();
 void                        check(int condition);
-String                      getContentType(String path, ResponseIUtils::CODES status);
+String                      getContentType(String path, CODES status);
 #endif // !UTILS_H

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 14:58:57 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/23 21:39:14 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ class request;
 class response
 {
 private:
+    parsing __conf;
     request __req;
-    std::string _filetype;
     std::string _response;
     std::string _body;
     std::size_t _ContentLenght;
@@ -34,8 +34,8 @@ private:
     LocationMap _location;
     std::string _path;
     std::map<int,std::string> statusPhrases;
-    ResponseIUtils::METHODS method;
-    ResponseIUtils::CODES _status_code;
+    METHODS method;
+    CODES _status_code;
     bool isCgiBody;
     parsing conf;
     Map headers;
@@ -58,6 +58,7 @@ public:
     void        checkAndAppend(Map &map, String &str, String key);
     String      getResponse();
     String      dirListing(String dirname);
+    String      getCgiBody(String cgi_body);
 };
 
 #endif // !RESPONSE_HPP

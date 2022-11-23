@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 08:24:58 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/23 17:47:47 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 request::request()
 {
-	status = 200;
+	status = OK;
     req = "";
 	req_method ="";
 	req_body ="";
@@ -39,6 +39,7 @@ request & request::operator=(const request & obj)
 		this->req_version = obj.req_version;
 		this->req_body = obj.req_body;
 		this->req_headers = obj.req_headers;
+        this->req_query = obj.req_query;
 		this->error = obj.error;
 	}
 	return *this;
@@ -69,24 +70,24 @@ void    request::requestPrint()
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
 
-int request::requestCheck(std::string _req)
+CODES request::requestCheck(std::string _req)
 {
     req = _req;
-    int st = 0;
-    if((st = parseReqMethods()) || (st = parseHeaders()))
+    CODES st = OK;
+    if((st = parseReqMethods()) != OK || (st = parseHeaders()) != OK)
     {
         status = st;
         return status;
     }
     requestPrint();
-    return 0;
+    return OK;
 }
 
 request::~request()
 {
 }
 
-int request::parseHeaders()
+CODES request::parseHeaders()
 {
     std::string all;
     int lt_of_head;
@@ -102,12 +103,12 @@ int request::parseHeaders()
         }
         all = req.substr(0, lt_of_head);
         if(all.find(':') == std::string::npos)
-            return ResponseIUtils::BAD_REQUEST;
+            return BAD_REQUEST;
         key = all.substr(0,all.find(':'));
         value = all.substr(all.find(' ') + 1, all.length());
         req_headers.insert(std::make_pair((key), value));
         if(req_headers.count("Host") > 1  || req_headers.count("Host") < 0)
-            return ResponseIUtils::BAD_REQUEST;
+            return BAD_REQUEST;
         req = req.substr(req.find("\r\n") + 2,req.length());
     }
     std::map<std::string,std::string>::iterator it;
@@ -116,12 +117,12 @@ int request::parseHeaders()
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
         if(!isNumber(port))
-            return ResponseIUtils::BAD_REQUEST;
+            return BAD_REQUEST;
     }
     if((it = req_headers.find("Content-Type")) != req_headers.end())
     {
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
-            return ResponseIUtils::BAD_REQUEST;
+            return BAD_REQUEST;
     }
     if((it = req_headers.find("Content-Length") )!= req_headers.end())
     {
@@ -130,17 +131,17 @@ int request::parseHeaders()
         obj = selectServer(servers, getReqHost(), getReqPort());
         if(!isNumber(it->second))
         {
-            return ResponseIUtils::BAD_REQUEST;
+            return BAD_REQUEST;
         }
         if(std::stoi(it->second) > obj.getMaxBodySize())
-            return ResponseIUtils::LARGE_PAYLOAD;
+            return LARGE_PAYLOAD;
     }
     if(!req.empty())
         req_body = req;
-    return 0;
+    return OK;
 }
 
-int request::parseReqMethods()
+CODES request::parseReqMethods()
 {
     std::string r_line;
     std::string r_all;
@@ -150,7 +151,7 @@ int request::parseReqMethods()
         r_line = req.substr(0,req.find("\n"));
         r_all = r_line.substr(0,r_line.find(' '));
         if(r_all != "GET" && r_all != "PUT" && r_all != "DELETE" && r_all != "POST")
-            return ResponseIUtils::NOT_IMPLEMENTED;
+            return NOT_IMPLEMENTED;
         else
         {
             req_method = r_all;
@@ -169,16 +170,16 @@ int request::parseReqMethods()
             r_all = r_line.substr(r_all.find(' ') + 1,r_line.find('\r'));
         }
         else
-            return ResponseIUtils::BAD_REQUEST;
+            return BAD_REQUEST;
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         if(r_all == "HTTP/1.1")
             req_version = r_all;
         else
-            return ResponseIUtils::NON_SUPPORTED_HTTPVERSION;
+            return NON_SUPPORTED_HTTPVERSION;
     }
     req = req.substr(req.find("\r\n") + 2,req.length());
-    return 0;
+    return OK;
 }
 
 /*--------------------------------------Getters-------------------------------------------*/
@@ -246,6 +247,11 @@ std::string request::getReqHost()
 	return host;
 }
 
+CODES         request::getReqStatus()
+{
+    return status;
+}
+
 void        request::ClearRequest()
 {
     req = "";
@@ -254,7 +260,7 @@ void        request::ClearRequest()
     req_version = "";
     req_body = "";
     req_query = "";
-    status = 0;
+    status = OK;
     req_headers.clear();
     error = 0;
 }
