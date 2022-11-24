@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/24 15:17:40 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:22:15 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ webserv::~webserv()
 void webserv::init(String filename)
 {
 	parsing obj(filename);
+	this->config = obj;
 	pollfd new_fd;
 
 	data = obj.getData();
@@ -83,8 +84,8 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		int ret;
 		client & c = clients[fd.fd];
 		ret = c._read(fd.fd);
-		if (ret == -1)
-			fd.revents = POLLNVAL;
+		// if (ret == -1)
+		// 	fd.revents = POLLNVAL;
 		fd.events = POLLIN | POLLOUT;
 	}
 }
@@ -100,16 +101,20 @@ void webserv::eraseSocket(int _index, int index, int fd)
 void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 {
 	client &c = clients[fd.fd];
-	std::string connection;
+	std::string connection = "";
 	if (c.isDone() == true)
 	{
 		request req;
 		req = request();
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
-		c.setResString(req.getReqPath().substr(1));
-		// print(req.getHeaderValue("Content-Length"));
-		connection = req.getHeaderValue("Connection");
+		response res(req, config);
+		// std::cout << res.getResponse() << std::endl;
+		c.setResString(res.getResponse());
+		res.ClearResponse();
+		// Test
+		// connection = req.getHeaderValue("Connection");
+		print(c.getReqString());
 		if (c._send(fd.fd) < 0 || connection == "close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;

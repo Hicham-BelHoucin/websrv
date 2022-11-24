@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/20 12:48:05 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/22 08:24:58 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,21 @@ request::request(std::string _req)
 
 void    request::requestPrint()
 {
-    // std::cout << "----------------------------------------Request---------------------------------------------------"<< std::endl;
+    std::cout << "----------------------------------------Request---------------------------------------------------"<< std::endl;
 
-    // std::cout << "\e[1;35mMethod :\e[1;36m " << req_method <<"\e[1;33m"<< std::endl;
-    // std::cout << "\e[1;35mUrl :\e[1;36m " << req_path <<"\e[1;33m"<< std::endl;
-    // std::cout << "\e[1;35mVersion :\e[1;36m " << req_version <<"\e[1;33m"<< std::endl;
-    // if(!req_query.empty())
-    //     std::cout << "\e[1;35mQuery :\e[1;36m " << req_query <<"\e[1;33m"<< std::endl;
-    // for(std::map<std::string ,std::string>::iterator it = req_headers.begin(); it != req_headers.end() ; it++)
-	// {
-	// 	std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
-	// }
-    // if(!req_body.empty())
-    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    std::cout << "\e[1;35mMethod :\e[1;36m " << req_method <<"\e[1;33m"<< std::endl;
+    std::cout << "\e[1;35mUrl :\e[1;36m " << req_path <<"\e[1;33m"<< std::endl;
+    std::cout << "\e[1;35mVersion :\e[1;36m " << req_version <<"\e[1;33m"<< std::endl;
+    if(!req_query.empty())
+        std::cout << "\e[1;35mQuery :\e[1;36m " << req_query <<"\e[1;33m"<< std::endl;
+    for(std::map<std::string ,std::string>::iterator it = req_headers.begin(); it != req_headers.end() ; it++)
+	{
+		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
+	}
+    if(!req_body.empty())
+        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
-    // std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
+    std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
 
 int request::requestCheck(std::string _req)
@@ -112,7 +112,7 @@ int request::parseHeaders()
     }
     std::map<std::string,std::string>::iterator it;
     std::string port;
-    if((it = req_headers.find("Host") ) != req_headers.end())
+    if((it = req_headers.find("Host")) != req_headers.end())
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
         if(!isNumber(port))
@@ -133,7 +133,7 @@ int request::parseHeaders()
             return ResponseIUtils::BAD_REQUEST;
         }
         if(std::stoi(it->second) > obj.getMaxBodySize())
-            return REQUEST_ENTITY_TOO_LARGE;
+            return ResponseIUtils::LARGE_PAYLOAD;
     }
     if(!req.empty())
         req_body = req;
@@ -175,7 +175,7 @@ int request::parseReqMethods()
         if(r_all == "HTTP/1.1")
             req_version = r_all;
         else
-            return HTTP_VERSOIN_NOT_SUPPORTED;
+            return ResponseIUtils::NON_SUPPORTED_HTTPVERSION;
     }
     req = req.substr(req.find("\r\n") + 2,req.length());
     return 0;
@@ -232,8 +232,8 @@ std::string request::getReqPort()
     std::size_t found;
 
     if((found = port.find_first_of(":")) != std::string::npos)
-        port = port.substr(found + 1, port.length());
-	return port;
+        port = port.substr(found + 1);
+	return "3000";
 }
 
 std::string request::getReqHost()
@@ -244,4 +244,17 @@ std::string request::getReqHost()
     if((found = host.find_first_of(":")) != std::string::npos)
         host = host.substr(0, found);
 	return host;
+}
+
+void        request::ClearRequest()
+{
+    req = "";
+    req_method = "";
+    req_path = "";
+    req_version = "";
+    req_body = "";
+    req_query = "";
+    status = 0;
+    req_headers.clear();
+    error = 0;
 }

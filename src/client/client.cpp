@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/24 17:04:17 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:20:47 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ client::client(/* args */) : donereading(false)
 	std::string data = readFile("./src/index.html");
 	res_string =
         "HTTP/1.1 200 OK\n"
-        "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-        "Server: Apache/2.2.3\n"
-        "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+        "date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+        "derver: Apache/2.2.3\n"
+        "last-modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
         "ETag: \"56d-9989200-1132c580\"\n"
         "Content-Type: text/html\n"
         "Content-Length: " + std::to_string(data.length()) + "\n"

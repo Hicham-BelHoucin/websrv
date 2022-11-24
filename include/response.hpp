@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:36:31 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/21 19:26:54 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class response
 {
 private:
     request __req;
+    std::string _filetype;
     std::string _response;
     std::string _body;
     std::size_t _ContentLenght;
@@ -51,10 +52,11 @@ public:
     String      MethodDelete(LocationMap location, String path, String body);
     String      MethodNotAllowed(LocationMap location, String path, String body);
     String      writeContent(String path, String body);
-    server      selectServer(std::vector<server> servers, std::string host, std::string port);
+    // server      selectServer(std::vector<server> servers, std::string host, std::string port);
     LocationMap locationMatch(Set locations, String path);
     String      MethodCheck(LocationMap location, String method, String path, String body);
     void        checkAndAppend(Map &map, String &str, String key);
+    String      getResponse();
 };
 
 #endif // !RESPONSE_HPP

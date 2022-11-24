@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 11:54:19 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/24 15:11:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:21:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,5 @@ int 			            getsocket(std::vector<createSocket> sockets, int fd);
 std::string		            _displayTimestamp( void );
 std::map<int, std::string>  setStatusPhrases();
 void                        check(int condition);
-String                      getContentType(String path);
+String                      getContentType(String path, ResponseIUtils::CODES status);
 #endif // !UTILS_H

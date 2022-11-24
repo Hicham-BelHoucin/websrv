@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/24 14:24:51 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:21:24 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,15 @@ Map					parsing::getErrorPages(Map data)
 	return errorPages;
 }
 
+parsing &parsing::operator=(const parsing & obj)
+{
+	if (&obj == this) return *this;
+	this->data = obj.data;
+	this->locations = obj.locations;
+	this ->_size = obj._size;
+	this->locationsInfo = obj.locationsInfo;
+	return *this;
+}
 std::string			parsing::getServerName(Map data) const
 {
 	Map::iterator it;
@@ -556,7 +565,11 @@ int parsing::IsSpecialKey(std::string line)
 
 	skipWhiteSpaces(line, index);
 	if (line == "server" || line[index] == '{' || line[index] == '}' || line.compare(index, 8, "location") == 0 || line[index] == '#')
+	{
+		if (line.find(';') != std::string::npos && line[index] != '#')
+			throw std::runtime_error("extra semicolone !" + line);
 		return (1);
+	}
 	return (0);
 }
 
@@ -569,6 +582,7 @@ void parsing::checkSemicolon(std::string text)
 
 	while (std::getline(str, line, '\n'))
 	{
+		index = 0;
 		skipWhiteSpaces(line, index);
 		pos = line.find(';');
 		if (IsSpecialKey(line) == 1)
@@ -578,6 +592,8 @@ void parsing::checkSemicolon(std::string text)
 		else if (pos != std::string::npos && line[pos] == ';' && line[pos + 1] == ';')
 			throw std::runtime_error("extra semicolone !" + line);
 		else if (line[index] == ';')
+			throw std::runtime_error("extra semicolone !" + line);
+		else if (line[pos] ==';' && line.find(';', pos + 1) != std::string::npos)
 			throw std::runtime_error("extra semicolone !" + line);
 	}
 }
