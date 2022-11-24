@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/22 08:59:00 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/24 18:21:43 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,6 +347,15 @@ bool isNumber(const std::string& s)
 {
     return s.find_first_not_of("0123456789") == std::string::npos;
 }
+
+// bool    isHex(std::string tmp){
+//     if (tmp[0] == '\r')
+//         return false;
+//     size_t pos = tmp.find_first_not_of("0123456789ABCDEFabcdef");
+//     if (tmp[pos] == '\r')
+//         return true;
+//     return false;
+// }
 
 int line_countword(std::string line)
 {

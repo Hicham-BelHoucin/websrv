@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:23 by obeaj            ###   ########.fr       */
+/*   Created: 2022/11/20 11:54:19 by hbel-hou          #+#    #+#             */
+/*   Updated: 2022/11/24 18:21:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 bool isNumber(const std::string& s);
 int line_countword(std::string line);
+int			hexToDecimal(std::string str);
 std::string generateErrorPage(int number, std::string description);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);

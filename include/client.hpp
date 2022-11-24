@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 15:31:29 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/24 18:20:57 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ class client
 		response	getRes(void) const {
 			return res;
 		}
+		bool	isChunked();
+		void	setIsChunked(std::string req);
+		void	handleChunked(std::string req, std::string&);
 		void	setResString(const std::string & res) {
 			// std::string data = readFile(res);
 			// if (data == "")

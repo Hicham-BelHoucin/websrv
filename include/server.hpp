@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 11:55:40 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/24 13:30:52 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class server
 		Map getErrorPages();
 		int getMaxBodySize() {
 			// fix this later
-			return _maxBodySize * 1000000;
+			return _maxBodySize;
 		}
 		~server();
 };

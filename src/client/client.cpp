@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 16:44:48 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/24 18:20:47 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,61 @@ std::string		client::getReqString() const
 	return req_string;
 }
 
+bool	client::isChunked()
+{
+	return chunked;
+}
+
+void	client::handleChunked(std::string req, std::string &body)
+{
+	static int toLoaded;
+	int index = req.find("\r\n\r\n");
+	std::string headers;
+	headers = index != std::string::npos ? req.substr(0, index + 4) : "";
+	std::stringstream str(index != std::string::npos ? req.substr(index + 4) : req);
+	std::string line;
+	std::string tocopy;
+	if (!toLoaded)
+	{
+		if (!headers.empty())
+			body.append(headers);
+		while (getline(str, line, '\n'))
+		{
+			if (line.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos)
+			{
+				toLoaded = hexToDecimal(line);
+				if (toLoaded == 0)
+					return ;
+				tocopy = str.str().substr(line.length() + 1, toLoaded);
+				body.append(tocopy);
+				toLoaded -= tocopy.length();
+				return ;
+			}
+		}
+	}
+	else
+	{
+		if (req.find("0\r\n") != std::string::npos)
+			req.erase(req.find("0\r\n"), 3);
+		body.append(req);
+		toLoaded -= req.length();
+	}
+	if (toLoaded < 0)
+	{
+		print("'" + body + "'");
+		toLoaded = 0;
+	}
+}
+
+void	client::setIsChunked(std::string req){
+	chunked = (req.find("Transfer-Encoding: chunked")!= std::string::npos);
+}
+
 int	client::_read(int connection)
 {
+	static int i;
 	char 	buff[1001];
+	std::string _req;
 	int		ret = 0;
 
 	bzero(buff + 0, 1001);
@@ -59,14 +111,20 @@ int	client::_read(int connection)
 		ret = recv(connection, buff, 999, 0);
 		buff[ret] = '\0';
 		if (ret < 0)
-		{
-			// print(ret);
 			return -1;
-		}
+		if (!i)
+			setIsChunked(buff);
+		if (isChunked() == true)
+			handleChunked(buff, req_string);
+		else
+			req_string += static_cast<std::string>(buff);
 		if (ret == 0 || ret < 999)
+		{
 			this->donereading = true;
-		req_string += static_cast<std::string>(buff);
+			i = -1;
+		}
 	}
+	i++;
 	return ret;
 }
 

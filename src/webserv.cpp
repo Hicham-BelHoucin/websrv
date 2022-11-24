@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/22 09:16:10 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/24 18:22:15 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		fd.events = POLLIN | POLLOUT;
 		fd.revents = 0;
 		clients.insert(std::make_pair(new_connection.fd, c));
-
 	}
 	else
 	{
