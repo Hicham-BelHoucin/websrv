@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/19 15:49:47 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:01:19 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ class client
 		response	getRes(void) const {
 			return res;
 		}
+		bool	isChunked();
+		void	setIsChunked(std::string req);
+		void	handleChunked(std::string req, std::string&);
 		void	setResString(const std::string & res) {
 			std::string data = readFile(res);
 			if (data == "")

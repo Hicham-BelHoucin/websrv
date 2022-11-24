@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/20 11:54:08 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:51:18 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,19 +166,23 @@ std::string	readFile(std::string filename)
 
 bool	isMatch(String pattern, String str)
 {
-	if (pattern.empty() && str.empty())
-		return (true);
-	if (pattern.at(0) == '?' && str.empty())
-		return (false);
-	if (!pattern.substr(1).empty())
+	try
 	{
-		if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
+		if (pattern.empty() && str.empty())
+			return (true);
+		if (pattern.at(0) == '?' && str.empty())
 			return (false);
+		if (!pattern.substr(1).empty())
+		{
+			if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
+				return (false);
+		}
+		if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
+			return (isMatch(pattern.substr(1), str.substr(1)));
+		if (pattern.at(0) == '*')
+			return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
 	}
-	if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
-		return (isMatch(pattern.substr(1), str.substr(1)));
-	if (pattern.at(0) == '*')
-		return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
+	catch(const std::exception& e){}
 	return (false);
 }
 
@@ -337,6 +341,15 @@ bool isNumber(const std::string& s)
 {
     return s.find_first_not_of("0123456789") == std::string::npos;
 }
+
+// bool    isHex(std::string tmp){
+//     if (tmp[0] == '\r')
+//         return false;
+//     size_t pos = tmp.find_first_not_of("0123456789ABCDEFabcdef");
+//     if (tmp[pos] == '\r')
+//         return true;
+//     return false;
+// }
 
 int line_countword(std::string line)
 {

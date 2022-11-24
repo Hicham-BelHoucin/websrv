@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 11:54:19 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/20 11:54:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 15:11:33 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 bool isNumber(const std::string& s);
 int line_countword(std::string line);
+int			hexToDecimal(std::string str);
 std::string generateErrorPage(int number, std::string description);
 std::string&                stringtrim(std::string &str);
 bool                        isMatch(String pattern, String str);

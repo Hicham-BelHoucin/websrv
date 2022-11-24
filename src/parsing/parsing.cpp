@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 11:21:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:24:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,19 @@ std::string			parsing::getServerName(Map data) const
 
 int					parsing::getMaxBodySize(Map data) const
 {
-	Map::iterator it;
+	Map::iterator	it;
+	int 			i;
 
+	/// you need to fix this function to give you the right result
 	it = data.find("max_body_size");
 	if (it == data.end())
 		return CLINETMAXBODYSIZE;
-	return std::stoi(it->second);
+	i = std::stoi(it->second);
+	if (it->second.find('G') != std::string::npos)
+		i *= 1;
+	else if (it->second.find('B') != std::string::npos)
+		i *= 1;
+	return i;
 };
 
 std::string			parsing::getRoot(Map data) const
@@ -249,7 +256,12 @@ void	parsing::parseFile(std::string text, size_t start)
 				checkHost(conf);
 			else if (conf.first == "client_max_body_size")
 			{
-				if (conf.second.find_first_not_of("0123456789m") != std::string::npos || conf.second[conf.second.size() - 1] != 'm')
+				int index = conf.second.find_last_of('M');
+				if (conf.second.find_first_not_of("0123456789MBG") != std::string::npos)
+					throw std::runtime_error("client max body must be composed only from digits ! " + conf.second);
+				index = index == std::string::npos ? conf.second.find_last_of('G') : index;
+				index = index == std::string::npos ? conf.second.find_last_of('B') : index;
+				if ((index == std::string::npos) || (index != std::string::npos && index != conf.second.size() - 1))
 					throw std::runtime_error("client max body must be composed only from digits !");
 			}
 			for (int i = 0; i < 10; i++)
