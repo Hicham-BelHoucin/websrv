@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/23 17:47:47 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/25 22:15:41 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 request::request()
 {
-	status = OK;
+	status = 200;
     req = "";
 	req_method ="";
 	req_body ="";
@@ -39,7 +39,6 @@ request & request::operator=(const request & obj)
 		this->req_version = obj.req_version;
 		this->req_body = obj.req_body;
 		this->req_headers = obj.req_headers;
-        this->req_query = obj.req_query;
 		this->error = obj.error;
 	}
 	return *this;
@@ -70,24 +69,24 @@ void    request::requestPrint()
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
 
-CODES request::requestCheck(std::string _req)
+int request::requestCheck(std::string _req)
 {
     req = _req;
-    CODES st = OK;
-    if((st = parseReqMethods()) != OK || (st = parseHeaders()) != OK)
+    int st = 0;
+    if((st = parseReqMethods()) || (st = parseHeaders()))
     {
         status = st;
         return status;
     }
     requestPrint();
-    return OK;
+    return 200;
 }
 
 request::~request()
 {
 }
 
-CODES request::parseHeaders()
+int request::parseHeaders()
 {
     std::string all;
     int lt_of_head;
@@ -138,10 +137,10 @@ CODES request::parseHeaders()
     }
     if(!req.empty())
         req_body = req;
-    return OK;
+    return 200;
 }
 
-CODES request::parseReqMethods()
+int request::parseReqMethods()
 {
     std::string r_line;
     std::string r_all;
@@ -179,7 +178,7 @@ CODES request::parseReqMethods()
             return NON_SUPPORTED_HTTPVERSION;
     }
     req = req.substr(req.find("\r\n") + 2,req.length());
-    return OK;
+    return 200;
 }
 
 /*--------------------------------------Getters-------------------------------------------*/
@@ -247,11 +246,6 @@ std::string request::getReqHost()
 	return host;
 }
 
-CODES         request::getReqStatus()
-{
-    return status;
-}
-
 void        request::ClearRequest()
 {
     req = "";
@@ -260,7 +254,12 @@ void        request::ClearRequest()
     req_version = "";
     req_body = "";
     req_query = "";
-    status = OK;
+    status = 0;
     req_headers.clear();
     error = 0;
+}
+
+int request::getReqStatus()
+{
+    return status;
 }

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 16:44:48 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/25 19:03:48 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ int	client::_read(int connection)
 	return ret;
 }
 
+#define BUFFER_SIZE 20
+
 int	client::_send(int connection)
 {
 	char *buffptr;
@@ -80,7 +82,7 @@ int	client::_send(int connection)
 	buffptr = (char *)res_string.c_str();
 	while (len > 0)
 	{
-		rv = send(connection, buffptr, len, 0);
+		rv = send(connection, buffptr, BUFFER_SIZE, 0);
 		if (rv < 0)
 			return rv;
 		buffptr += rv;

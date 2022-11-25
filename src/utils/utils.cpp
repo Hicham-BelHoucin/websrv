@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/23 17:18:12 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/25 18:14:56 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,25 +144,22 @@ int	checkExtansion(String filename)
 	return 0;
 }
 
+#include <fstream>
+
 std::string	readFile(std::string filename)
 {
-	std::ifstream   in_file(filename);
-    std::string     text;
-    std::string     line;
-
-    if (in_file.is_open())
-	{
-		while (getline(in_file, line, '\n'))
-		{
-			if (line != "" &&  line.find_first_not_of(WHITESPACES, 0) != std::string::npos)
-			{
-				line += "\n";
-				text += line;
-			}
-		}
+	std::ifstream 	file;
+	String text;
+	std::ostringstream streambuff;
+	file.open(filename, std::ios::binary);
+	if (file.is_open()) {
+		streambuff << file.rdbuf();
+		text = streambuff.str();
+		file.close();
 	}
-    return text;
+	return text;
 }
+
 
 bool	isMatch(String pattern, String str)
 {
@@ -296,22 +293,39 @@ std::map<int, std::string> setStatusPhrases()
 String	getContentType(String path, CODES status)
 {
 	String type = checkExtension(path);
-	if (status != OK)
-		return	"text/html";
-	if (type == "css")
+	if (type == "html" || type == "htm")
+			return "text/html";
+	else if (type == "mp4")
+		return "video/mp4";
+	else if (type == "aac")
+		return "audio/aac";
+	else if (type == "css")
 		return "text/css";
+	else if (type == "gif")
+		return "image/gif";	
+	else if (type == "ico")
+		return "image/vnd.microsoft.icon";
+	if (type == "jpg" || type == "jpeg")
+		return "image/jpeg";
 	else if (type == "js")
 		return "text/javascript";
-	else if (type == "jpeg" || type == "jpg")
-		return "image/jpeg";
-	else if (type == "png")
-		return "image/png";
-	else if (type == "bmp")
-		return "image/bmp";
 	else if (type == "json")
 		return "application/json";
+	else if (type == "mp3")
+		return "audio/mpeg";
+	else if (type == "png")
+		return "image/png";
+	else if (type == "pdf")
+		return "application/pdf";
+	else if (type == "php")
+		return "application/x-httpd-php";
+	else if (type == "sh")
+		return "application/x-sh";
+	else if (type == "txt")
+		return "text/plain";
 	else
 		return "text/html";
+	return type;
 }
 
 bool isNumber(const std::string& s)

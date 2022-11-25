@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/23 17:44:50 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/25 22:06:19 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,12 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
 		response res(req, config);
-		std::cout << res.getResponse() << std::endl;
+		// std::cout << res.getResponse() << std::endl;
 		c.setResString(res.getResponse());
 		res.ClearResponse();
 		// Test
 		connection = req.getHeaderValue("Connection");
-		if (c._send(fd.fd) < 0 || connection == "close")
+		if (c._send(fd.fd) < 0 || connection != "Close")
 			fd.revents = POLLNVAL;
 		fd.events = POLLIN;
 		c.clean();

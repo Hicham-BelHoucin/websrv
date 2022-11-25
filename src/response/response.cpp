@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/23 21:57:36 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/25 22:53:05 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ String response::MethodGet(LocationMap location, String path, String body)
             isCgiBody = true;
             cgi cgiHandler(path, __req);
             if (location.find("fastcgi_pass") != location.end())
-                return(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0]));
+                return(getCgiBody(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0])));
         }
     }
     _status_code = NOT_FOUND;
@@ -172,7 +172,11 @@ String response::MethodPost(LocationMap location, String path, String body)
     DIR *Dir;
     struct dirent *DirEntry;
     VecIterator it;
-
+    
+    if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
+    {
+        // return (handleUpload(location));
+    }
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -286,12 +290,17 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     methodsMap["PUT"] = &response::MethodPut;
     methodsMap["NotAllowed"] = &response::MethodNotAllowed;
     it = methodsMap.begin();
-    // TODO: Add checking for the body size;
-    // if ( location.find("max_body_size") !=location.end() && std::stoi(location.find("max_body_size")->second[0]) < body.size())
-    // {
-    //    _status_code = LARGE_PAYLOAD;
-    //    return(readFile(ERROR413));
-    // }
+    switch(_status_code)
+    {
+        case BAD_REQUEST:
+            return (readFile(ERROR400));
+        case LARGE_PAYLOAD:
+            return (readFile(ERROR413));
+        case NOT_IMPLEMENTED:
+            return (readFile(ERROR501));
+        case NON_SUPPORTED_HTTPVERSION:
+            return (readFile(ERROR505));
+    }
     while (it != methodsMap.end())
     {
         if (method == it->first)
@@ -304,8 +313,9 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     return "";
 }
 
-response::response(request req, parsing conf): __req(req), __conf(conf), _status_code(req.getReqStatus())
+response::response(request req, parsing conf): __req(req), __conf(conf)
 {
+    _status_code = static_cast<CODES>(req.getReqStatus());
     statusPhrases = setStatusPhrases();
     // selecting a server
     _serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
@@ -326,12 +336,16 @@ void response::setHeaders(request req)
     headers.insert(std::make_pair("Date", getDate()));
     // headers["Last-Modified"] = getLastModified();
     if (req.getHeaderValue("Connection") != "")
-        headers.insert(std::make_pair("Connection", "Keep-Alive"));
+        headers.insert(std::make_pair("Connection", "keep-alive"));
     if (headers.find("Connection")->second == "Keep-Alive")
         headers.insert(std::make_pair("Keep-Alive", "timeout=5, max=1000"));
     headers.insert(std::make_pair("Content-Length", std::to_string(_body.length())));
-    headers.insert(std::make_pair("Content-Type", getContentType(req.getReqPath(), _status_code)));
+    if (!isCgiBody)
+        headers.insert(std::make_pair("Content-Type", getContentType(req.getReqPath(), _status_code)));
+    if (getContentType(req.getReqPath(), _status_code) == "application/pdf" )
+        headers.insert(std::make_pair("Content-Disposition", "attachment; filename=" + req.getReqPath().substr(1)));
     headers.insert(std::make_pair("Content-Location", req.getReqPath()));
+    headers.insert(std::make_pair("Transfer-Encoding", "chunked"));
 }
 
 void    response::checkAndAppend(Map &map, String &str, String key)
@@ -345,20 +359,32 @@ void    response::checkAndAppend(Map &map, String &str, String key)
 		str.append(it->first + ": " + it->second + "\r\n");
 }
 
+String response::handleUpload(LocationMap location)
+{
+    // read  the map of the files to upload
+    // read the upload_store from location
+    // loop over the map and call writeContent function
+    // see if location contain a return line
+    // if it does, write it to the body, and change the status code accordingly
+    // return the body
+}
+
 void response::ResponseBuilder()
 {
     _response += "HTTP/1.1 " + std::to_string(_status_code) + " " + statusPhrases[_status_code] + "\r\n";
     checkAndAppend(headers, _response, "Connection");
-    checkAndAppend(headers,_response,"Keep-Alive");
+    // checkAndAppend(headers,_response,"Keep-Alive");
     checkAndAppend(headers,_response,"Date");
-    checkAndAppend(headers,_response,"Content-Location");
+    // checkAndAppend(headers,_response,"Content-Location");
     checkAndAppend(headers,_response,"Content-Length");
+    // checkAndAppend(headers,_response,"Content-Disposition");
     // if (headers.find("Content-Type") != headers.end())
     checkAndAppend(headers,_response,"Content-Type");
     // checkAndAppend(headers,_response,"last-modified");
     checkAndAppend(headers,_response,"Server");
     _response += "\r\n";
     _response.append(_body);
+    // _response += "\r\n";
 }
 
 void response::ClearResponse()
@@ -385,18 +411,26 @@ String      response::getCgiBody(String cgi_body)
 {
     int found;
     int found1;
-    String tmp;
+    String key;
+    String value;
     String __headerfield;
+    String line;
      
-    if ((found = cgi_body.find("\r\n\r\n")) != String::npos)
-        __headerfield = cgi_body.substr(0, found - 1);
-    while ((found = __headerfield.find("\r\n")) != String::npos)
+    if ((found1 = cgi_body.find("\r\n\r\n")) != String::npos)
+        __headerfield = cgi_body.substr(0, found1 - 1);
+    std::stringstream str(__headerfield);
+    while (std::getline(str, line, '\n'))
     {
-        tmp = __headerfield.substr(found + 1);
-        if ((found1 = tmp.find(":")) != String::npos)
-        {}
+        if ((found = line.find(":")) != String::npos)
+        {
+            key = line.substr(0, found);
+            value = line.substr(found + 1);
+            headers.insert(std::make_pair(stringtrim(key), stringtrim(value)));
+        }
     }
-    return(cgi_body.substr(cgi_body.find_last_of("\r\n") + 1));
+    if (found1 != String::npos)
+        return(cgi_body.substr(found1 + 1));
+    return "";
 }
 
 String response::dirListing(String dirname)
@@ -404,7 +438,7 @@ String response::dirListing(String dirname)
 	DIR *dr;
 	struct dirent *en;
 	String body;
-	dr = opendir(dirname.c_str()); //open all directory
+	dr = opendir(dirname.c_str());
     body += "<html>\n";
     body += "<head><title>Index of ";
     body += __req.getReqPath();
@@ -433,7 +467,7 @@ String response::dirListing(String dirname)
 		body += "<hr>\n";
 		body += "</body>\n";
 		body += "</html>\n";
-		closedir(dr); //close all directory
+		closedir(dr);
 	}
 	return(body);
 }

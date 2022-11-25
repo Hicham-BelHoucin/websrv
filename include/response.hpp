@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/23 21:39:14 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/25 22:46:43 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ public:
     String      MethodDelete(LocationMap location, String path, String body);
     String      MethodNotAllowed(LocationMap location, String path, String body);
     String      writeContent(String path, String body);
+    String      handleUpload(LocationMap location);
     // server      selectServer(std::vector<server> servers, std::string host, std::string port);
     LocationMap locationMatch(Set locations, String path);
     String      MethodCheck(LocationMap location, String method, String path, String body);

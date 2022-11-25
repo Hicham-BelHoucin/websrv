@@ -8,7 +8,8 @@ name = form.getvalue('name')
   
 # to get the data from fields
 email = form.getvalue('email')   
-  
+
+print ("Content-Type: text/html \r\n\r\n")
 print ("<html>")
 print ("<head>")
 print ("<title>First CGI Program</title>")
@@ -16,6 +17,5 @@ print ("</head>")
 print ("<body>")
 print ("<h2>Hello, %s %s</h2>" 
        % (name, email))
-  
 print ("</body>")
 print ("</html>")
