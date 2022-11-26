@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/24 18:22:15 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:25:35 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,10 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 		req = request();
 		req.setservers(servers);
 		req.requestCheck(c.getReqString());
-		response res(req, config);
-		// std::cout << res.getResponse() << std::endl;
-		c.setResString(res.getResponse());
-		res.ClearResponse();
+		// response res(req, config);
+		// // std::cout << res.getResponse() << std::endl;
+		// c.setResString(res.getResponse());
+		// res.ClearResponse();
 		// Test
 		// connection = req.getHeaderValue("Connection");
 		print(c.getReqString());
