@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/25 22:53:05 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 13:17:01 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,6 +300,8 @@ String response::MethodCheck(LocationMap location, String method, String path, S
             return (readFile(ERROR501));
         case NON_SUPPORTED_HTTPVERSION:
             return (readFile(ERROR505));
+        default:
+            break;
     }
     while (it != methodsMap.end())
     {
@@ -315,7 +317,7 @@ String response::MethodCheck(LocationMap location, String method, String path, S
 
 response::response(request req, parsing conf): __req(req), __conf(conf)
 {
-    _status_code = static_cast<CODES>(req.getReqStatus());
+    _status_code = static_cast<CODES>(__req.getReqStatus());
     statusPhrases = setStatusPhrases();
     // selecting a server
     _serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
@@ -367,6 +369,7 @@ String response::handleUpload(LocationMap location)
     // see if location contain a return line
     // if it does, write it to the body, and change the status code accordingly
     // return the body
+    return "";
 }
 
 void response::ResponseBuilder()

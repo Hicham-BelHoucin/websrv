@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/25 18:14:56 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 13:36:57 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,10 +353,14 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
     while (it != servers.end())
     {
         std::vector<int> ports = (*it).getPorts();
-        if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
-        {
-            selected.push_back(*it);
-        }
+		try
+		{
+			if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
+			{
+				selected.push_back(*it);
+			}
+		}
+		catch(const std::exception& e){}
         it++;
     }
     it = selected.begin();

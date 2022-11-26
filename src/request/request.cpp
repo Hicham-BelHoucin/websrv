@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/25 22:15:41 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 13:41:14 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ request & request::operator=(const request & obj)
 		this->req_version = obj.req_version;
 		this->req_body = obj.req_body;
 		this->req_headers = obj.req_headers;
+        this->status = obj.status;
 		this->error = obj.error;
 	}
 	return *this;
@@ -75,11 +76,12 @@ int request::requestCheck(std::string _req)
     int st = 0;
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
+        std::cout << st << " \n";
         status = st;
         return status;
     }
     requestPrint();
-    return 200;
+    return 0;
 }
 
 request::~request()
@@ -123,21 +125,21 @@ int request::parseHeaders()
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
             return BAD_REQUEST;
     }
-    if((it = req_headers.find("Content-Length") )!= req_headers.end())
-    {
-        server obj;
+    // if((it = req_headers.find("Content-Length") )!= req_headers.end())
+    // {
+    //     server obj;
 
-        obj = selectServer(servers, getReqHost(), getReqPort());
-        if(!isNumber(it->second))
-        {
-            return BAD_REQUEST;
-        }
-        if(std::stoi(it->second) > obj.getMaxBodySize())
-            return LARGE_PAYLOAD;
-    }
+    //     obj = selectServer(servers, getReqHost(), getReqPort());
+    //     if(!isNumber(it->second))
+    //     {
+    //         return BAD_REQUEST;
+    //     }
+    //     if(std::stoi(it->second) > obj.getMaxBodySize())
+    //         return LARGE_PAYLOAD;
+    // }
     if(!req.empty())
         req_body = req;
-    return 200;
+    return 0;
 }
 
 int request::parseReqMethods()
@@ -178,7 +180,7 @@ int request::parseReqMethods()
             return NON_SUPPORTED_HTTPVERSION;
     }
     req = req.substr(req.find("\r\n") + 2,req.length());
-    return 200;
+    return 0;
 }
 
 /*--------------------------------------Getters-------------------------------------------*/
