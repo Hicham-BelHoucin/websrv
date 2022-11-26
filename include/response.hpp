@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/25 22:46:43 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 16:14:18 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ private:
     LocationMap _location;
     std::string _path;
     std::map<int,std::string> statusPhrases;
+    Map         _upload;
     METHODS method;
     CODES _status_code;
     bool isCgiBody;

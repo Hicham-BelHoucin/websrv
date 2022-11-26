@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/26 13:17:01 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 16:35:46 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,12 +363,26 @@ void    response::checkAndAppend(Map &map, String &str, String key)
 
 String response::handleUpload(LocationMap location)
 {
-    // read  the map of the files to upload
     // read the upload_store from location
+    String upload_store;
+    Map::iterator it = _upload.begin();
+    if (location.find("upload_store") != location.end())
+        upload_store = location.find("upload_store")->second[0];
     // loop over the map and call writeContent function
+    while(it != _upload.end())
+    {
+        writeContent(upload_store + it->first, it->second);
+        it++;
+    }
+    if (_status_code == FORBIDDEN)
+        return (readFile(ERROR403));
     // see if location contain a return line
-    // if it does, write it to the body, and change the status code accordingly
-    // return the body
+    // if it does, add the location header, and change the status code accordingly
+    if (location.find("return") != location.end())
+    {
+        _status_code = static_cast<CODES>(std::stoi(location.find("return")->second[0]));
+        headers.insert(std::make_pair("Location", location.find("return")->second[1]));
+    }
     return "";
 }
 

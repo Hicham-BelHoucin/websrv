@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/25 19:03:48 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 16:06:47 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	client::_read(int connection)
 	return ret;
 }
 
-#define BUFFER_SIZE 20
+#define BUFFER_SIZE 50
 
 int	client::_send(int connection)
 {
@@ -94,3 +94,4 @@ int	client::_send(int connection)
 client::~client()
 {
 }
+
