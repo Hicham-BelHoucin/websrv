@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/23 17:27:45 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/27 19:06:13 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ cgi::cgi(String path, request req) : body(req.getReqBody())
 
 void cgi::cgiEnvInit(String path, request req)
 {
-    	std::map<std::string, std::string>	headers = req.getHeaders();
+    std::map<std::string, std::string>	headers = req.getHeaders();
+    std::map<std::string, std::string>::iterator it = headers.begin();
+	String temp;
+
 	if (headers.find("Auth-Scheme") != headers.end() && headers["Auth-Scheme"] != "")
 		this->env["AUTH_TYPE"] = headers["Authorization"];
-
 	this->env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	this->env["SCRIPT_NAME"] = path;
 	this->env["SCRIPT_FILENAME"] = path;
@@ -51,6 +53,14 @@ void cgi::cgiEnvInit(String path, request req)
 		this->env["SERVER_NAME"] = "";
 	this->env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->env["SERVER_SOFTWARE"] = "Webserv IHO-0.1";
+	while (it != headers.end())
+	{
+		temp = it->first;
+		if (temp.find("-") != std::string::npos)
+			std::replace(temp.begin(), temp.end(), '-', '_');
+		this->env["HTTP_" + temp] = it->second;
+		it++;
+	}
 }
 
 String cgi::executeCgi(String script, String cgi_pass)
@@ -84,13 +94,23 @@ String cgi::executeCgi(String script, String cgi_pass)
 	}
 	else if (!pid)
 	{
-		char *const args[] = {(char *const)cgi_pass.c_str(), (char *const)script.c_str()};
-
+		if (!cgi_pass.empty())
+		{	
+			char *const args[] = {(char *const)cgi_pass.c_str(), (char *const)script.c_str()};
+			dup2(fdIn, STDIN_FILENO);
+			dup2(fdOut, STDOUT_FILENO);
+			execve(cgi_pass.c_str(), args, envv);
+			std::cerr <<"Execve crashed !!" << std::endl;
+			write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+			exit(1);
+		}
 		dup2(fdIn, STDIN_FILENO);
 		dup2(fdOut, STDOUT_FILENO);
-		execve(cgi_pass.c_str(), args, envv);
+		execve(script.c_str(), NULL, envv);
 		std::cerr <<"Execve crashed !!" << std::endl;
 		write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+		exit(1);
+
 	}
 	else
 	{
@@ -119,8 +139,6 @@ String cgi::executeCgi(String script, String cgi_pass)
 	for (size_t i = 0; envv[i]; i++)
 		delete[] envv[i];
 	delete[] envv;
-	if (!pid)
-		exit(0);
 	return (newBody);
 }
 

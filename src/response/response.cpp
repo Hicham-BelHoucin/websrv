@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/26 16:35:46 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/27 17:18:58 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ String response::MethodNotAllowed(LocationMap location, String path, String body
     _status_code = NOT_ALLOWED;
     return readFile(ERROR405);
 }
-
 
 String response::MethodGet(LocationMap location, String path, String body)
 {
@@ -177,6 +176,10 @@ String response::MethodPost(LocationMap location, String path, String body)
     {
         // return (handleUpload(location));
     }
+    else if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "off")
+    {
+        //return 
+    }
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -239,6 +242,9 @@ String response::MethodPost(LocationMap location, String path, String body)
             _status_code = OK;
             isCgiBody = true;
             cgi cgiHandler(path, __req);
+            //TO DO 
+            // check if the cgi returns an error and change the status code accordingly
+            // then return the appropriate error page
             if (location.find("fastcgi_pass") != location.end())
                 return(getCgiBody(cgiHandler.executeCgi(path, location.find("fastcgi_pass")->second[0])));
         }
@@ -447,6 +453,10 @@ String      response::getCgiBody(String cgi_body)
     }
     if (found1 != String::npos)
         return(cgi_body.substr(found1 + 1));
+    if (headers.find("Status") != headers.end())
+    {
+        _status_code = static_cast<CODES>(std::stoi(headers.find("Status")->second));
+    }
     return "";
 }
 
