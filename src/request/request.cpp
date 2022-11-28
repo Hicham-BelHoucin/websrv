@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/26 13:41:14 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/28 19:29:54 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ request & request::operator=(const request & obj)
 		this->req_body = obj.req_body;
 		this->req_headers = obj.req_headers;
         this->status = obj.status;
+        this->body_con = obj.body_con;
 		this->error = obj.error;
 	}
 	return *this;
@@ -64,8 +65,8 @@ void    request::requestPrint()
 	{
 		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
 	}
-    if(!req_body.empty())
-        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    // if(!req_body.empty())
+    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
@@ -76,7 +77,6 @@ int request::requestCheck(std::string _req)
     int st = 0;
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
-        std::cout << st << " \n";
         status = st;
         return status;
     }
@@ -124,6 +124,7 @@ int request::parseHeaders()
     {
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
             return BAD_REQUEST;
+        boundry = it->second.substr(it->second.find("=") + 1, it->second.find("\r\n"));
     }
     // if((it = req_headers.find("Content-Length") )!= req_headers.end())
     // {
@@ -138,8 +139,63 @@ int request::parseHeaders()
     //         return LARGE_PAYLOAD;
     // }
     if(!req.empty())
+    {
         req_body = req;
+        if((it = req_headers.find("Content-Type")) != req_headers.end() && it->second.find("multipart") != std::string::npos)
+            parseReqBody();
+    }
     return 0;
+}
+
+void       request::parseReqBody()
+{
+    std::string bd;
+    int f_of_ct;
+    int f;
+    std::string key;
+    std::string value;
+    std::string b;
+    std::string newreq;
+    std::string c;
+    newreq = req;
+    std::string bound = "--" + boundry;
+    newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
+    while (newreq != "--\r\n")
+    {
+        if(newreq.find(bound)!= std::string::npos)
+            b = newreq.substr(0,newreq.find(bound));
+        else
+            break;
+        while(b.length())
+        {
+            if((f_of_ct = b.find("\n")) != std::string::npos)
+            {    
+                bd = b.substr(0,f_of_ct);
+                if(bd.find("Content-Disposition:") != std::string::npos && bd.find("filename") == std::string::npos)
+                    break;
+                else if(bd.find("Content-Disposition") != std::string::npos && bd.find("filename") != std::string::npos)
+                {
+                    key = bd.erase(0,bd.find("filename=\"") + 10);
+                    key = key.substr(0,key.find("\""));
+                }
+                else if(bd.find("Content-Type") != std::string::npos)
+                    c = bd.substr(bd.find(":") + 1,bd.length());
+                else
+                    value += bd += '\n';
+            }
+            b = b.substr(f_of_ct + 1,b.length());
+        }
+        if(!key.empty() || !value.empty())
+            body_con.insert(std::make_pair(key, value));
+        key.clear();
+        value.clear();
+        if((f = newreq.find(bound) + bound.length() + 2) != std::string::npos)
+            newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
+    }
+    for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
+	{
+		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
+	}
 }
 
 int request::parseReqMethods()
@@ -248,6 +304,11 @@ std::string request::getReqHost()
 	return host;
 }
 
+Map         request::getFilesBody()
+{
+    return body_con;
+}
+
 void        request::ClearRequest()
 {
     req = "";
@@ -259,6 +320,7 @@ void        request::ClearRequest()
     status = 0;
     req_headers.clear();
     error = 0;
+    body_con.clear();
 }
 
 int request::getReqStatus()
