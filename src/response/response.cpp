@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/27 17:18:58 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/28 14:47:04 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,11 +360,14 @@ void    response::checkAndAppend(Map &map, String &str, String key)
 {
     Map::iterator it;
 
-    it  = map.find(key);
-    if (it == map.end())
-        return;
-	if (map.find(key) != map.end())
-		str.append(it->first + ": " + it->second + "\r\n");
+    it  = map.begin();
+	while (it != map.end())
+    {
+        if (it->first == key)    
+		    str.append(it->first + ": " + it->second + "\r\n");
+        it++;
+    }
+    return;
 }
 
 String response::handleUpload(LocationMap location)
@@ -403,6 +406,7 @@ void response::ResponseBuilder()
     // checkAndAppend(headers,_response,"Content-Disposition");
     // if (headers.find("Content-Type") != headers.end())
     checkAndAppend(headers,_response,"Content-Type");
+    checkAndAppend(headers,_response,"Set-Cookie");
     // checkAndAppend(headers,_response,"last-modified");
     checkAndAppend(headers,_response,"Server");
     _response += "\r\n";
