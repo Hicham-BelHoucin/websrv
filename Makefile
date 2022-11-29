@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
+#    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/21 15:13:27 by obeaj            ###   ########.fr        #
+#    Updated: 2022/11/29 08:18:07 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,9 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g 
+CFLAGS = -g
 
-OBEJECTDIR = ./objects
+OBEJECTDIR = .objects
 
 SRCS = src/parsing/parsing.cpp \
 	   src/request/request.cpp \
@@ -46,10 +46,10 @@ INCLUDE =	include/createSocket.hpp \
 all: $(NAME)
 
 $(NAME) : $(INCLUDE) $(SRCOBJ)
-	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME) 
+	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME)
 
 %.o : %.cpp $(INCLUDE)
-	$(CC) $(CFLAGS) -I include -o $@  -c $< 
+	$(CC) $(CFLAGS) -I include -o $@  -c $<
 
 $(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
 	@mkdir -p $(dir $@)
