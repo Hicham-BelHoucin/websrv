@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 08:28:11 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:10:07 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,9 @@ void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 		c.setResString(res.getResponse());
 		// res.ClearResponse();
 		// Test
-		if (c.isSent() == true)
-			c.setTotal(c.getReqString().length());
-		connection = req.getHeaderValue("Connection");
-		if (c._send(fd.fd) < 0 || connection == "close")
-			fd.revents = POLLNVAL;
-		else
-			fd.revents = POLLOUT;
-		fd.events = POLLIN | POLLOUT;
+		// send(fd.fd, res.getResponse().c_str() + , res.getResponse().length(), 0);
+		c._send(fd.fd);
+		// c.clean();
 	}
 }
 

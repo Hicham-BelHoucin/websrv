@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 08:25:35 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:50:06 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	client::isSent(void) {
 };
 
 
-client::client(/* args */) : donereading(false), donesending(true), sent(0)
+client::client(/* args */) : donereading(false), donesending(true), sent(0), total(0)
 {
 	std::string data = readFile("./src/index.html");
 	res_string =
@@ -47,7 +47,7 @@ void	client::clean(void)
 {
 	req_string.clear();
 	// you will need to uncomment this when you merge response
-	// res_string.clear();
+	res_string.clear();
 	donereading = false;
 }
 
@@ -83,23 +83,21 @@ int	client::_read(int connection)
 	return ret;
 }
 
-#define BUFFER_SIZE 50
-
 int	client::_send(int connection)
 {
-	char *buffptr;
 	int rv;
 
-	donesending = false;
-	buffptr = (char *)res_string.c_str();
-	if ((rv = send(connection, buffptr + sent, BUFFER_SIZE, 0)) == -1)
-		return -1;
-	sent += rv;
-	if (sent == total)
+	if (total == 0)
 	{
-		donesending = true;
+		total = res_string.length();
 		sent = 0;
+	}
+	rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
+	if (total != 0 && total == sent)
+	{
+		clean();
 		total = 0;
+		sent = 0;
 	}
 	return 0;
 }
