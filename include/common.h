@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   common.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:15 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/26 17:33:48 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 # define ERROR500 "./src/errors/error_500.html"
 # define ERROR502 "./src/errors/error_502.html"
 # define CONFIGFILE "./conf/config.conf"
+# define BUFFER_SIZE 50
 
 # define CGI_BUFSIZE 65536
 // Colors
