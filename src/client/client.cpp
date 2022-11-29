@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 13:50:06 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/29 15:50:07 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,7 @@ int	client::_read(int connection)
 		ret = recv(connection, buff, 999, 0);
 		buff[ret] = '\0';
 		if (ret < 0)
-		{
-			// print(ret);
 			return -1;
-		}
 		if (ret == 0 || ret < 999)
 			this->donereading = true;
 		req_string += static_cast<std::string>(buff);
@@ -92,8 +89,12 @@ int	client::_send(int connection)
 		total = res_string.length();
 		sent = 0;
 	}
-	rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
-	if (total != 0 && total == sent)
+	if (res_string.length() - sent > 0)
+		rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
+	if (rv == -1)
+		return -1;
+	sent += rv;
+	if ((total != 0 && total == sent))
 	{
 		clean();
 		total = 0;

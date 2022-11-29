@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 13:10:07 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/29 15:49:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		int ret;
 		client & c = clients[fd.fd];
 		ret = c._read(fd.fd);
-		// if (ret == -1)
-		// 	fd.revents = POLLNVAL;
+		if (ret == -1)
+			fd.revents = POLLNVAL;
 		fd.events = POLLIN | POLLOUT;
 	}
 }
