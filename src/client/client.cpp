@@ -3,16 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/26 16:06:47 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/29 08:25:35 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.hpp"
 
-client::client(/* args */) : donereading(false)
+void	client::isDoneSending(int v)
+{
+	sent = v;
+}
+void	client::setTotal(int v)
+{
+	total = v;
+}
+bool	client::isSent(void) {
+	return donesending;
+};
+
+
+client::client(/* args */) : donereading(false), donesending(true), sent(0)
 {
 	std::string data = readFile("./src/index.html");
 	res_string =
@@ -76,19 +89,19 @@ int	client::_send(int connection)
 {
 	char *buffptr;
 	int rv;
-	int len;
 
-	len = res_string.length();
+	donesending = false;
 	buffptr = (char *)res_string.c_str();
-	while (len > 0)
+	if ((rv = send(connection, buffptr + sent, BUFFER_SIZE, 0)) == -1)
+		return -1;
+	sent += rv;
+	if (sent == total)
 	{
-		rv = send(connection, buffptr, BUFFER_SIZE, 0);
-		if (rv < 0)
-			return rv;
-		buffptr += rv;
-		len -= rv;
+		donesending = true;
+		sent = 0;
+		total = 0;
 	}
-	return rv;
+	return 0;
 }
 
 client::~client()

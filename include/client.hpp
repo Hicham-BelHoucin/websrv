@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/23 17:25:39 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/29 08:25:03 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,22 @@
 class client
 {
 	private:
-		int 		fd;
 		std::string req_string;
 		std::string res_string;
 		bool		donereading;
 		bool		chunked;
+		bool		donesending;
 		request		req;
 		response	res;
+		int			sent;
+		int			total;
 	public:
 		int		_read(int);
 		int		_send(int);
 		bool	isDone(void);
+		void	isDoneSending(int v);
+		void	setTotal(int v);
+		bool	isSent(void);
 		void	clean(void);
 		std::string getReqString(void) const;
 		request	&	getReq(void) {
@@ -40,8 +45,10 @@ class client
 		response	getRes(void) const {
 			return res;
 		}
-		void	setResString(const std::string & res) 
-		{
+		bool	isChunked();
+		void	setIsChunked(std::string req);
+		void	handleChunked(std::string req, std::string&);
+		void	setResString(const std::string & res) {
 			res_string = res;
 		}
 		client();
