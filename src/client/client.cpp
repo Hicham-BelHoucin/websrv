@@ -6,47 +6,61 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 15:50:07 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 14:36:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.hpp"
 
-void	client::isDoneSending(int v)
+void	client::isDoneSending(int value)
 {
-	sent = v;
+	sent = value;
 }
-void	client::setTotal(int v)
+
+void	client::setTotal(int value)
 {
-	total = v;
+	total = value;
 }
+
 bool	client::isSent(void) {
 	return donesending;
 };
 
-
-client::client(/* args */) : donereading(false), donesending(true), sent(0), total(0)
-{
-	std::string data = readFile("./src/index.html");
-	res_string =
-        "HTTP/1.1 200 OK\n"
-        "date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-        "derver: Apache/2.2.3\n"
-        "last-modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
-        "ETag: \"56d-9989200-1132c580\"\n"
-        "Content-Type: text/html\n"
-        "Content-Length: " + std::to_string(data.length()) + "\n"
-        "Accept-Ranges: bytes\n"
-        "Connection: Keep Alive\n"
-        "\n";
-    res_string += data;
-	res_string += "\r\n";
+void	client::setResString(const std::string & res) {
+	res_string = res;
 }
+
+int 	client::HnadleInputEvent(createSocket & _socket, pollfd & fd) {
+	int ret;
+
+	ret = _read(fd.fd);
+	if (ret == -1)
+		fd.revents = POLLNVAL;
+	fd.events = POLLIN | POLLOUT;
+	return 0;
+};
+
+int 	client::HnadleOutputEvent(createSocket & _socket, pollfd & fd) {
+	std::string connection = "";
+	if (isDone() == true)
+	{
+		print("/*******************************************************/");
+		print(getReqString());
+		print("/*******************************************************/");
+		request req;
+		req = request();
+		req.setservers(servers);
+		req.requestCheck(getReqString());
+		response res(req, config);
+		setResString(res.getResponse());
+		_send(fd.fd);
+	}
+	return 0;
+};
 
 void	client::clean(void)
 {
 	req_string.clear();
-	// you will need to uncomment this when you merge response
 	res_string.clear();
 	donereading = false;
 }
@@ -63,19 +77,18 @@ std::string		client::getReqString() const
 
 int	client::_read(int connection)
 {
-	char 	buff[1001];
+	char 	buff[1000];
 	int		ret = 0;
 
-	bzero(buff + 0, 1001);
+	bzero(buff + 0, 1000);
 	if (!isDone())
 	{
-		ret = recv(connection, buff, 999, 0);
-		buff[ret] = '\0';
+		ret = recv(connection, buff, 1000, 0);
 		if (ret < 0)
 			return -1;
-		if (ret == 0 || ret < 999)
+		if (ret == 0 || ret < 1000)
 			this->donereading = true;
-		req_string += static_cast<std::string>(buff);
+		req_string.append(buff);
 	}
 	return ret;
 }
@@ -84,6 +97,7 @@ int	client::_send(int connection)
 {
 	int rv;
 
+	rv = 0;
 	if (total == 0)
 	{
 		total = res_string.length();
@@ -101,6 +115,56 @@ int	client::_send(int connection)
 		sent = 0;
 	}
 	return 0;
+}
+
+client::client(void)
+	: req_string("")
+	, res_string("")
+	, donereading(false)
+	, donesending(true)
+	, sent(0)
+	, total(0)
+	, servers()
+	, config()
+{}
+
+client::client(const std::vector<server> servers, const parsing config)
+	: req_string("")
+	, res_string("")
+	, donereading(false)
+	, donesending(true)
+	, sent(0)
+	, total(0)
+	, servers(servers)
+	, config(config)
+{}
+
+client::client(const client & copy)
+	: req_string(copy.req_string)
+	, res_string(copy.res_string)
+	, donereading(copy.donereading)
+	, donesending(copy.donesending)
+	, sent(copy.sent)
+	, total(copy.total)
+	, servers(copy.servers)
+	, config(copy.config)
+{}
+
+client & client::operator=(const client & assign)
+{
+	if (this != &assign)
+	{
+		req_string = assign.req_string;
+		res_string = assign.res_string;
+		donereading = assign.donereading;
+		chunked = assign.chunked;
+		donesending = assign.donesending;
+		sent = assign.sent;
+		total = assign.total;
+		servers = assign.servers;
+		config = assign.config;
+	}
+	return *this;
 }
 
 client::~client()

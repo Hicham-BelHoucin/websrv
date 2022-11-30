@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/28 19:29:54 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/29 16:03:47 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int request::requestCheck(std::string _req)
         status = st;
         return status;
     }
-    requestPrint();
+    // requestPrint();
     return 0;
 }
 
@@ -169,7 +169,7 @@ void       request::parseReqBody()
         while(b.length())
         {
             if((f_of_ct = b.find("\n")) != std::string::npos)
-            {    
+            {
                 bd = b.substr(0,f_of_ct);
                 if(bd.find("Content-Disposition:") != std::string::npos && bd.find("filename") == std::string::npos)
                     break;
@@ -192,10 +192,10 @@ void       request::parseReqBody()
         if((f = newreq.find(bound) + bound.length() + 2) != std::string::npos)
             newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
     }
-    for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
-	{
-		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
-	}
+    // for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
+	// {
+	// 	std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
+	// }
 }
 
 int request::parseReqMethods()

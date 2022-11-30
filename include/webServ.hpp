@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:25 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 12:01:31 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ class webserv
 		void setUpServer(void);
         webserv();
         webserv(String);
+        webserv(const webserv & copy);
+        webserv & operator=(const webserv & assgin);
         ~webserv();
 };
 

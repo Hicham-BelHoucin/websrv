@@ -6,15 +6,70 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 15:49:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 14:01:22 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webServ.hpp"
 
 webserv::webserv()
-	: sockets(), data()
+	: sockets()
+	, listning_fds()
+	, master_fds()
+	, clients()
+	, data()
+	, servers()
+	, config()
+{}
+
+webserv::webserv(String filename)
+	: sockets()
+	, listning_fds()
+	, master_fds()
+	, clients()
+	, data()
+	, servers()
+	, config()
 {
+	try
+	{
+		printLogs("\n\n\n\n---------------------------------[" \
+			+ _displayTimestamp() + " start new web server session " + getenv("USER") \
+			+ "]---------------------------------");
+		init(filename);
+		printLogs(_displayTimestamp() + "server initialized successfully");
+		printLogs(_displayTimestamp() + "start listing ... ");
+		setUpServer();
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+}
+
+webserv::webserv(const webserv & copy)
+	: sockets(copy.sockets)
+	, listning_fds(copy.listning_fds)
+	, master_fds(copy.master_fds)
+	, clients(copy.clients)
+	, data(copy.data)
+	, servers(copy.servers)
+	, config(copy.config)
+{}
+
+webserv & webserv::operator=(const webserv & assgin)
+{
+	if (this != &assgin)
+	{
+		sockets = assgin.sockets;
+		listning_fds = assgin.listning_fds;
+		master_fds = assgin.master_fds;
+		clients = assgin.clients;
+		data = assgin.data;
+		servers = assgin.servers;
+		config = assgin.config;
+	}
+	return *this;
 }
 
 webserv::~webserv()
@@ -40,24 +95,6 @@ void webserv::init(String filename)
 	servers = createServers(data, obj);
 }
 
-webserv::webserv(String filename)
-	: sockets(), data()
-{
-	try
-	{
-		printLogs("\n\n\n\n---------------------------------[" \
-			+ _displayTimestamp() + " start new web server session " + getenv("USER") \
-			+ "]---------------------------------");
-		init(filename);
-		printLogs(_displayTimestamp() + "server initialized successfully");
-		printLogs(_displayTimestamp() + "start listing ... ");
-		setUpServer();
-	}
-	catch (const std::exception &e)
-	{
-		std::cerr << e.what() << '\n';
-	}
-}
 
 void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 {
@@ -66,7 +103,7 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 
 	if (std::find(master_fds.begin(), master_fds.end(), fd.fd) != master_fds.end())
 	{
-		client  c;
+		client  c(servers, config);
 		connection = _socket._accept();
 		if (connection == -1)
 			return check(1);
@@ -78,16 +115,16 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		fd.events = POLLIN | POLLOUT;
 		fd.revents = 0;
 		clients.insert(std::make_pair(new_connection.fd, c));
-
+		print("received new connection : " + _socket.ip + ":" + std::to_string(_socket.port));
 	}
 	else
 	{
-		int ret;
-		client & c = clients[fd.fd];
-		ret = c._read(fd.fd);
-		if (ret == -1)
-			fd.revents = POLLNVAL;
-		fd.events = POLLIN | POLLOUT;
+		if (clients.find(fd.fd) != clients.end())
+		{
+			int ret;
+			client & c = clients[fd.fd];
+			c.HnadleInputEvent(_socket, fd);
+		}
 	}
 }
 
@@ -101,22 +138,10 @@ void webserv::eraseSocket(int _index, int index, int fd)
 
 void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 {
-	client &c = clients[fd.fd];
-	std::string connection = "";
-	if (c.isDone() == true)
+	if (clients.find(fd.fd) != clients.end())
 	{
-		request req;
-		req = request();
-		req.setservers(servers);
-		req.requestCheck(c.getReqString());
-		response res(req, config);
-		// std::cout << res.getResponse() << std::endl;
-		c.setResString(res.getResponse());
-		// res.ClearResponse();
-		// Test
-		// send(fd.fd, res.getResponse().c_str() + , res.getResponse().length(), 0);
-		c._send(fd.fd);
-		// c.clean();
+		client &c = clients[fd.fd];
+		c.HnadleOutputEvent(_socket, fd);
 	}
 }
 
@@ -148,7 +173,11 @@ void webserv::setUpServer(void)
 				if (listning_fds[i].revents & POLLOUT)
 					handleOutputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLNVAL)
+				{
 					eraseSocket(index, i, listning_fds[i].fd);
+					print("deleted");
+					break;
+				}
 			}
 		}
 	}

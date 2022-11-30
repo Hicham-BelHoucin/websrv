@@ -6,7 +6,7 @@
 #    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/29 08:18:07 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/11/30 14:13:42 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g
+CFLAGS = -g 
 
 OBEJECTDIR = .objects
 
