@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/23 17:18:33 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 19:09:04 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,24 +36,25 @@ std::vector<int> 	parsing::getPorts(Map data) const
 
 Map					parsing::getErrorPages(Map data)
 {
-	Map errorPages;
+	int errors[] = { 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 308, 400, 401, 403, 404, 405, 406, 410, 411, 500, 501, 502, 505};
+	std::map<int, std::string> 	status;
+	Map							errorPages;
+	Map::iterator				it;
+	std::string 				error;
 
-	if (data.find("error_page_403") != data.end())
-		errorPages.insert(*data.find("error_page_403"));
-	else
-		errorPages.insert(std::make_pair("error_page_403", ERROR403));
-	if (data.find("error_page_403") != data.end())
-		errorPages.insert(*data.find("error_page_404"));
-	else
-		errorPages.insert(std::make_pair("error_page_404", ERROR404));
-	if (data.find("error_page_500") != data.end())
-		errorPages.insert(*data.find("error_page_500"));
-	else
-		errorPages.insert(std::make_pair("error_page_500", ERROR500));
-	if (data.find("error_page_502") != data.end())
-		errorPages.insert(*data.find("error_page_502"));
-	else
-		errorPages.insert(std::make_pair("error_page_502", ERROR502));
+	status = setStatusPhrases();
+	for (int i = 0; i < 26; i++)
+	{
+		it = data.find("error_page_" + std::to_string(errors[i]));
+		if (it != data.end())
+		{
+			error = readFile(it->second);
+			error == "" ? generateErrorPage(errors[i], status.find(errors[i])->second) : error;
+		}
+		else
+			error = generateErrorPage(errors[i], status.find(errors[i])->second);
+		errorPages.insert(std::make_pair("error_page_" + std::to_string(errors[i]), error));
+	}
 	return errorPages;
 }
 
@@ -78,12 +79,18 @@ std::string			parsing::getServerName(Map data) const
 
 int					parsing::getMaxBodySize(Map data) const
 {
-	Map::iterator it;
+	Map::iterator	it;
+	long long		ret;
 
 	it = data.find("max_body_size");
 	if (it == data.end())
 		return CLINETMAXBODYSIZE;
-	return std::stoi(it->second);
+	ret = std::stoi(it->second);
+	if (it->second.find("B") != std::string::npos)
+		ret /= 1024 * 1024;
+	else if (it->second.find("G") != std::string::npos)
+		ret /= 1024;
+	return ret;
 };
 
 std::string			parsing::getRoot(Map data) const
@@ -177,7 +184,7 @@ std::string	parsing::readFile(std::string filename)
 		}
 	}
     else
-        throw std::runtime_error("cannot open file " + filename);
+        return "";
     return text;
 }
 
@@ -258,8 +265,13 @@ void	parsing::parseFile(std::string text, size_t start)
 				checkHost(conf);
 			else if (conf.first == "client_max_body_size")
 			{
-				if (conf.second.find_first_not_of("0123456789m") != std::string::npos || conf.second[conf.second.size() - 1] != 'm')
-					throw std::runtime_error("client max body must be composed only from digits !");
+                int index = conf.second.find_last_of('M');
+                if (conf.second.find_first_not_of("0123456789MBG") != std::string::npos)
+                    throw std::runtime_error("client max body must be composed only from digits ! " + conf.second);
+                index = index == std::string::npos ? conf.second.find_last_of('G') : index;
+                index = index == std::string::npos ? conf.second.find_last_of('B') : index;
+                if ((index == std::string::npos) || (index != std::string::npos && index != conf.second.size() - 1))
+                    throw std::runtime_error("client max body must be composed only from digits !");
 			}
 			for (int i = 0; i < 10; i++)
 			{

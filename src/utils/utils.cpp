@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/26 13:36:57 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 18:38:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,7 +302,7 @@ String	getContentType(String path, CODES status)
 	else if (type == "css")
 		return "text/css";
 	else if (type == "gif")
-		return "image/gif";	
+		return "image/gif";
 	else if (type == "ico")
 		return "image/vnd.microsoft.icon";
 	if (type == "jpg" || type == "jpeg")
@@ -383,30 +383,34 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
 std::string generateErrorPage(int number, std::string description)
 {
 	return (
-		"<!DOCTYPE html> \n \
-		<html lang=\"en\"> \n \
-		<head> \n \
-			<title>Document</title> \n \
-			<style> \n \
-				.container { \n \
-					display: flex; \n \
-					height: 100vh; \n \
-					width: 100vw; \n \
-					flex-direction:column; \n \
-					justify-content: center; \n \
-					align-items: center; \n \
-				} \n \
-				div { \n \
-					color: black; \n \
-					font-weight: 800; \n \
-					font-size: 5rem; \n \
-				} \n \
-			</style> \n \
-		</head> \n \
-		<body class=\"container\"> \n \
-			<div>Error " + std::to_string(number) + "</div> \n \
-			<div>" + description + "</div> \n \
-		</body> \n \
-		</html>"
+		"<!DOCTYPE html> \n"
+		"<html lang=\"en\"> \n"
+		"<head> \n"
+		"	<title>Document</title> \n"
+		"	<style> \n"
+		"		.container { \n"
+		"			display: flex; \n"
+		"			height: 100vh; \n"
+		"			width: 100vw; \n"
+		"			flex-direction:column; \n"
+		"			justify-content: center; \n"
+		"			align-items: center; \n"
+		"		} \n"
+		"		div { \n"
+		"			color: black; \n"
+		"			font-weight: 800; \n"
+		"			font-size: 5rem; \n"
+		"		} \n"
+		"		img {"
+		"			width: 300px;"
+		"		}"
+		"	</style> \n"
+		"</head> \n"
+		"<body class=\"container\"> \n"
+		"	<div>Error " + std::to_string(number) + "</div> \n"
+		"	<div>" + description + "</div> \n"
+		"	<img src=\"http://0.0.0.0:3000/img/5741333.png\" alt=\"error\"/>"
+		"</body> \n"
+		"</html>"
 	);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 12:12:59 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 18:27:12 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ String response::MethodGet(LocationMap location, String path, String body)
         }
     }
     _status_code = NOT_FOUND;
-    return (readFile(ERROR404));
+    return (_serv.getErrorPages().find("error_page_404")->second);
 }
 
 String response::MethodPost(LocationMap location, String path, String body)
@@ -251,7 +251,7 @@ String response::MethodPost(LocationMap location, String path, String body)
         }
     }
     _status_code = NOT_FOUND;
-    return (readFile(ERROR404));
+    return (_serv.getErrorPages().find("error_page_404")->second);
 }
 
 String response::MethodPut(LocationMap location, String path, String body)

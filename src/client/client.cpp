@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 15:20:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:44:28 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 void	client::isDoneSending(int value)
 {
 	sent = value;
+}
+
+void	client::setDoneReading(bool value)
+{
+	donereading = value;
 }
 
 void	client::setTotal(int value)
@@ -42,22 +47,20 @@ int 	client::HnadleInputEvent(createSocket & _socket, pollfd & fd) {
 
 int 	client::HnadleOutputEvent(createSocket & _socket, pollfd & fd) {
 	std::string connection = "";
-	if (isDone() == true)
+	if (isDone() == true && req_string != "")
 	{
 		if (total == 0)
 		{
-			print("/*******************************************************/");
-			print(getReqString());
-			print("/*******************************************************/");
 			request req;
 			req = request();
 			req.setservers(servers);
 			req.requestCheck(getReqString());
 			response res(req, config);
 			setResString(res.getResponse());
-			_send(fd.fd);
 		}
+		_send(fd.fd);
 	}
+	fd.events = POLLIN | POLLOUT;
 	return 0;
 };
 
@@ -80,19 +83,20 @@ std::string		client::getReqString() const
 
 int	client::_read(int connection)
 {
-	char 	buff[1001];
-	int		ret = 0;
+	char 	buff[501];
+	int		ret = 500;
 
-	bzero(buff, 1000);
+	bzero(buff, 500);
 	if (!isDone())
 	{
-		ret = recv(connection, buff, 1000, 0);
+		ret = recv(connection, buff, 500, 0);
 		if (ret < 0)
 			return -1;
 		buff[ret] = '\0';
-		if (ret == 0 || ret < 1000)
+		if (ret == 0 || ret < 500)
 			this->donereading = true;
-		req_string.append(buff);
+		if (ret > 0)
+			req_string.append(buff, ret);
 	}
 	return ret;
 }

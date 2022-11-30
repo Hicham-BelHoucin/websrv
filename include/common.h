@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/29 08:24:34 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 15:42:56 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 # define ERROR500 "./src/errors/error_500.html"
 # define ERROR501 "./src/errors/error_501.html"
 # define ERROR502 "./src/errors/error_502.html"
-# define ERROR505 "./src/errors/error_505.html"
+# define ERROR505 "./src/errors/error_503.html"
 # define CONFIGFILE "./conf/config.conf"
 # define BUFFER_SIZE 50
 

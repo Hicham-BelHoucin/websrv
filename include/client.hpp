@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 11:52:39 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:38:36 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class client
 		bool			isDone(void);
 		void			isDoneSending(int v);
 		void			setTotal(int v);
+		void			setDoneReading(bool value);
 		bool			isSent(void);
 		void			clean(void);
 		std::string		getReqString(void) const;

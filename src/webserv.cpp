@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 14:38:43 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:45:18 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void webserv::init(String filename)
 		master_fds.push_back(sockets[i].getSockfd());
 	}
 	servers = createServers(data, obj);
+	print(servers[0].getMaxBodySize());
 }
 
 
@@ -115,7 +116,7 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		fd.events = POLLIN | POLLOUT;
 		fd.revents = 0;
 		clients.insert(std::make_pair(new_connection.fd, c));
-		print("received new connection : " + _socket.ip + ":" + std::to_string(_socket.port));
+		print("received new connection : " + _socket.ip + ":" << _socket.port);
 	}
 	else
 	{
@@ -167,17 +168,16 @@ void webserv::setUpServer(void)
 				if (index == -1)
 					continue;
 				if (listning_fds[i].revents & POLLERR || listning_fds[i].revents & POLLHUP)
+				{
 					eraseSocket(index, i, listning_fds[i].fd);
+					continue;
+				}
 				if (listning_fds[i].revents & POLLIN)
 					handleInputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLOUT)
 					handleOutputEvent(sockets[index], listning_fds[i]);
 				if (listning_fds[i].revents & POLLNVAL)
-				{
 					eraseSocket(index, i, listning_fds[i].fd);
-					print("deleted");
-					break;
-				}
 			}
 		}
 	}
