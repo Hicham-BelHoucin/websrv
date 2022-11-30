@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/28 19:29:54 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 11:49:44 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ void    request::requestPrint()
 	{
 		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
 	}
-    // if(!req_body.empty())
-    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    if(!req_body.empty())
+        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
@@ -77,6 +77,7 @@ int request::requestCheck(std::string _req)
     int st = 0;
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
+        std::cout << st << " \n";
         status = st;
         return status;
     }
@@ -138,64 +139,162 @@ int request::parseHeaders()
     //     if(std::stoi(it->second) > obj.getMaxBodySize())
     //         return LARGE_PAYLOAD;
     // }
+    int s = 0;
     if(!req.empty())
     {
         req_body = req;
         if((it = req_headers.find("Content-Type")) != req_headers.end() && it->second.find("multipart") != std::string::npos)
-            parseReqBody();
+        {
+            if((s = parseReqBody()))
+                return s;
+        }    
     }
     return 0;
 }
 
-void       request::parseReqBody()
+int       request::parseReqBody()
 {
     std::string bd;
     int f_of_ct;
-    int f;
+    // int f;
     std::string key;
     std::string value;
     std::string b;
     std::string newreq;
     std::string c;
+    int f;
     newreq = req;
     std::string bound = "--" + boundry;
-    newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
-    while (newreq != "--\r\n")
+    int last_bound;
+    if((last_bound = newreq.find(bound + "--")) == std::string::npos)
+        return BAD_REQUEST;
+    // newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
+    newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,last_bound + bound.length() + 2);
+    // newreq = newreq.substr(0, last_bound + bound.length() + 2);
+    int q = bound.length() + 2;
+    // int v = newreq.find(bound);
+    // bd = newreq.substr(0,v);
+    // std::cout << "hi " << bd <<  std::endl;
+    // std::cout << "hi " << v <<std::endl;
+    // int f = newreq.find(bound);
+    // newreq = newreq.substr(0,f);  
+    for(int j = 0 ; q < newreq.length() ; j++)
     {
-        if(newreq.find(bound)!= std::string::npos)
-            b = newreq.substr(0,newreq.find(bound));
-        else
-            break;
-        while(b.length())
+        // if(newreq.find(bound) != std::string::npos)
+            f = newreq.find(bound);
+        // else if(newreq.find(bound + "--") != std::string::npos)
+        //     f = newreq.find(bound + "--");
+        // int z = newreq.find(bound,q);
+        // else if(newreq.find(bound + "--") != std::string::npos)
+        //     f = newreq.find(bound,bound.length() + 4);
+        bd = newreq.substr(0,f);
+        newreq = newreq.substr(f+ bound.length() + 2,newreq.length());
+        int l;
+        
+        if(bd.find("filename=\"") != std::string::npos)
         {
-            if((f_of_ct = b.find("\n")) != std::string::npos)
-            {    
-                bd = b.substr(0,f_of_ct);
-                if(bd.find("Content-Disposition:") != std::string::npos && bd.find("filename") == std::string::npos)
-                    break;
-                else if(bd.find("Content-Disposition") != std::string::npos && bd.find("filename") != std::string::npos)
-                {
-                    key = bd.erase(0,bd.find("filename=\"") + 10);
-                    key = key.substr(0,key.find("\""));
-                }
-                else if(bd.find("Content-Type") != std::string::npos)
-                    c = bd.substr(bd.find(":") + 1,bd.length());
-                else
-                    value += bd += '\n';
+            key = bd.erase(0,bd.find("filename=\"") + 10);
+            key = key.substr(0,key.find("\""));
+            l = bd.find("\r\n\r\n") + 4;
+            // std::cout << "this is bd " << bd << std::endl;
+            // std::cout << "this is lenght " << bd.length() << std::endl;
+            int m = bd.length() - 2;
+            while (l < m)
+            {
+                value += bd[l++];
             }
-            b = b.substr(f_of_ct + 1,b.length());
-        }
-        if(!key.empty() || !value.empty())
-            body_con.insert(std::make_pair(key, value));
+        body_con.insert(std::make_pair(key, value));
         key.clear();
-        value.clear();
-        if((f = newreq.find(bound) + bound.length() + 2) != std::string::npos)
-            newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
+        value.clear();  
+        }
+        // std::cout << "this is req " <<  newreq << "|" <<std::endl;
+        // bd = newreq.substr(q,f - q);
+        // std::cout << "this is req " <<  bd << "|" <<std::endl;
+        // std::cout << "this is q " << q  << std::endl;
+        // if(j > 5)
+        //     break;
+        // q = f;
+        // std::cout << "this is the f " << f <<  "this is q " << q << "this is req " << newreq.length() << std::endl;
     }
-    for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
-	{
-		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
-	}
+    // for(int j = 0 ; newreq.length() != 0 ; j++)
+    // {
+    //     if(newreq.find(bound) != std::string::npos)
+    //         f = newreq.find(bound);
+    //     else if(newreq.find(bound + "--") != std::string::npos)
+    //         f = newreq.find(bound + "--");
+    //     // int z = newreq.find(bound,q);
+    //     // else if(newreq.find(bound + "--") != std::string::npos)
+    //     //     f = newreq.find(bound,bound.length() + 4);
+    //     bd = newreq.substr(0,f);
+    //     newreq = newreq.substr(f+ bound.length() + 2,newreq.length());
+    //     int l;
+        
+    //     if(bd.find("filename=\"") != std::string::npos)
+    //     {
+    //         key = bd.erase(0,bd.find("filename=\"") + 10);
+    //         key = key.substr(0,key.find("\""));
+    //         l = bd.find("\r\n\r\n") + 4;
+    //         // std::cout << "this is bd " << bd << std::endl;
+    //         // std::cout << "this is lenght " << bd.length() << std::endl;
+    //         int m = bd.length();
+    //         while (l < m)
+    //         {
+    //             value += bd[l++];
+    //         }
+    //     body_con.insert(std::make_pair(key, value));
+    //     key.clear();
+    //     value.clear();  
+    //     }
+    //     // std::cout << "this is req " <<  newreq << "|" <<std::endl;
+    //     // bd = newreq.substr(q,f - q);
+    //     // std::cout << "this is req " <<  bd << "|" <<std::endl;
+    //     // std::cout << "this is q " << q  << std::endl;
+    //     // if(j > 5)
+    //     //     break;
+    //     q = f;
+    //     std::cout << "this is the f " << f <<  "this is q " << q << "this is req " << newreq.length() << std::endl;
+    // }
+    // while (newreq != "--\r\n")
+    // {
+    //     if(newreq.find(bound)!= std::string::npos)
+    //         b = newreq.substr(0,newreq.find(bound));
+    //     else
+    //         break;
+    //     while(b.length())
+    //     {
+    //         if((f_of_ct = b.find("\n")) != std::string::npos)
+    //         {    
+    //             bd = b.substr(0,f_of_ct);
+    //             if(bd.find("Content-Disposition:") != std::string::npos && bd.find("filename") == std::string::npos)
+    //                 break;
+    //             else if(bd.find("Content-Disposition") != std::string::npos && bd.find("filename") != std::string::npos)
+    //             {
+    //                 key = bd.erase(0,bd.find("filename=\"") + 10);
+    //                 key = key.substr(0,key.find("\""));
+    //             }
+    //             else if(bd.find("Content-Type") != std::string::npos)
+    //                 c = bd.substr(bd.find(":") + 1,bd.length());
+    //             else
+    //                 value += bd += '\n';
+    //         }
+    //         b = b.substr(f_of_ct + 1,b.length());
+    //     }
+    //     if(!key.empty() || !value.empty())
+    //         body_con.insert(std::make_pair(key, value));
+    //     key.clear();
+    //     value.clear();
+    //     if((f = newreq.find(bound) + bound.length() + 2) != std::string::npos)
+    //         newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
+    // }
+    // for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
+	// {
+	// 	std::cout << "|\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"|\e[1;33m"<<std::endl;
+	// }
+    // for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
+	// {
+	// 	std::cout << "| " << it->first << " : " << it->second <<" |"<<std::endl;
+	// }
+    return 0;
 }
 
 int request::parseReqMethods()
@@ -304,7 +403,7 @@ std::string request::getReqHost()
 	return host;
 }
 
-Map         request::getFilesBody()
+Map request::getFilesBody()
 {
     return body_con;
 }
@@ -320,7 +419,6 @@ void        request::ClearRequest()
     status = 0;
     req_headers.clear();
     error = 0;
-    body_con.clear();
 }
 
 int request::getReqStatus()

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/28 19:59:49 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 12:12:59 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ String response::writeContent(String path, String body)
     }
     else
     {
-        file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc);
+        file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
         if (file.is_open() == false)
         {
             _status_code = FORBIDDEN;
@@ -326,6 +326,10 @@ response::response(request req, parsing conf) : __req(req), __conf(conf), _uploa
 {
     _status_code = static_cast<CODES>(__req.getReqStatus());
     statusPhrases = setStatusPhrases();
+    // for(std::map<std::string ,std::string>::iterator it = _upload.begin(); it != _upload.end() ; it++)
+	// {
+	// 	std::cout << "| " << it->first << " : " << it->second <<" |"<<std::endl;
+	// }
     // selecting a server
     _serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
     // matching the path location

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/28 18:25:11 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/11/30 11:35:37 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class request
         void        requestPrint();
         int         parseReqMethods();
         int         getReqStatus();
-        void        parseReqBody();
+        int         parseReqBody();
         std::string getHeaderValue(std::string key);
         std::string getReqMethod();
         std::string getReqVersion();
@@ -51,8 +51,8 @@ class request
         std::string getReqHost();
         std::map<std::string, std::string> getHeaders();
         std::string getReqQuery();
-        Map         getFilesBody();
         void        ClearRequest();
+        Map         getFilesBody();
         void        setservers(const std::vector<server> & obj) {servers = obj;};
 };
 #endif
