@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 12:56:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 14:56:07 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,18 @@ std::string			parsing::getServerName(Map data) const
 int					parsing::getMaxBodySize(Map data) const
 {
 	Map::iterator	it;
+	int				ret;
 
+	ret = INT_MAX;
 	it = data.find("client_max_body_size");
 	if (it == data.end())
 		return CLINETMAXBODYSIZE;
-	return std::stoi(it->second);
+	try
+	{
+		ret = std::stoi(it->second);
+	}
+	catch(const std::exception& e){}
+	return ret;
 };
 
 std::string			parsing::getRoot(Map data) const

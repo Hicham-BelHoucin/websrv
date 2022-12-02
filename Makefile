@@ -6,7 +6,7 @@
 #    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/30 14:13:42 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/12/02 15:13:48 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,20 +14,20 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g 
+CFLAGS = 
 
 OBEJECTDIR = .objects
 
 SRCS = src/parsing/parsing.cpp \
-	   src/request/request.cpp \
-	   src/utils/utils.cpp \
 	   src/server/createSocket.cpp \
 	   src/server/server.cpp \
 	   src/webserv.cpp \
 	   src/main.cpp \
-	   src/response/response.cpp \
 	   src/client/client.cpp \
-	   src/cgi/cgi.cpp
+	   src/cgi/cgi.cpp \
+	   src/utils/utils.cpp \
+	   src/response/response.cpp \
+	   src/request/request.cpp \
 
 SRCOBJ = $(SRCS:.cpp=.o)
 SRCOBJ := $(addprefix $(OBEJECTDIR)/, $(SRCOBJ))
@@ -58,6 +58,7 @@ $(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
 clean:
 	@rm -rf $(SRCOBJ)
 	@rm -rf $(OBEJECTDIR)
+	@rm -f webserver.logs
 
 fclean: clean
 	@rm -f $(NAME)

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 15:42:56 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:05:00 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@
 # define ERROR502 "./src/errors/error_502.html"
 # define ERROR505 "./src/errors/error_503.html"
 # define CONFIGFILE "./conf/config.conf"
-# define BUFFER_SIZE 50
 
 # define CGI_BUFSIZE 1024
 // Colors
@@ -55,7 +54,7 @@
 # define YELLOW "\033[33m"
 # define RESET "\033[0m"
 
-# define CLINETMAXBODYSIZE 1
+# define CLINETMAXBODYSIZE 2147483647
 # define SEVRERNAME "exmaple.com"
 
 # define print(msg)                            \

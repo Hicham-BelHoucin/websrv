@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 14:39:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:20:28 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int request::requestCheck(std::string _req)
         status = st;
         return status;
     }
-    // requestPrint();
+    requestPrint();
     return 0;
 }
 
@@ -390,7 +390,7 @@ std::string request::getReqPort()
 
     if((found = port.find_first_of(":")) != std::string::npos)
         port = port.substr(found + 1);
-	return "3000";
+	return port;
 }
 
 std::string request::getReqHost()

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 18:27:12 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:34:29 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,22 +264,28 @@ String response::MethodDelete(LocationMap location, String path, String body)
 {
     (void)location;
     PATHMODE mode;
+	std::string root;
 
     mode = checkPathMode(path);
     if (mode & ISFILE)
     {
+		root = _serv.getRootPath();
+		if (root.back() == '/')
+			_path = root + _path.substr(1);
+		else
+			_path = root + _path;
         if (remove(_path.c_str()) == 0)
             _status_code = NO_CONTENT;
         else
         {
             _status_code = FORBIDDEN;
-            return readFile(ERROR403);
+            return _serv.getErrorPages().find("error_page_403")->second;
         }
     }
     else
     {
         _status_code = NOT_FOUND;
-        return readFile(ERROR404);
+        return _serv.getErrorPages().find("error_page_404")->second;
     }
     return "";
 }

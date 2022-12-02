@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 11:41:06 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:25:15 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void webserv::init(String filename)
 
 	data = obj.getData();
 	sockets = createSockets(data, obj);
-	for (int i = 0; i < sockets.size(); i++)
+	for (size_t i = 0; i < sockets.size(); i++)
 	{
 		new_fd.fd = sockets[i].getSockfd();
 		new_fd.events = POLLIN | POLLOUT;
@@ -115,15 +115,14 @@ void webserv::handleInputEvent(createSocket &_socket, pollfd &fd)
 		fd.events = POLLIN | POLLOUT;
 		fd.revents = 0;
 		clients.insert(std::make_pair(new_connection.fd, c));
-		print("received new connection : " + _socket.ip + ":" << _socket.port);
+		printLogs("received new connection : " + _socket.ip + ":" + std::to_string(_socket.port));
 	}
 	else
 	{
 		if (clients.find(fd.fd) != clients.end())
 		{
-			int ret;
 			client & c = clients[fd.fd];
-			c.HnadleInputEvent(_socket, fd);
+			c.HnadleInputEvent(fd);
 		}
 	}
 }
@@ -138,16 +137,16 @@ void webserv::eraseSocket(int _index, int index, int fd)
 
 void webserv::handleOutputEvent(createSocket &_socket, pollfd &fd)
 {
+	(void)_socket;
 	if (clients.find(fd.fd) != clients.end())
 	{
 		client &c = clients[fd.fd];
-		c.HnadleOutputEvent(_socket, fd);
+		c.HnadleOutputEvent(fd);
 	}
 }
 
 void webserv::setUpServer(void)
 {
-	nfds_t nfds;
 	nfds_t ready;
 	int index;
 
