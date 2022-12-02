@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 17:31:14 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/02 18:48:05 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void    request::requestPrint()
 int request::requestCheck(std::string _req)
 {
     int     st = 0;
+
     req = _req;
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
