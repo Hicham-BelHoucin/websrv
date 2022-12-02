@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 19:09:04 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 12:56:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,11 @@ std::string			parsing::getServerName(Map data) const
 int					parsing::getMaxBodySize(Map data) const
 {
 	Map::iterator	it;
-	long long		ret;
 
-	it = data.find("max_body_size");
+	it = data.find("client_max_body_size");
 	if (it == data.end())
 		return CLINETMAXBODYSIZE;
-	ret = std::stoi(it->second);
-	if (it->second.find("B") != std::string::npos)
-		ret /= 1024 * 1024;
-	else if (it->second.find("G") != std::string::npos)
-		ret /= 1024;
-	return ret;
+	return std::stoi(it->second);
 };
 
 std::string			parsing::getRoot(Map data) const
@@ -265,12 +259,9 @@ void	parsing::parseFile(std::string text, size_t start)
 				checkHost(conf);
 			else if (conf.first == "client_max_body_size")
 			{
-                int index = conf.second.find_last_of('M');
-                if (conf.second.find_first_not_of("0123456789MBG") != std::string::npos)
+                if (conf.second.find_first_not_of("0123456789bB") != std::string::npos)
                     throw std::runtime_error("client max body must be composed only from digits ! " + conf.second);
-                index = index == std::string::npos ? conf.second.find_last_of('G') : index;
-                index = index == std::string::npos ? conf.second.find_last_of('B') : index;
-                if ((index == std::string::npos) || (index != std::string::npos && index != conf.second.size() - 1))
+                else if (conf.second.back() != 'b' && conf.second.back() != 'B')
                     throw std::runtime_error("client max body must be composed only from digits !");
 			}
 			for (int i = 0; i < 10; i++)

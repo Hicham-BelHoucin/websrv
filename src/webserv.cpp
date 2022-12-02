@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 18:45:18 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 11:41:06 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void webserv::init(String filename)
 		master_fds.push_back(sockets[i].getSockfd());
 	}
 	servers = createServers(data, obj);
-	print(servers[0].getMaxBodySize());
 }
 
 
