@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 18:48:05 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/02 20:02:11 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,14 @@
 
 /*-----------------------------Consructors Destructors------------------------------------*/
 
-request::request()
-{
-	status = 200;
-    req = "";
-	req_method ="";
-	req_body ="";
-	req_version ="";
-	req_path= "";
-}
+request::request(void)
+    : status(200)
+    , req("")
+    , req_method("")
+    , req_body("")
+    , req_version("")
+    , req_path("")
+{}
 
 request::request(const request & obj)
 {
@@ -45,10 +44,12 @@ request & request::operator=(const request & obj)
 	}
 	return *this;
 }
-request::request(std::string _req)
-{
 
-}
+request::request(std::string _req)
+{}
+
+request::~request()
+{}
 
 /*---------------------------------Member functions----------------------------------------*/
 
@@ -65,8 +66,8 @@ void    request::requestPrint()
 	{
 		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
 	}
-    if(!req_body.empty())
-        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    // if(!req_body.empty())
+    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
@@ -86,9 +87,6 @@ int request::requestCheck(std::string _req)
     return 0;
 }
 
-request::~request()
-{
-}
 
 int request::parseHeaders()
 {
@@ -141,7 +139,7 @@ int request::parseHeaders()
         }
         boundry = it->second.substr(it->second.find("=") + 1, it->second.find("\r\n"));
     }
-    if((it = req_headers.find("Content-Length") )!= req_headers.end())
+    if((it = req_headers.find("Content-Length")) != req_headers.end())
     {
         server obj;
 
@@ -156,6 +154,11 @@ int request::parseHeaders()
             printLogs(_displayTimestamp() + "LARGE_PAYLOAD");
             return LARGE_PAYLOAD;
         }
+    }
+    if((it = req_headers.find("Content-Length")) != req_headers.end() && req.empty())
+    {
+        printLogs(_displayTimestamp() + "BAD_REQUEST");
+        return BAD_REQUEST;
     }
     if(!req.empty())
     {
