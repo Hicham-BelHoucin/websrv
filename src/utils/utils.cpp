@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/24 18:21:43 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:38:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,93 +144,83 @@ int	checkExtansion(String filename)
 	return 0;
 }
 
+#include <fstream>
+
 std::string	readFile(std::string filename)
 {
-	std::ifstream   in_file(filename);
-    std::string     text;
-    std::string     line;
-
-    if (in_file.is_open())
-	{
-		while (getline(in_file, line, '\n'))
-		{
-			if (line != "" &&  line.find_first_not_of(WHITESPACES, 0) != std::string::npos)
-			{
-				line += "\n";
-				text += line;
-			}
-		}
+	std::ifstream 	file;
+	String text;
+	std::ostringstream streambuff;
+	file.open(filename, std::ios::binary);
+	if (file.is_open()) {
+		streambuff << file.rdbuf();
+		text = streambuff.str();
+		file.close();
 	}
-    return text;
+	return text;
 }
+
 
 bool	isMatch(String pattern, String str)
 {
-	try
+	if (*pattern.c_str() == '\0' && *str.c_str() == '\0')
+		return (true);
+	if (*pattern.c_str() == '?' && *str.c_str() == '\0')
+		return (false);
+	if (pattern.c_str() + 1)
 	{
-		if (pattern.empty() && str.empty())
-			return (true);
-		if (pattern.at(0) == '?' && str.empty())
+		if ((*pattern.c_str() == '*' || *pattern.c_str() == '?') && *(pattern.c_str() + 1) != '\0' && *str.c_str() == '\0')
 			return (false);
-		if (pattern.c_str()[1])
-		{
-			if (!pattern.substr(1).empty())
-			{
-				if ((pattern.at(0) == '*' || pattern.at(0) == '?') && !pattern.substr(1).empty() && str.empty())
-					return (false);
-			}
-			if (pattern.at(0) == '?' || pattern.at(0) == str.at(0))
-				return (isMatch(pattern.substr(1), str.substr(1)));
-			if (pattern.at(0) == '*')
-				return (isMatch(pattern.substr(1), str) || isMatch(pattern, str.substr(1)));
-		}
 	}
-	catch(const std::exception& e){}
+	if (*pattern.c_str() == '?' || *pattern.c_str() == *str.c_str())
+		return (isMatch(pattern.c_str() + 1, str.c_str() + 1));
+	if (*pattern.c_str() == '*')
+		return (isMatch(pattern.c_str() + 1, str.c_str()) || isMatch(pattern.c_str(), str.c_str() + 1));
 	return (false);
 }
 
-ResponseIUtils::PATHMODE	checkPathMode(std::string path)
+PATHMODE	checkPathMode(std::string path)
 {
 	struct stat  st;
 
 	if(stat(path.c_str(), &st) == 0)
 	{
 		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
-			return	ResponseIUtils::D_ALL;
+			return	D_ALL;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::D_RW;
+			return    D_RW;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::D_WX;
+			return    D_WX;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::D_RX;
+			return    D_RX;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR)
-			return    ResponseIUtils::D_READ;
+			return    D_READ;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::D_WRITE;
+			return    D_WRITE;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::D_EXEC;
+			return    D_EXEC;
 		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
-			return	ResponseIUtils::F_ALL;
+			return	F_ALL;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::F_RW;
+			return    F_RW;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::F_WX;
+			return    F_WX;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::F_RX;
+			return    F_RX;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR)
-			return    ResponseIUtils::F_READ;
+			return    F_READ;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IWUSR)
-			return    ResponseIUtils::F_WRITE;
+			return    F_WRITE;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR)
-			return    ResponseIUtils::F_EXEC;
+			return    F_EXEC;
 		else if (st.st_mode & S_IFDIR)
-			return    ResponseIUtils::DIR;
+			return    _DIR;
 		else if (st.st_mode & S_IFREG)
-			return	  ResponseIUtils::FILE;
+			return	  _FILE;
 		else
-			return (ResponseIUtils::NONE);
+			return (_NONE_);
 	}
-    return (ResponseIUtils::NONE);
+    return (_NONE_);
 }
 
 String checkExtension(String filename)
@@ -245,28 +235,6 @@ String checkExtension(String filename)
 	else
 		return (filename);
 }
-
-String dirListing(String dirname)
-{
-	DIR *dr;
-	struct dirent *en;
-	String body;
-	dr = opendir(dirname.c_str()); //open all directory
-	if (dr)
-	{
-		while ((en = readdir(dr)) != NULL) \
-		{
-			if (en->d_name[0]!= '.')
-			{
-				body.append(en->d_name);
-				body.append("\n");
-			}
-		}
-		closedir(dr); //close all directory
-	}
-	return(body);
-}
-
 
 String getDate()
 {
@@ -322,40 +290,48 @@ std::map<int, std::string> setStatusPhrases()
 	return status;
 }
 
-String	getContentType(String path, ResponseIUtils::CODES status)
+String	getContentType(String path, CODES status)
 {
 	String type = checkExtension(path);
-	if (status != ResponseIUtils::OK)
-		return	"text/html";
-	if (type == "css")
+	if (type == "html" || type == "htm")
+			return "text/html";
+	else if (type == "mp4")
+		return "video/mp4";
+	else if (type == "aac")
+		return "audio/aac";
+	else if (type == "css")
 		return "text/css";
+	else if (type == "gif")
+		return "image/gif";
+	else if (type == "ico")
+		return "image/vnd.microsoft.icon";
+	if (type == "jpg" || type == "jpeg")
+		return "image/jpeg";
 	else if (type == "js")
 		return "text/javascript";
-	else if (type == "jpeg" || type == "jpg")
-		return "image/jpeg";
-	else if (type == "png")
-		return "image/png";
-	else if (type == "bmp")
-		return "image/bmp";
 	else if (type == "json")
 		return "application/json";
+	else if (type == "mp3")
+		return "audio/mpeg";
+	else if (type == "png")
+		return "image/png";
+	else if (type == "pdf")
+		return "application/pdf";
+	else if (type == "php")
+		return "application/x-httpd-php";
+	else if (type == "sh")
+		return "application/x-sh";
+	else if (type == "txt")
+		return "text/plain";
 	else
 		return "text/html";
+	return type;
 }
 
 bool isNumber(const std::string& s)
 {
     return s.find_first_not_of("0123456789") == std::string::npos;
 }
-
-// bool    isHex(std::string tmp){
-//     if (tmp[0] == '\r')
-//         return false;
-//     size_t pos = tmp.find_first_not_of("0123456789ABCDEFabcdef");
-//     if (tmp[pos] == '\r')
-//         return true;
-//     return false;
-// }
 
 int line_countword(std::string line)
 {
@@ -377,10 +353,14 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
     while (it != servers.end())
     {
         std::vector<int> ports = (*it).getPorts();
-        if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
-        {
-            selected.push_back(*it);
-        }
+		try
+		{
+			if (std::find(ports.begin(), ports.end(), stoi(port)) != ports.end())
+			{
+				selected.push_back(*it);
+			}
+		}
+		catch(const std::exception& e){}
         it++;
     }
     it = selected.begin();
@@ -403,30 +383,34 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
 std::string generateErrorPage(int number, std::string description)
 {
 	return (
-		"<!DOCTYPE html> \n \
-		<html lang=\"en\"> \n \
-		<head> \n \
-			<title>Document</title> \n \
-			<style> \n \
-				.container { \n \
-					display: flex; \n \
-					height: 100vh; \n \
-					width: 100vw; \n \
-					flex-direction:column; \n \
-					justify-content: center; \n \
-					align-items: center; \n \
-				} \n \
-				div { \n \
-					color: black; \n \
-					font-weight: 800; \n \
-					font-size: 5rem; \n \
-				} \n \
-			</style> \n \
-		</head> \n \
-		<body class=\"container\"> \n \
-			<div>Error " + std::to_string(number) + "</div> \n \
-			<div>" + description + "</div> \n \
-		</body> \n \
-		</html>"
+		"<!DOCTYPE html> \n"
+		"<html lang=\"en\"> \n"
+		"<head> \n"
+		"	<title>Document</title> \n"
+		"	<style> \n"
+		"		.container { \n"
+		"			display: flex; \n"
+		"			height: 100vh; \n"
+		"			width: 100vw; \n"
+		"			flex-direction:column; \n"
+		"			justify-content: center; \n"
+		"			align-items: center; \n"
+		"		} \n"
+		"		div { \n"
+		"			color: black; \n"
+		"			font-weight: 800; \n"
+		"			font-size: 5rem; \n"
+		"		} \n"
+		"		img {"
+		"			width: 300px;"
+		"		}"
+		"	</style> \n"
+		"</head> \n"
+		"<body class=\"container\"> \n"
+		"	<div>Error " + std::to_string(number) + "</div> \n"
+		"	<div>" + description + "</div> \n"
+		"	<img src=\"http://0.0.0.0:3000/img/5741333.png\" alt=\"error\"/>"
+		"</body> \n"
+		"</html>"
 	);
 }

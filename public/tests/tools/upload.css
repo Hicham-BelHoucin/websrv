@@ -1,0 +1,38 @@
+.container {
+	display: flex;
+	align-items: center;
+	justify-items: center;
+	flex-direction: column;
+	width: 100vw;
+	height: 100vh;
+}
+.form {
+	display: flex;
+	align-items: center;
+	justify-items: center;
+	flex-direction: column;
+	padding: 2rem;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-radius: 1rem;
+	width: 50%;
+	height: 50%;
+}
+.form--form {
+	display: flex;
+	align-items: center;
+	justify-items: center;
+	flex-direction: column;
+	margin-top: 2rem;
+	width: 50%;
+	height: 50%;
+}
+.browse {
+	padding: 2.5rem;
+}
+.upload {
+	padding: 1.5rem;
+	border: none;
+	color: white;
+	border-radius: 1rem;
+	background-color: #2b8ce4;
+}

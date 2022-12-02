@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/20 13:40:22 by imabid           ###   ########.fr       */
+/*   Updated: 2022/11/30 11:35:37 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@ class request
         std::string 						req_version;
         std::string 						req_body;
         std::string 						req_query;
+        std::string 						boundry;
         int                                 status;
         std::map<std::string, std::string> 	req_headers;
+        Map 	                            body_con;
         int									error;
         std::vector<server>                 servers;
     public:
@@ -38,7 +40,8 @@ class request
         int         requestCheck(std::string _req);
         void        requestPrint();
         int         parseReqMethods();
-        void        parseReqBody(std::string reqbody);
+        int         getReqStatus();
+        int         parseReqBody();
         std::string getHeaderValue(std::string key);
         std::string getReqMethod();
         std::string getReqVersion();
@@ -49,6 +52,7 @@ class request
         std::map<std::string, std::string> getHeaders();
         std::string getReqQuery();
         void        ClearRequest();
+        Map         getFilesBody();
         void        setservers(const std::vector<server> & obj) {servers = obj;};
 };
 #endif

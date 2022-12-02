@@ -8,6 +8,7 @@
 Webserv
 testing-socket/
 test.cpp
+.objects/
 testing.cpp
 used_struct.hpp
 werserver.logs

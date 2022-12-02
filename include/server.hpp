@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/24 13:30:52 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 11:27:17 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,29 +27,18 @@ class server
 		std::vector<int>	_ports;
 		Map					_errorPages;
 	public:
-		server();
+		String 				getRootPath(void) const;
+		String 				getHost(void) const;
+		Set 				getlocations(void) const;
+		String				getServerName(void) const;
+		std::vector<int>	getPorts(void) const;
+		Map 				getErrorPages(void) const;
+		int 				getMaxBodySize(void) const;
+		server(void);
 		server(String, String, String, Set, int, std::vector<int>, Map);
-		server & operator=(const server & obj) {
-			_root = obj._root;
-			_serverName = obj._serverName;
-			_host = obj._host;
-			_locations = obj._locations;
-			_maxBodySize = obj._maxBodySize;
-			_ports = obj._ports;
-			_errorPages = obj._errorPages;
-			return *this;
-		}
-		String getRootPath();
-		String getHost();
-		Set getlocations();
-		String getServerName();
-		std::vector<int> getPorts();
-		Map getErrorPages();
-		int getMaxBodySize() {
-			// fix this later
-			return _maxBodySize;
-		}
-		~server();
+		server(const server & obj);
+		server & operator=(const server & obj);
+		~server(void);
 };
 
 #endif // SEVER_HPP

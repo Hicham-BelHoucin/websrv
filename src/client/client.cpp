@@ -6,35 +6,68 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/24 18:20:47 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:44:28 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.hpp"
 
-client::client(/* args */) : donereading(false)
+void	client::isDoneSending(int value)
 {
-	std::string data = readFile("./src/index.html");
-	res_string =
-        "HTTP/1.1 200 OK\n"
-        "date: Thu, 19 Feb 2009 12:27:04 GMT\n"
-        "derver: Apache/2.2.3\n"
-        "last-modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
-        "ETag: \"56d-9989200-1132c580\"\n"
-        "Content-Type: text/html\n"
-        "Content-Length: " + std::to_string(data.length()) + "\n"
-        "Accept-Ranges: bytes\n"
-        "Connection: Keep Alive\n"
-        "\n";
-    res_string += data;
-	res_string += "\r\n";
+	sent = value;
 }
+
+void	client::setDoneReading(bool value)
+{
+	donereading = value;
+}
+
+void	client::setTotal(int value)
+{
+	total = value;
+}
+
+bool	client::isSent(void) {
+	return donesending;
+};
+
+void	client::setResString(const std::string & res) {
+	res_string = res;
+}
+
+int 	client::HnadleInputEvent(createSocket & _socket, pollfd & fd) {
+	int ret;
+
+	ret = _read(fd.fd);
+	if (ret == -1)
+		fd.revents = POLLNVAL;
+	fd.events = POLLIN | POLLOUT;
+	return 0;
+};
+
+int 	client::HnadleOutputEvent(createSocket & _socket, pollfd & fd) {
+	std::string connection = "";
+	if (isDone() == true && req_string != "")
+	{
+		if (total == 0)
+		{
+			request req;
+			req = request();
+			req.setservers(servers);
+			req.requestCheck(getReqString());
+			response res(req, config);
+			setResString(res.getResponse());
+		}
+		_send(fd.fd);
+	}
+	fd.events = POLLIN | POLLOUT;
+	return 0;
+};
 
 void	client::clean(void)
 {
 	req_string.clear();
-	// you will need to uncomment this when you merge response
-	// res_string.clear();
+	res_string.clear();
 	donereading = false;
 }
 
@@ -48,105 +81,101 @@ std::string		client::getReqString() const
 	return req_string;
 }
 
-bool	client::isChunked()
-{
-	return chunked;
-}
-
-void	client::handleChunked(std::string req, std::string &body)
-{
-	static int toLoaded;
-	int index = req.find("\r\n\r\n");
-	std::string headers;
-	headers = index != std::string::npos ? req.substr(0, index + 4) : "";
-	std::stringstream str(index != std::string::npos ? req.substr(index + 4) : req);
-	std::string line;
-	std::string tocopy;
-	if (!toLoaded)
-	{
-		if (!headers.empty())
-			body.append(headers);
-		while (getline(str, line, '\n'))
-		{
-			if (line.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos)
-			{
-				toLoaded = hexToDecimal(line);
-				if (toLoaded == 0)
-					return ;
-				tocopy = str.str().substr(line.length() + 1, toLoaded);
-				body.append(tocopy);
-				toLoaded -= tocopy.length();
-				return ;
-			}
-		}
-	}
-	else
-	{
-		if (req.find("0\r\n") != std::string::npos)
-			req.erase(req.find("0\r\n"), 3);
-		body.append(req);
-		toLoaded -= req.length();
-	}
-	if (toLoaded < 0)
-	{
-		print("'" + body + "'");
-		toLoaded = 0;
-	}
-}
-
-void	client::setIsChunked(std::string req){
-	chunked = (req.find("Transfer-Encoding: chunked")!= std::string::npos);
-}
-
 int	client::_read(int connection)
 {
-	static int i;
-	char 	buff[1001];
-	std::string _req;
-	int		ret = 0;
+	char 	buff[501];
+	int		ret = 500;
 
-	bzero(buff + 0, 1001);
+	bzero(buff, 500);
 	if (!isDone())
 	{
-		ret = recv(connection, buff, 999, 0);
-		buff[ret] = '\0';
+		ret = recv(connection, buff, 500, 0);
 		if (ret < 0)
 			return -1;
-		if (!i)
-			setIsChunked(buff);
-		if (isChunked() == true)
-			handleChunked(buff, req_string);
-		else
-			req_string += static_cast<std::string>(buff);
-		if (ret == 0 || ret < 999)
-		{
+		buff[ret] = '\0';
+		if (ret == 0 || ret < 500)
 			this->donereading = true;
-			i = -1;
-		}
+		if (ret > 0)
+			req_string.append(buff, ret);
 	}
-	i++;
 	return ret;
 }
 
 int	client::_send(int connection)
 {
-	char *buffptr;
 	int rv;
-	int len;
 
-	len = res_string.length();
-	buffptr = (char *)res_string.c_str();
-	while (len > 0)
+	rv = 0;
+	if (total == 0)
 	{
-		rv = send(connection, buffptr, len, 0);
-		if (rv < 0)
-			return rv;
-		buffptr += rv;
-		len -= rv;
+		total = res_string.length();
+		sent = 0;
 	}
-	return rv;
+	if (res_string.length() - sent > 0)
+		rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
+	if (rv == -1)
+		return -1;
+	sent += rv;
+	if ((total != 0 && total == sent))
+	{
+		clean();
+		total = 0;
+		sent = 0;
+	}
+	return 0;
+}
+
+client::client(void)
+	: req_string("")
+	, res_string("")
+	, donereading(false)
+	, donesending(true)
+	, sent(0)
+	, total(0)
+	, servers()
+	, config()
+{}
+
+client::client(const std::vector<server> servers, const parsing config)
+	: req_string("")
+	, res_string("")
+	, donereading(false)
+	, donesending(true)
+	, sent(0)
+	, total(0)
+	, servers(servers)
+	, config(config)
+{}
+
+client::client(const client & copy)
+	: req_string(copy.req_string)
+	, res_string(copy.res_string)
+	, donereading(copy.donereading)
+	, donesending(copy.donesending)
+	, sent(copy.sent)
+	, total(copy.total)
+	, servers(copy.servers)
+	, config(copy.config)
+{}
+
+client & client::operator=(const client & assign)
+{
+	if (this != &assign)
+	{
+		req_string = assign.req_string;
+		res_string = assign.res_string;
+		donereading = assign.donereading;
+		chunked = assign.chunked;
+		donesending = assign.donesending;
+		sent = assign.sent;
+		total = assign.total;
+		servers = assign.servers;
+		config = assign.config;
+	}
+	return *this;
 }
 
 client::~client()
 {
 }
+

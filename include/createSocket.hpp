@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   createSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 16:32:40 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/19 16:36:04 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/02 11:39:55 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,21 @@ class createSocket
 		std::string			ip;
         struct sockaddr_in  address;
     public:
+        int 		_bind(void);
+        int 		_listen(void);
+        int 		_accept(void);
+        int 		_close(void);
+		int 		_connect(void);
+        int 		_read(int connection);
+        int 		_send(int connection);
+        int 		getSockfd();
+        bool		operator==(const createSocket &);
         createSocket();
         createSocket(int sockfd, std::string ip, int port);
         createSocket(std::string ip, int port);
-        int _bind(void);
-        int _listen(void);
-        int _accept(void);
-        int _close(void);
-		int _connect(void);
-        int _read(int connection);
-        int _send(int connection);
+        createSocket(const createSocket & obj);
+        createSocket & operator=(const createSocket & obj);
         ~createSocket();
-        int getSockfd();
-        bool operator==(const createSocket & obj){
-            return this->port == obj.port;
-        };
 };
 
 #endif
