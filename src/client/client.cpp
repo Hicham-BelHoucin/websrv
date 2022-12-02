@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 17:44:28 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:11:49 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	client::setResString(const std::string & res) {
 	res_string = res;
 }
 
-int 	client::HnadleInputEvent(createSocket & _socket, pollfd & fd) {
+int 	client::HnadleInputEvent(pollfd & fd) {
 	int ret;
 
 	ret = _read(fd.fd);
@@ -45,7 +45,7 @@ int 	client::HnadleInputEvent(createSocket & _socket, pollfd & fd) {
 	return 0;
 };
 
-int 	client::HnadleOutputEvent(createSocket & _socket, pollfd & fd) {
+int 	client::HnadleOutputEvent(pollfd & fd) {
 	std::string connection = "";
 	if (isDone() == true && req_string != "")
 	{
@@ -68,7 +68,10 @@ void	client::clean(void)
 {
 	req_string.clear();
 	res_string.clear();
+	total = 0;
+	sent = 0;
 	donereading = false;
+	donesending = true;
 }
 
 bool	client::isDone(void)
@@ -117,11 +120,7 @@ int	client::_send(int connection)
 		return -1;
 	sent += rv;
 	if ((total != 0 && total == sent))
-	{
 		clean();
-		total = 0;
-		sent = 0;
-	}
 	return 0;
 }
 

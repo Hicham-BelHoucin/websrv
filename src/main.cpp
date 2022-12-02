@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 09:57:05 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/29 13:05:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:11:14 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 int main(int argc, char const *argv[])
 {
+	(void)argc;
 	if (argv[1] && (checkExtansion(argv[1]) == -1))
 		return EXIT_FAILURE;
 	else if (!argv[1])

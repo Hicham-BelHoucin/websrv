@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 18:38:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:13:38 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 std::string& rtrim(std::string& str, const std::string &ws)
 {
+	(void)ws;
     str.erase(str.find_last_not_of(WHITESPACES) + 1);
     return str;
 }
@@ -21,6 +22,7 @@ std::string& rtrim(std::string& str, const std::string &ws)
 // trim from beginning of string (left)
 std::string& ltrim(std::string& str, const std::string &ws)
 {
+	(void)ws;
     str.erase(0, str.find_first_not_of(WHITESPACES));
     return str;
 }
@@ -40,28 +42,28 @@ std::string	_displayTimestamp( void )
 	time (&rawtime);
 	timeinfo = localtime (&rawtime);
 
-	strftime (buffer, 80, "[%d/%m/%Y  %H:%M:%S] ", timeinfo);
+	strftime (buffer, 80, "%d/%m/%Y  %H:%M:%S ", timeinfo);
 	return buffer;
 }
 
 // print logs in the log file
 void			printLogs(const std::string & line)
 {
-	// std::ofstream	logfile;
+	std::ofstream	logfile;
 
-	// logfile.open("werserver.logs", std::ifstream::app);
-	// if (logfile.is_open())
-	// {
-	// 	logfile << "" << line  << std::endl;
-	// 	logfile.close();
-	// }
+	logfile.open("werserver.logs", std::ifstream::app);
+	if (logfile.is_open())
+	{
+		logfile << line << std::endl;
+		logfile.close();
+	}
 }
 
 std::vector<int>	getallPorts(Data data, parsing obj)
 {
 	std::vector<int> ports;
 	std::vector<int> temp;
-	for (int i = 0; i < data.size(); i++)
+	for (size_t i = 0; i < data.size(); i++)
 	{
 		temp = obj.getPorts(data[0].data);
 		ports.insert(ports.end(), temp.begin(), temp.end());
@@ -80,7 +82,7 @@ std::vector<server> createServers(Data data, parsing obj)
 	Map 				errorPages;
 	std::vector<server>	servers;
 
-	for (int i = 0; i < data.size(); i++)
+	for (size_t i = 0; i < data.size(); i++)
 	{
 		root = obj.getRoot(data[i].data);
 		host = obj.getHost(data[i].data);
@@ -111,7 +113,8 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 	createSocket								socket;
 	String										host;
 
-	for (int i = 0; i < data.size(); i++)
+	(void)obj;
+	for (size_t i = 0; i < data.size(); i++)
 	{
 		ret = data[i].data.equal_range("listen");
 		host = data[i].data.find("host")->second;
@@ -131,7 +134,7 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 
 int	getsocket(std::vector<createSocket> sockets, int fd)
 {
-	for (int i = 0; i < sockets.size(); i++)
+	for (size_t i = 0; i < sockets.size(); i++)
 		if (sockets[i].getSockfd() == fd)
 			return i;
 	return -1;
@@ -143,8 +146,6 @@ int	checkExtansion(String filename)
 		return -1;
 	return 0;
 }
-
-#include <fstream>
 
 std::string	readFile(std::string filename)
 {
@@ -336,7 +337,7 @@ bool isNumber(const std::string& s)
 int line_countword(std::string line)
 {
     int c = 0;
-    for(int i = 0 ; i < line.size() ;i++)
+    for(size_t i = 0 ; i < line.size() ;i++)
     {
         if(line[i] == ' ')
            c++;

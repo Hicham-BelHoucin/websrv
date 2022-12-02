@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/30 16:38:36 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:11:57 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ class client
 		std::string		getReqString(void) const;
 		bool			isChunked();
 		void			setIsChunked(std::string req);
-		int 			HnadleInputEvent(createSocket & _socket, pollfd & fd) ;
-		int 			HnadleOutputEvent(createSocket & _socket, pollfd & fd) ;
+		int 			HnadleInputEvent(pollfd & fd) ;
+		int 			HnadleOutputEvent(pollfd & fd) ;
 		void			handleChunked(std::string req, std::string&);
 		void			setResString(const std::string & res);
 		client(void);
