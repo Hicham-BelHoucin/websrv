@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/27 19:06:13 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/02 19:05:49 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ String cgi::executeCgi(String script, String cgi_pass)
 	pid_t		pid;
 	int			saveStdin;
 	int			saveStdout;
-	
+
 	char		**envv;
 	std::string	newBody;
 
@@ -95,7 +95,7 @@ String cgi::executeCgi(String script, String cgi_pass)
 	else if (!pid)
 	{
 		if (!cgi_pass.empty())
-		{	
+		{
 			char *const args[] = {(char *const)cgi_pass.c_str(), (char *const)script.c_str()};
 			dup2(fdIn, STDIN_FILENO);
 			dup2(fdOut, STDOUT_FILENO);

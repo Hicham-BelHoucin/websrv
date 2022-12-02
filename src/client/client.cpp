@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 15:11:49 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:44:06 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 	{
 		if (total == 0)
 		{
+			print(req_string);
 			request req;
 			req = request();
 			req.setservers(servers);

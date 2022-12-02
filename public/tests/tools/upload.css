@@ -1,7 +1,7 @@
 .container {
 	display: flex;
 	align-items: center;
-	justify-items: center;
+	justify-content: center;
 	flex-direction: column;
 	width: 100vw;
 	height: 100vh;
@@ -9,7 +9,7 @@
 .form {
 	display: flex;
 	align-items: center;
-	justify-items: center;
+	justify-content: center;
 	flex-direction: column;
 	padding: 2rem;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -20,7 +20,7 @@
 .form--form {
 	display: flex;
 	align-items: center;
-	justify-items: center;
+	justify-content: center;
 	flex-direction: column;
 	margin-top: 2rem;
 	width: 50%;
