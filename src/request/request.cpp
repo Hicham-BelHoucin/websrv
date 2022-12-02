@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 14:39:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/02 17:31:14 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,11 @@ void    request::requestPrint()
 
 int request::requestCheck(std::string _req)
 {
+    int     st = 0;
     req = _req;
-    int st = 0;
     if((st = parseReqMethods()) || (st = parseHeaders()))
     {
-        std::cout << st << " \n";
+        std::cout << "this is s " << st << std::endl;
         status = st;
         return status;
     }
@@ -91,10 +91,11 @@ request::~request()
 
 int request::parseHeaders()
 {
-    std::string all;
-    int lt_of_head;
-    std::string key;
-    std::string value;
+    std::string     all;
+    std::string     key;
+    std::string     value;
+    int             lt_of_head;
+    int             s = 0;
 
     while ((lt_of_head = req.find("\r\n")) != std::string::npos)
     {
@@ -105,12 +106,18 @@ int request::parseHeaders()
         }
         all = req.substr(0, lt_of_head);
         if(all.find(':') == std::string::npos)
+        {
+            printLogs(_displayTimestamp() + "BAD_REQUEST");
             return BAD_REQUEST;
+        }
         key = all.substr(0,all.find(':'));
         value = all.substr(all.find(' ') + 1, all.length());
         req_headers.insert(std::make_pair((key), value));
         if(req_headers.count("Host") > 1  || req_headers.count("Host") < 0)
+        {
+            printLogs(_displayTimestamp() + "BAD_REQUEST");
             return BAD_REQUEST;
+        }
         req = req.substr(req.find("\r\n") + 2,req.length());
     }
     std::map<std::string,std::string>::iterator it;
@@ -119,27 +126,36 @@ int request::parseHeaders()
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
         if(!isNumber(port))
+        {
+            printLogs(_displayTimestamp() + "BAD_REQUEST");
             return BAD_REQUEST;
+        }
     }
     if((it = req_headers.find("Content-Type")) != req_headers.end())
     {
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
+        {
+            printLogs(_displayTimestamp() + "BAD_REQUEST");
             return BAD_REQUEST;
+        }
         boundry = it->second.substr(it->second.find("=") + 1, it->second.find("\r\n"));
     }
-    // if((it = req_headers.find("Content-Length") )!= req_headers.end())
-    // {
-    //     server obj;
+    if((it = req_headers.find("Content-Length") )!= req_headers.end())
+    {
+        server obj;
 
-    //     obj = selectServer(servers, getReqHost(), getReqPort());
-    //     if(!isNumber(it->second))
-    //     {
-    //         return BAD_REQUEST;
-    //     }
-    //     if(std::stoi(it->second) > obj.getMaxBodySize())
-    //         return LARGE_PAYLOAD;
-    // }
-    int s = 0;
+        obj = selectServer(servers, getReqHost(), getReqPort());
+        if(!isNumber(it->second))
+        {
+            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            return BAD_REQUEST;
+        }
+        if(std::stoi(it->second) > obj.getMaxBodySize())
+        {
+            printLogs(_displayTimestamp() + "LARGE_PAYLOAD");
+            return LARGE_PAYLOAD;
+        }
+    }
     if(!req.empty())
     {
         req_body = req;
@@ -154,160 +170,63 @@ int request::parseHeaders()
 
 int       request::parseReqBody()
 {
-    std::string bd;
-    int f_of_ct;
-    // int f;
-    std::string key;
-    std::string value;
-    std::string b;
-    std::string newreq;
-    std::string c;
-    int f;
+    std::string     content;
+    std::string     key;
+    std::string     value;
+    std::string     newreq;
+    std::string     bound;
+    int             bound_pos;
+    int             content_pos;
+    int             con_last_pos;
+    int             bound_len;
+    int             last_bound;
+    
     newreq = req;
-    std::string bound = "--" + boundry;
-    int last_bound;
+    bound = "--" + boundry;
     if((last_bound = newreq.find(bound + "--")) == std::string::npos)
-        return BAD_REQUEST;
-    // newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
-    newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,last_bound + bound.length() + 2);
-    // newreq = newreq.substr(0, last_bound + bound.length() + 2);
-    int q = bound.length() + 2;
-    // int v = newreq.find(bound);
-    // bd = newreq.substr(0,v);
-    // std::cout << "hi " << bd <<  std::endl;
-    // std::cout << "hi " << v <<std::endl;
-    // int f = newreq.find(bound);
-    // newreq = newreq.substr(0,f);
-    for(int j = 0 ; q < newreq.length() ; j++)
     {
-        // if(newreq.find(bound) != std::string::npos)
-            f = newreq.find(bound);
-        // else if(newreq.find(bound + "--") != std::string::npos)
-        //     f = newreq.find(bound + "--");
-        // int z = newreq.find(bound,q);
-        // else if(newreq.find(bound + "--") != std::string::npos)
-        //     f = newreq.find(bound,bound.length() + 4);
-        bd = newreq.substr(0,f);
-        newreq = newreq.substr(f+ bound.length() + 2,newreq.length());
-        int l;
-
-        if(bd.find("filename=\"") != std::string::npos)
-        {
-            key = bd.erase(0,bd.find("filename=\"") + 10);
-            key = key.substr(0,key.find("\""));
-            l = bd.find("\r\n\r\n") + 4;
-            // std::cout << "this is bd " << bd << std::endl;
-            // std::cout << "this is lenght " << bd.length() << std::endl;
-            int m = bd.length() - 2;
-            while (l < m)
-            {
-                value += bd[l++];
-            }
-        body_con.insert(std::make_pair(key, value));
-        key.clear();
-        value.clear();
-        }
-        // std::cout << "this is req " <<  newreq << "|" <<std::endl;
-        // bd = newreq.substr(q,f - q);
-        // std::cout << "this is req " <<  bd << "|" <<std::endl;
-        // std::cout << "this is q " << q  << std::endl;
-        // if(j > 5)
-        //     break;
-        // q = f;
-        // std::cout << "this is the f " << f <<  "this is q " << q << "this is req " << newreq.length() << std::endl;
+        printLogs(_displayTimestamp() + "BAD_REQUEST");
+        return BAD_REQUEST;
     }
-    // for(int j = 0 ; newreq.length() != 0 ; j++)
-    // {
-    //     if(newreq.find(bound) != std::string::npos)
-    //         f = newreq.find(bound);
-    //     else if(newreq.find(bound + "--") != std::string::npos)
-    //         f = newreq.find(bound + "--");
-    //     // int z = newreq.find(bound,q);
-    //     // else if(newreq.find(bound + "--") != std::string::npos)
-    //     //     f = newreq.find(bound,bound.length() + 4);
-    //     bd = newreq.substr(0,f);
-    //     newreq = newreq.substr(f+ bound.length() + 2,newreq.length());
-    //     int l;
-
-    //     if(bd.find("filename=\"") != std::string::npos)
-    //     {
-    //         key = bd.erase(0,bd.find("filename=\"") + 10);
-    //         key = key.substr(0,key.find("\""));
-    //         l = bd.find("\r\n\r\n") + 4;
-    //         // std::cout << "this is bd " << bd << std::endl;
-    //         // std::cout << "this is lenght " << bd.length() << std::endl;
-    //         int m = bd.length();
-    //         while (l < m)
-    //         {
-    //             value += bd[l++];
-    //         }
-    //     body_con.insert(std::make_pair(key, value));
-    //     key.clear();
-    //     value.clear();
-    //     }
-    //     // std::cout << "this is req " <<  newreq << "|" <<std::endl;
-    //     // bd = newreq.substr(q,f - q);
-    //     // std::cout << "this is req " <<  bd << "|" <<std::endl;
-    //     // std::cout << "this is q " << q  << std::endl;
-    //     // if(j > 5)
-    //     //     break;
-    //     q = f;
-    //     std::cout << "this is the f " << f <<  "this is q " << q << "this is req " << newreq.length() << std::endl;
-    // }
-    // while (newreq != "--\r\n")
-    // {
-    //     if(newreq.find(bound)!= std::string::npos)
-    //         b = newreq.substr(0,newreq.find(bound));
-    //     else
-    //         break;
-    //     while(b.length())
-    //     {
-    //         if((f_of_ct = b.find("\n")) != std::string::npos)
-    //         {
-    //             bd = b.substr(0,f_of_ct);
-    //             if(bd.find("Content-Disposition:") != std::string::npos && bd.find("filename") == std::string::npos)
-    //                 break;
-    //             else if(bd.find("Content-Disposition") != std::string::npos && bd.find("filename") != std::string::npos)
-    //             {
-    //                 key = bd.erase(0,bd.find("filename=\"") + 10);
-    //                 key = key.substr(0,key.find("\""));
-    //             }
-    //             else if(bd.find("Content-Type") != std::string::npos)
-    //                 c = bd.substr(bd.find(":") + 1,bd.length());
-    //             else
-    //                 value += bd += '\n';
-    //         }
-    //         b = b.substr(f_of_ct + 1,b.length());
-    //     }
-    //     if(!key.empty() || !value.empty())
-    //         body_con.insert(std::make_pair(key, value));
-    //     key.clear();
-    //     value.clear();
-    //     if((f = newreq.find(bound) + bound.length() + 2) != std::string::npos)
-    //         newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,newreq.length());
-    // }
-    // for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
-	// {
-	// 	std::cout << "|\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"|\e[1;33m"<<std::endl;
-	// }
-    // for(std::map<std::string ,std::string>::iterator it = body_con.begin(); it != body_con.end() ; it++)
-	// {
-	// 	std::cout << "| " << it->first << " : " << it->second <<" |"<<std::endl;
-	// }
+    newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,last_bound + bound.length() + 2);
+    bound_len = bound.length() + 2;
+    for(int j = 0 ; bound_len < newreq.length() ; j++)
+    {
+        bound_pos = newreq.find(bound);
+        content = newreq.substr(0,bound_pos);
+        newreq = newreq.substr(bound_pos + bound.length() + 2, newreq.length());
+        if(content.find("filename=\"") != std::string::npos)
+        {
+            key = content.erase(0,content.find("filename=\"") + 10);
+            key = key.substr(0,key.find("\""));
+            content_pos = content.find("\r\n\r\n") + 4;
+            con_last_pos = content.length() - 2;
+            while (content_pos < con_last_pos)
+                value += content[content_pos++];
+            body_con.insert(std::make_pair(key, value));
+            key.clear();
+            value.clear();
+        }
+    }
     return 0;
 }
 
 int request::parseReqMethods()
 {
-    std::string r_line;
-    std::string r_all;
-    int f = req.find("\r\n");
-    if(f != std::string::npos)
+    std::string     r_line;
+    std::string     r_all;
+    int             f_line;
+
+    f_line = req.find("\r\n");
+    if(f_line != std::string::npos)
     {
         r_line = req.substr(0,req.find("\n"));
         r_all = r_line.substr(0,r_line.find(' '));
         if(r_all != "GET" && r_all != "PUT" && r_all != "DELETE" && r_all != "POST")
+        {
+            printLogs(_displayTimestamp() + "NOT_IMPLEMENTED");
             return NOT_IMPLEMENTED;
+        }
         else
         {
             req_method = r_all;
@@ -326,13 +245,19 @@ int request::parseReqMethods()
             r_all = r_line.substr(r_all.find(' ') + 1,r_line.find('\r'));
         }
         else
+        {
+            printLogs(_displayTimestamp() + "BAD_REQUEST");
             return BAD_REQUEST;
+        }
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
         if(r_all == "HTTP/1.1")
             req_version = r_all;
         else
+        {
+            printLogs(_displayTimestamp() + "NON_SUPPORTED_HTTPVERSION");
             return NON_SUPPORTED_HTTPVERSION;
+        }
     }
     req = req.substr(req.find("\r\n") + 2,req.length());
     return 0;
