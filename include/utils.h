@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 18:16:30 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/03 13:04:39 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,8 @@ std::string		            _displayTimestamp( void );
 std::map<int, std::string>  setStatusPhrases();
 void                        check(int condition);
 String                      getContentType(String path, CODES status);
+int			hexToDecimal(std::string str);
+int			AppendHeaders(std::string req, std::string & body);
+int			IsHexa(std::string str);
+
 #endif // !UTILS_H

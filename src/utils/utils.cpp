@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 15:13:38 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/03 13:48:16 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -414,4 +414,28 @@ std::string generateErrorPage(int number, std::string description)
 		"</body> \n"
 		"</html>"
 	);
+}
+
+int		IsHexa(std::string str)
+{
+	if (str.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos && str != "\r\n" && str != "\n" && str != "\r")
+		return 1;
+	return 0;
+}
+
+int		AppendHeaders(std::string req, std::string & body)
+{
+	int index;
+
+	index = req.find("\r\n\r\n");
+	if (index == std::string::npos)
+		return 0;
+	if (body.empty())
+		body.append(req, 0, index + 4);
+	return 1;
+}
+
+std::string AppendBody(std::string req, std::string & body)
+{
+	return std::string();
 }

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 16:34:29 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/03 11:14:09 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,11 @@ String response::MethodGet(LocationMap location, String path, String body)
         if (mode & (D_RD))
         {
             Dir = opendir(path.c_str());
+			if (!Dir)
+			{
+				_status_code = SERVER_ERROR;
+				return _serv.getErrorPages().find("error_page_500")->second;
+			}
             while ((DirEntry = readdir(Dir)))
             {
                 // Search for index in directory
