@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/03 15:37:53 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/03 21:00:56 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,6 @@ int 	client::HnadleOutputEvent(createSocket & _socket, pollfd & fd) {
 			req.requestCheck(getReqString());
 			response res(req, config);
 			setResString(res.getResponse());
-			// std::cout << "------------------------------------------------------------------------------------first" << std::endl;
-			// print(req_string);
-			// std::cout << "------------------------------------------------------------------------------------end" << std::endl;
-			// usleep(2000000);
 		}
 		_send(fd.fd);
 	}
