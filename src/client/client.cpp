@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 19:34:53 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/03 15:37:53 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,10 @@ int 	client::HnadleOutputEvent(createSocket & _socket, pollfd & fd) {
 			req.requestCheck(getReqString());
 			response res(req, config);
 			setResString(res.getResponse());
+			// std::cout << "------------------------------------------------------------------------------------first" << std::endl;
+			// print(req_string);
+			// std::cout << "------------------------------------------------------------------------------------end" << std::endl;
+			// usleep(2000000);
 		}
 		_send(fd.fd);
 	}
@@ -81,24 +85,41 @@ std::string		client::getReqString() const
 	return req_string;
 }
 
-int	client::_read(int connection)
+int    client::_read(int connection)
 {
-	char 	buff[501];
-	int		ret = 500;
+    char     buff[1025];
+    int        ret = 1024;
+    int headerslength = 0;
+    int index = 0;
+    int    contentlength = 0;
 
-	bzero(buff, 500);
-	if (!isDone())
-	{
-		ret = recv(connection, buff, 500, 0);
-		if (ret < 0)
-			return -1;
-		buff[ret] = '\0';
-		if (ret == 0 || ret < 500)
-			this->donereading = true;
-		if (ret > 0)
-			req_string.append(buff, ret);
-	}
-	return ret;
+    bzero(buff, 1024);
+
+    if (!isDone())
+    {
+        ret = recv(connection, buff, 1024, 0);
+        if (ret < 0)
+            return -1;
+        buff[ret] = '\0';
+        if (ret > 0)
+            req_string.append(buff, ret);
+        try
+        {
+            headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
+            index = req_string.find("Content-Length: ") + strlen("Content-Length: ");
+            contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
+        }
+        catch(const std::exception& e)
+        {
+            headerslength = 0;
+            index = 0;
+            contentlength =0;
+        }
+        if ((contentlength + headerslength <= req_string.length())
+                || (!contentlength && ret < 1024))
+            this->donereading = true;
+    }
+    return ret;
 }
 
 int	client::_send(int connection)

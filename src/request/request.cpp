@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 20:02:11 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/03 19:02:11 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*-----------------------------Consructors Destructors------------------------------------*/
 
 request::request(void)
-    : status(200)
+    : status(OK)
     , req("")
     , req_method("")
     , req_body("")
@@ -66,8 +66,8 @@ void    request::requestPrint()
 	{
 		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
 	}
-    // if(!req_body.empty())
-    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    if(!req_body.empty())
+        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
@@ -86,7 +86,6 @@ int request::requestCheck(std::string _req)
     // requestPrint();
     return 0;
 }
-
 
 int request::parseHeaders()
 {
@@ -228,6 +227,7 @@ int request::parseReqMethods()
         r_all = r_line.substr(0,r_line.find(' '));
         if(r_all != "GET" && r_all != "PUT" && r_all != "DELETE" && r_all != "POST")
         {
+            std::cout << " this is methode " << r_all << std::endl;
             printLogs(_displayTimestamp() + "NOT_IMPLEMENTED");
             return NOT_IMPLEMENTED;
         }
