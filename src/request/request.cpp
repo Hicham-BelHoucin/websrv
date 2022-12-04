@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 17:40:55 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/04 18:41:49 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,10 +218,10 @@ int request::parseReqMethods()
 {
     std::string     r_line;
     std::string     r_all;
-    int             f_line;
     std::string     nreq;
     std::string     p_str;
     std::string     w_p_str;
+    int             f_line;
 
     f_line = req.find("\r\n");
     if(f_line != std::string::npos)
@@ -251,7 +251,7 @@ int request::parseReqMethods()
                 int index;
                 while((index = nreq.find("%20")) != std::string::npos) 
                 {
-                    nreq.erase(index,p_str.length() - 1);  
+                    nreq.erase(index, p_str.length() - 1);  
                     nreq.replace(index, w_p_str.length(), w_p_str);
                 }
             }
