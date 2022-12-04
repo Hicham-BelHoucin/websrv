@@ -1,15 +1,15 @@
 <?php
-if (isset($_COOKIE['prenom']) && isset($_COOKIE['nom']))
+if (isset($_POST['prenom']) && isset($_POST['nom']))
 {
-    $prenom = $_COOKIE['prenom'];
-    $nom = $_COOKIE['nom'];
+    $prenom = $_POST['prenom'];
+    $nom = $_POST['nom'];
+    setcookie("prenom", $_POST['prenom'], time() + (10 * 365 * 24 * 60 * 60));
+    setcookie("nom", $_POST['nom'],   time() + (10 * 365 * 24 * 60 * 60));
 }
 else
 {
-    setcookie("prenom", $_POST['prenom']);
-    setcookie("nom", $_POST['nom']);
-    $prenom = $_POST['prenom'];
-    $nom = $_POST['nom'];
+    $prenom = $_COOKIE['prenom'];
+    $nom = $_COOKIE['nom'];
 }
 ?>
 
