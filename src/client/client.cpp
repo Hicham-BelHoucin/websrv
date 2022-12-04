@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/03 21:00:56 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/04 15:26:51 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int    client::_read(int connection)
         {
             headerslength = 0;
             index = 0;
-            contentlength =0;
+            contentlength = 0;
         }
         if ((contentlength + headerslength <= req_string.length())
                 || (!contentlength && ret < 1024))

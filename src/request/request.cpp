@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/03 21:00:51 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/04 17:40:55 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ request & request::operator=(const request & obj)
 		this->req_path = obj.req_path;
 		this->req_version = obj.req_version;
 		this->req_body = obj.req_body;
+        this->req_query = obj.req_query;
 		this->req_headers = obj.req_headers;
         this->status = obj.status;
         this->body_con = obj.body_con;
@@ -66,8 +67,8 @@ void    request::requestPrint()
 	{
 		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
 	}
-    if(!req_body.empty())
-        std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
+    // if(!req_body.empty())
+    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
 
     std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
 }
@@ -82,7 +83,7 @@ int request::requestCheck(std::string _req)
         status = st;
         return status;
     }
-    // requestPrint();
+    requestPrint();
     return 0;
 }
 
@@ -218,6 +219,9 @@ int request::parseReqMethods()
     std::string     r_line;
     std::string     r_all;
     int             f_line;
+    std::string     nreq;
+    std::string     p_str;
+    std::string     w_p_str;
 
     f_line = req.find("\r\n");
     if(f_line != std::string::npos)
@@ -238,13 +242,27 @@ int request::parseReqMethods()
         r_all = r_all.substr(0,r_all.find(' '));
         if(r_all.at(0) == '/')
         {
-            if(r_all.find("?") != std::string::npos)
+            nreq = r_all;
+            if(nreq.find("%20") != std::string::npos)
             {
-                req_path = r_all.substr(0,r_all.find('?'));
-                req_query = r_all.substr(r_all.find('?') + 1);
+                w_p_str = " ";
+                p_str = "%20";
+                    
+                int index;
+                while((index = nreq.find("%20")) != std::string::npos) 
+                {
+                    nreq.erase(index,p_str.length() - 1);  
+                    nreq.replace(index, w_p_str.length(), w_p_str);
+                }
+            }
+            if(nreq.find("?") != std::string::npos)
+            {
+                
+                req_path = nreq.substr(0,nreq.find('?'));
+                req_query = nreq.substr(nreq.find('?') + 1);
             }
             else
-                req_path = r_all;
+                req_path = nreq;
             r_all = r_line.substr(r_all.find(' ') + 1,r_line.find('\r'));
         }
         else
