@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/03 13:48:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/03 17:28:55 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,7 +418,7 @@ std::string generateErrorPage(int number, std::string description)
 
 int		IsHexa(std::string str)
 {
-	if (str.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos && str != "\r\n" && str != "\n" && str != "\r")
+	if (str.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos)
 		return 1;
 	return 0;
 }
@@ -438,4 +438,24 @@ int		AppendHeaders(std::string req, std::string & body)
 std::string AppendBody(std::string req, std::string & body)
 {
 	return std::string();
+}
+
+std::vector<std::string> split(std::string text, std::string del)
+{
+	int start;
+	int end;
+	std::vector<std::string> ret;
+
+	end = 0;
+	start = 0;
+	while (start <= text.length())
+	{
+		end = text.find(del, start);
+		if (end == std::string::npos)
+			break;
+		end += del.length();
+		ret.push_back(text.substr(start, end - start));
+		start = end;
+	}
+	return ret;
 }

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/03 15:50:17 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 11:41:08 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,45 @@ bool	client::isChunked(std::string req)
 	return (req.find("Transfer-Encoding: chunked")!= std::string::npos);
 }
 
-std::string	client::handleChunked(std::string req)
+std::string	client::handleChunked(std::string req, int connection)
 {
-	std::string			line;
-	int					index;
-	std::string 		body = req.find("\r\n\r\n") != std::string::npos ? req.substr(req.find("\r\n\r\n") + 4) : "";
-	std::stringstream	str(body);
+	std::string body;
+	std::string head;
+	std::string temp;
 
-	index = 0;
-	while (getline(str, line, '\n'))
+	head = req.find("\r\n\r\n") != std::string::npos ? req.substr(0, req.find("\r\n\r\n") + 4) : req;
+	req.erase(req.find(head), head.length());
+	for (int i = 0; i < req.size(); i++)
 	{
-		// print(line);
-		if (IsHexa(line) == 1)
+		int j;
+		for (j = i; j < req.size(); j++)
 		{
-			line.append("\n");
-			index = req.find(line, index);
-			if (index != std::string::npos)
-				req.erase(index, line.length());
-			index += line.length();
+			if (req[j] == '\n')
+				break ;
 		}
+		try
+		{
+			j++;
+			temp = req.substr(i, (j - i));
+			if (!temp.empty() && temp != "\r\n" &&  IsHexa(temp))
+			{
+				temp.erase(temp.find("\r\n"), strlen("\r\n"));
+				// print(temp);
+				int a = hexToDecimal(temp);
+				if (a == 0)
+					break;
+				temp = req.substr(j, a);
+				print("////////////////////");
+				print(temp);
+				print("////////////////////");
+				body.append(temp);
+				j += a;
+			}
+			i = j;
+		}
+		catch(const std::exception& e) {}
 	}
-	return (req);
+	return (head + body);
 }
 
 int 	client::HnadleInputEvent(pollfd & fd) {
@@ -79,9 +97,8 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 		if (total == 0)
 		{
 			if (isChunked(req_string))
-				req_string = handleChunked(req_string);
+				req_string = handleChunked(req_string, 0);
 			// print(req_string);
-			// exit(0);
 			request req;
 			req = request();
 			req.setservers(servers);
@@ -89,6 +106,7 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 			connection = req.getHeaderValue("Connection");
 			response res(req, config);
 			setResString(res.getResponse());
+			print(res.getResponse());
 		}
 		if (_send(fd.fd) == -1 || connection == "close")
 			fd.revents = POLLNVAL;
@@ -153,8 +171,24 @@ int client::normalRevc(int connection)
 
 int	client::_read(int connection)
 {
+	// char 	buff[1025];
+	// int		ret = 1024;
+
 	if (!isDone())
 	{
+		// if (isChunked(req_string))
+		// {
+		// 	// bzero(buff, 1024);
+		// 	// ret = recv(connection, buff, 1024, 0);
+		// 	// if (ret < 0)
+		// 		// return -1;
+		// 	// buff[ret] = '\0';
+		// 	// if (ret > 0)
+		// 		// req_string.append(buff, ret);
+		// 	handleChunked(req_string, connection);
+		// 	// req_string = handleChunked(req_string);
+		// 	// return (500);
+		// }
 		return normalRevc(connection);
 	}
 	return 0;
