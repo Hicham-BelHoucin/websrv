@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/04 11:43:24 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 16:30:29 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,32 @@ void	client::setResString(const std::string & res) {
 
 bool	client::isChunked(std::string req)
 {
-	return (req.find("Transfer-Encoding: chunked")!= std::string::npos);
+	return (req.find("Transfer-Encoding: chunked") != std::string::npos);
 }
+
+size_t		findSpecial(std::string text, size_t index)
+{
+	while (index < text.size())
+	{
+		if (text[index] == '\n')
+			return index;
+		index++;
+	}
+	return 0;
+}
+
 
 std::string	client::handleChunked(std::string req, int connection)
 {
 	std::string body;
 	std::string head;
 	std::string temp;
+	int end;
 
 	head = req.find("\r\n\r\n") != std::string::npos ? req.substr(0, req.find("\r\n\r\n") + 4) : req;
 	req.erase(req.find(head), head.length());
-	for (int i = 0; i < req.size(); i++)
+	end = 0;
+	for (int i = 0; i < req.size();)
 	{
 		int j;
 		for (j = i; j < req.size(); j++)
@@ -68,15 +82,15 @@ std::string	client::handleChunked(std::string req, int connection)
 				if (a == 0)
 					break;
 				temp = req.substr(j, a);
-				print("////////////////////");
-				print(temp);
-				print("////////////////////");
+				// print("////////////////////");
+				// print(temp);
+				// print("////////////////////");
 				body.append(temp);
 				j += a;
 			}
 			i = j;
 		}
-		catch(const std::exception& e) {}
+		catch (...){}
 	}
 	return (head + body);
 }
@@ -106,7 +120,7 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 			connection = req.getHeaderValue("Connection");
 			response res(req, config);
 			setResString(res.getResponse());
-			print(res.getResponse());
+			// print(res.getResponse());
 			// std::cout << YELLOW <<res.getResponse() << std::endl;
 			req.ClearRequest();
 			res.ClearResponse();
@@ -141,6 +155,7 @@ std::string		client::getReqString() const
 
 int client::normalRevc(int connection)
 {
+	static int i;
 	char 	buff[1025];
 	int		ret = 1024;
 	int headerslength = 0;
@@ -166,7 +181,14 @@ int client::normalRevc(int connection)
 		index = 0;
 		contentlength =0;
 	}
-	if ((contentlength + headerslength <= req_string.length())
+	if (isChunked(req_string))
+	{
+		int index = req_string.find("0\r\n\r\n", i);
+		i = req_string.length() / 2;
+		if (index != NOTFOUND)
+			this->donereading = true;
+	}
+	else if ((contentlength + headerslength <= req_string.length())
 			|| (!contentlength && ret < 1024))
 		this->donereading = true;
 	return ret;
@@ -174,26 +196,8 @@ int client::normalRevc(int connection)
 
 int	client::_read(int connection)
 {
-	// char 	buff[1025];
-	// int		ret = 1024;
-
 	if (!isDone())
-	{
-		// if (isChunked(req_string))
-		// {
-		// 	// bzero(buff, 1024);
-		// 	// ret = recv(connection, buff, 1024, 0);
-		// 	// if (ret < 0)
-		// 		// return -1;
-		// 	// buff[ret] = '\0';
-		// 	// if (ret > 0)
-		// 		// req_string.append(buff, ret);
-		// 	handleChunked(req_string, connection);
-		// 	// req_string = handleChunked(req_string);
-		// 	// return (500);
-		// }
 		return normalRevc(connection);
-	}
 	return 0;
 }
 

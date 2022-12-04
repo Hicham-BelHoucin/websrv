@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 11:46:16 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 13:56:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,7 +486,9 @@ String response::getCgiBody(String cgi_body)
     {
         if ((found = line.find(":")) != String::npos)
         {
+			key = line.substr(0, found);
             value = line.substr(found + 1);
+			print(key << " = " << value)
             headers.insert(std::make_pair(stringtrim(key), stringtrim(value)));
         }
     }

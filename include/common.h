@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   common.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/03 11:53:09 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/04 15:04:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 # define ERROR502 "./src/errors/error_502.html"
 # define ERROR505 "./src/errors/error_503.html"
 # define CONFIGFILE "./conf/config.conf"
+# define NOTFOUND std::string::npos
 
 # define CGI_BUFSIZE 1024
 // Colors
