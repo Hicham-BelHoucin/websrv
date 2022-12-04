@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/03 23:47:12 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/04 20:23:14 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ public:
     void        ClearResponse();
     String      MethodGet(LocationMap location, String path, String body);
     String      MethodPost(LocationMap location, String path, String body);
-    String      MethodPut(LocationMap location, String path, String body);
     String      MethodDelete(LocationMap location, String path, String body);
     String      MethodNotAllowed(LocationMap location, String path, String body);
     String      writeContent(String path, String body);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/04 16:30:29 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 21:03:24 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,10 @@ std::string	client::handleChunked(std::string req, int connection)
 			if (!temp.empty() && temp != "\r\n" &&  IsHexa(temp))
 			{
 				temp.erase(temp.find("\r\n"), strlen("\r\n"));
-				// print(temp);
 				int a = hexToDecimal(temp);
 				if (a == 0)
 					break;
 				temp = req.substr(j, a);
-				// print("////////////////////");
-				// print(temp);
-				// print("////////////////////");
 				body.append(temp);
 				j += a;
 			}
@@ -155,43 +151,44 @@ std::string		client::getReqString() const
 
 int client::normalRevc(int connection)
 {
-	static int i;
-	char 	buff[1025];
-	int		ret = 1024;
-	int headerslength = 0;
-	int index = 0;
-	int	contentlength = 0;
+	static	int 	i;
+    char     buff[10025];
+    int        ret = 10024;
+    int headerslength = 0;
+    int index = 0;
+    int    contentlength = 0;
 
-	bzero(buff, 1024);
-	ret = recv(connection, buff, 1024, 0);
-	if (ret < 0)
-		return -1;
-	buff[ret] = '\0';
-	if (ret > 0)
-		req_string.append(buff, ret);
-	try
-	{
-		headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
-		index = req_string.find("Content-Length: ") + strlen("Content-Length: ");
-		contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
-	}
-	catch(const std::exception& e)
-	{
-		headerslength = 0;
-		index = 0;
-		contentlength =0;
-	}
-	if (isChunked(req_string))
-	{
-		int index = req_string.find("0\r\n\r\n", i);
-		i = req_string.length() / 2;
-		if (index != NOTFOUND)
-			this->donereading = true;
-	}
-	else if ((contentlength + headerslength <= req_string.length())
-			|| (!contentlength && ret < 1024))
-		this->donereading = true;
-	return ret;
+    bzero(buff, 10024);
+    ret = recv(connection, buff, 10024, 0);
+    if (ret < 0)
+        return -1;
+    buff[ret] = '\0';
+    if (ret > 0)
+        req_string.append(buff, ret);
+    try
+    {
+        headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
+        index = req_string.find("Content-Length: ") + strlen("Content-Length: ");
+        contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
+    }
+    catch(const std::exception& e)
+    {
+        headerslength = 0;
+        index = 0;
+        contentlength =0;
+    }
+    if ((req_string.length() < 20048 && isChunked(req_string)) || chunked == true)
+    {
+		chunked = true;
+        int index = req_string.find("0\r\n\r\n", i);
+        if (index != NOTFOUND)
+            this->donereading = true;
+		i = req_string.length();
+    }
+    else if ((contentlength + headerslength <= req_string.length())
+            || (!contentlength && ret < 10024))
+        this->donereading = true;
+    return ret;
 }
 
 int	client::_read(int connection)
