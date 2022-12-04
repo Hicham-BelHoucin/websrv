@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 18:41:49 by imabid           ###   ########.fr       */
+/*   Updated: 2022/12/04 21:08:44 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,9 @@ int request::parseHeaders()
     std::string     all;
     std::string     key;
     std::string     value;
+    std::string     port;
     int             lt_of_head;
-    int             s = 0;
+    int             s;
 
     while ((lt_of_head = req.find("\r\n")) != std::string::npos)
     {
@@ -119,7 +120,6 @@ int request::parseHeaders()
         req = req.substr(req.find("\r\n") + 2,req.length());
     }
     std::map<std::string,std::string>::iterator it;
-    std::string port;
     if((it = req_headers.find("Host")) != req_headers.end())
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
@@ -162,6 +162,7 @@ int request::parseHeaders()
     if(!req.empty())
     {
         req_body = req;
+        s = 0;
         if((it = req_headers.find("Content-Type")) != req_headers.end() && it->second.find("multipart") != std::string::npos)
         {
             if((s = parseReqBody()))
@@ -222,6 +223,7 @@ int request::parseReqMethods()
     std::string     p_str;
     std::string     w_p_str;
     int             f_line;
+    int             ind;
 
     f_line = req.find("\r\n");
     if(f_line != std::string::npos)
@@ -247,12 +249,11 @@ int request::parseReqMethods()
             {
                 w_p_str = " ";
                 p_str = "%20";
-                    
-                int index;
-                while((index = nreq.find("%20")) != std::string::npos) 
+
+                while((ind = nreq.find("%20")) != std::string::npos) 
                 {
-                    nreq.erase(index, p_str.length() - 1);  
-                    nreq.replace(index, w_p_str.length(), w_p_str);
+                    nreq.erase(ind, p_str.length() - 1);  
+                    nreq.replace(ind, w_p_str.length(), w_p_str);
                 }
             }
             if(nreq.find("?") != std::string::npos)
