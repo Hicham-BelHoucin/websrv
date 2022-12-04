@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:45:43 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/28 19:16:08 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/03 23:47:12 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ private:
     request __req;
     std::string _response;
     std::string _body;
-    std::size_t _ContentLenght;
     std::string _reqMethod;
     server      _serv;
     String      _rootpath;
@@ -35,10 +34,8 @@ private:
     std::string _path;
     std::map<int,std::string> statusPhrases;
     Map         _upload;
-    METHODS method;
     CODES _status_code;
     bool isCgiBody;
-    parsing conf;
     Map headers;
 public:
     response();

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 15:05:00 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 15:04:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <dirent.h>
+#include <climits>
 # include <algorithm>
 
 # define ERROR400 "./src/errors/error_400.html"
@@ -46,6 +47,7 @@
 # define ERROR502 "./src/errors/error_502.html"
 # define ERROR505 "./src/errors/error_503.html"
 # define CONFIGFILE "./conf/config.conf"
+# define NOTFOUND std::string::npos
 
 # define CGI_BUFSIZE 1024
 // Colors

@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:18:08 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/23 17:16:54 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/04 01:18:28 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,6 @@
 
 #include "common.h"
  
-typedef enum S_METHODS 
-{
-    GET = 1 << 0,
-    DELETE = 1 << 1,
-    POST = 1 << 2,
-    PUT =  1 << 3,
-    UNKNOWN = 1 << 4,
-    ALLOWED = GET | DELETE | POST | PUT
-} METHODS;
-
 typedef enum S_STATUSCODE
 {
     OK = 200,
@@ -32,10 +22,12 @@ typedef enum S_STATUSCODE
     ACCEPTED = 202,
     NO_CONTENT = 204,
     PARTIAL_CONTENT = 206,
+    S_SUCCESS = OK | CREATED | ACCEPTED | NO_CONTENT | PARTIAL_CONTENT,
     MULTI_CHOICES = 300,
     MOVED_PERMANENTLY =  301,
     FOUND = 302,
     NOT_MODIFIED = 304,
+    REDIRECT = MULTI_CHOICES | MOVED_PERMANENTLY | FOUND | NOT_MODIFIED,
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
@@ -43,9 +35,11 @@ typedef enum S_STATUSCODE
     NOT_ALLOWED = 405,
     NOT_ACCEPTABLE = 406,
     LARGE_PAYLOAD = 413,
+    S_ERROR = BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND | NOT_ALLOWED | NOT_ACCEPTABLE | LARGE_PAYLOAD,
     SERVER_ERROR = 500,
     NOT_IMPLEMENTED = 501,
-    NON_SUPPORTED_HTTPVERSION = 505
+    NON_SUPPORTED_HTTPVERSION = 505,
+    S_SERVER_ERR = SERVER_ERROR | NOT_IMPLEMENTED | NON_SUPPORTED_HTTPVERSION
 
 } CODES;
 

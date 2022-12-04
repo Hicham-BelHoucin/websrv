@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>cookies Form</title>
+	<style>
+		body {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100vw;
+			height: 100vh;
+		}
+		.form {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			width: 50%;
+			height: 50%;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 1rem;
+		}
+		input {
+			width: 250px;
+			padding: 1rem;
+			margin: 1rem;
+		}
+	</style>
+</head>
+<body>
+	<form action="/python-cookie/cgi_cookie.py" method="post" enctype="multipart/form-data" class="form">
+		<div>
+			<div>Name: </div>
+			<input type="text" name="name" id="name"><br>
+		</div>
+		<div>
+			<div>E-mail:  </div>
+			<input type="text" name="email" id="email"><br>
+		</div>
+		<input type="submit">
+	</form>
+	<script>
+		let x = document.cookie;
+		x = x.split(';');
+		console.log(x);
+		console.log('hghjgjj');
+		let i = 0;
+		while (x[i] !== undefined)
+		{
+			const v = x[i].split('=');
+			if (v[0].trim() === 'name')
+				document.getElementById('name').value = v[1]
+			if (v[0].trim() === 'email')
+				document.getElementById('email').value = v[1]
+			i++;
+		}
+	</script>
+</body>
+</html>

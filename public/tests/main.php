@@ -3,7 +3,6 @@ if(!session_id())
 {
     session_start();
 }
-echo "Content-Type: text/html \r\n\r\n"
 ?>
 <!DOCTYPE html>
 <html lang="en">

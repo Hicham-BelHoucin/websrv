@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 15:13:38 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 11:44:47 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,6 +293,8 @@ std::map<int, std::string> setStatusPhrases()
 
 String	getContentType(String path, CODES status)
 {
+	if (!(status & S_SUCCESS))
+		return "text/html";
 	String type = checkExtension(path);
 	if (type == "html" || type == "htm")
 			return "text/html";
@@ -344,6 +346,13 @@ int line_countword(std::string line)
     }
     c = c + 1;
     return c;
+}
+
+String upperCase(String str)
+{
+	String s = str;
+	std::transform(s.begin(), s.end(),s.begin(), ::toupper);
+	return s;
 }
 
 server selectServer(std::vector<server> servers, std::string host, std::string port)
@@ -414,4 +423,48 @@ std::string generateErrorPage(int number, std::string description)
 		"</body> \n"
 		"</html>"
 	);
+}
+
+int		IsHexa(std::string str)
+{
+	if (str.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos)
+		return 1;
+	return 0;
+}
+
+int		AppendHeaders(std::string req, std::string & body)
+{
+	int index;
+
+	index = req.find("\r\n\r\n");
+	if (index == std::string::npos)
+		return 0;
+	if (body.empty())
+		body.append(req, 0, index + 4);
+	return 1;
+}
+
+std::string AppendBody(std::string req, std::string & body)
+{
+	return std::string();
+}
+
+std::vector<std::string> split(std::string text, std::string del)
+{
+	int start;
+	int end;
+	std::vector<std::string> ret;
+
+	end = 0;
+	start = 0;
+	while (start <= text.length())
+	{
+		end = text.find(del, start);
+		if (end == std::string::npos)
+			break;
+		end += del.length();
+		ret.push_back(text.substr(start, end - start));
+		start = end;
+	}
+	return ret;
 }
