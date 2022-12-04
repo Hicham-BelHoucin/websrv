@@ -13,3 +13,4 @@ testing.cpp
 used_struct.hpp
 werserver.logs
 /public/tests/upload/*
+/conf/*

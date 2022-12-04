@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/04 11:41:08 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 11:43:24 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,9 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 			response res(req, config);
 			setResString(res.getResponse());
 			print(res.getResponse());
+			// std::cout << YELLOW <<res.getResponse() << std::endl;
+			req.ClearRequest();
+			res.ClearResponse();
 		}
 		if (_send(fd.fd) == -1 || connection == "close")
 			fd.revents = POLLNVAL;

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/03 16:38:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 11:45:37 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ String                      getContentType(String path, CODES status);
 int			hexToDecimal(std::string str);
 std::vector<std::string> split(std::string text, std::string del);
 int			AppendHeaders(std::string req, std::string & body);
-int			IsHexa(std::string str);
+int		IsHexa(std::string str);
+String upperCase(String str);
 
-#endif // !UTILS_H
+#endif

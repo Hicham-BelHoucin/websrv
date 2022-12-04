@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 19:05:49 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 01:41:38 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void cgi::cgiEnvInit(String path, request req)
 	if (headers.find("Auth-Scheme") != headers.end() && headers["Auth-Scheme"] != "")
 		this->env["AUTH_TYPE"] = headers["Authorization"];
 	this->env["GATEWAY_INTERFACE"] = "CGI/1.1";
+	this->env["REDIRECT_STATUS"] = "200";
 	this->env["SCRIPT_NAME"] = path;
 	this->env["SCRIPT_FILENAME"] = path;
 	this->env["REQUEST_METHOD"] = req.getReqMethod();
@@ -58,7 +59,7 @@ void cgi::cgiEnvInit(String path, request req)
 		temp = it->first;
 		if (temp.find("-") != std::string::npos)
 			std::replace(temp.begin(), temp.end(), '-', '_');
-		this->env["HTTP_" + temp] = it->second;
+		this->env["HTTP_" + upperCase(temp)] = it->second;
 		it++;
 	}
 }
