@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 16:20:28 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 00:38:58 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ request & request::operator=(const request & obj)
 	{
 		this->req_method = obj.req_method;
 		this->req_path = obj.req_path;
+        this->req_query = obj.req_query;
 		this->req_version = obj.req_version;
 		this->req_body = obj.req_body;
 		this->req_headers = obj.req_headers;
@@ -416,9 +417,12 @@ void        request::ClearRequest()
     req_version = "";
     req_body = "";
     req_query = "";
-    status = 0;
+    status = 200;
+    boundry = "";
     req_headers.clear();
     error = 0;
+    body_con.clear();
+    servers.clear();
 }
 
 int request::getReqStatus()

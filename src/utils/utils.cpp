@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 15:13:38 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 01:42:52 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,6 +293,8 @@ std::map<int, std::string> setStatusPhrases()
 
 String	getContentType(String path, CODES status)
 {
+	if (!(status & S_SUCCESS))
+		return "text/html";
 	String type = checkExtension(path);
 	if (type == "html" || type == "htm")
 			return "text/html";
@@ -344,6 +346,13 @@ int line_countword(std::string line)
     }
     c = c + 1;
     return c;
+}
+
+String upperCase(String str)
+{
+	String s = str;
+	std::transform(s.begin(), s.end(),s.begin(), ::toupper);
+	return s;
 }
 
 server selectServer(std::vector<server> servers, std::string host, std::string port)

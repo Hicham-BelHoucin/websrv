@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 18:16:30 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 01:42:09 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,5 @@ std::string		            _displayTimestamp( void );
 std::map<int, std::string>  setStatusPhrases();
 void                        check(int condition);
 String                      getContentType(String path, CODES status);
+String                      upperCase(String str);
 #endif // !UTILS_H

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
+#    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/12/02 15:13:48 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/12/03 23:50:38 by obeaj            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,14 +46,14 @@ INCLUDE =	include/createSocket.hpp \
 all: $(NAME)
 
 $(NAME) : $(INCLUDE) $(SRCOBJ)
-	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME)
+	$(CC) $(CFLAGS) -I include $(SRCS) -o $(NAME) -g
 
 %.o : %.cpp $(INCLUDE)
-	$(CC) $(CFLAGS) -I include -o $@  -c $<
+	$(CC) $(CFLAGS) -I include -o $@  -c $< -g
 
 $(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -I include  -o $@  -c $<
+	$(CC) $(CFLAGS) -I include  -o $@  -c $< -g
 
 clean:
 	@rm -rf $(SRCOBJ)

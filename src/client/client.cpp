@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 15:44:06 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 00:43:20 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 			req.requestCheck(getReqString());
 			response res(req, config);
 			setResString(res.getResponse());
+			// std::cout << YELLOW <<res.getResponse() << std::endl;
+			req.ClearRequest();
+			res.ClearResponse();
 		}
 		_send(fd.fd);
 	}

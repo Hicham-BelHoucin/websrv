@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 16:34:29 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 01:44:26 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,11 @@ String response::MethodGet(LocationMap location, String path, String body)
         if (mode & (D_RD))
         {
             Dir = opendir(path.c_str());
+            if (!Dir)
+            {
+                std::cerr << RED << "Cannot open directory : " << path << std::endl;
+                return "";
+            }
             while ((DirEntry = readdir(Dir)))
             {
                 // Search for index in directory
@@ -191,6 +196,11 @@ String response::MethodPost(LocationMap location, String path, String body)
         if (mode & (D_RD))
         {
             Dir = opendir(path.c_str());
+            if (!Dir)
+            {
+                std::cerr << RED << "Cannot open directory : " << path << std::endl;
+                return "";
+            }
             while ((DirEntry = readdir(Dir)))
             {
                 // Search for index in directory
@@ -441,8 +451,11 @@ void response::ClearResponse()
     _path = "";
     statusPhrases.clear();
     _upload.clear();
-    isCgiBody = 0;
-
+    isCgiBody = 0;    // __conf.clearConf();
+    _reqMethod = "";
+    // _serv.clearServer();
+    _ServerLocations.clear();
+    _status_code = OK;
     //...
 }
 
@@ -462,22 +475,25 @@ String response::getCgiBody(String cgi_body)
 
     if ((found1 = cgi_body.find("\r\n\r\n")) != String::npos)
         __headerfield = cgi_body.substr(0, found1 - 1);
+    if (found1 == String::npos)
+    {
+        if ((found1 = cgi_body.find("\n\n")) != String::npos)
+            __headerfield = cgi_body.substr(0, found1 - 1); 
+    }
+        
     std::stringstream str(__headerfield);
     while (std::getline(str, line, '\n'))
     {
         if ((found = line.find(":")) != String::npos)
         {
-            key = line.substr(0, found);
             value = line.substr(found + 1);
             headers.insert(std::make_pair(stringtrim(key), stringtrim(value)));
         }
     }
+    if (headers.find("Status") != headers.end())
+        _status_code = static_cast<CODES>(std::stoi(headers.find("Status")->second));
     if (found1 != String::npos)
         return (cgi_body.substr(found1 + 1));
-    if (headers.find("Status") != headers.end())
-    {
-        _status_code = static_cast<CODES>(std::stoi(headers.find("Status")->second));
-    }
     return "";
 }
 
@@ -487,6 +503,11 @@ String response::dirListing(String dirname)
     struct dirent *en;
     String body;
     dr = opendir(dirname.c_str());
+    if (!dr)
+    {
+        std::cerr << RED << "Cannot open directory : " << dirname << std::endl;
+        return "";
+    }
     body += "<html>\n";
     body += "<head><title>Index of ";
     body += __req.getReqPath();
