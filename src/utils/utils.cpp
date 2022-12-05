@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 14:05:50 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:36:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void			printLogs(const std::string & line)
 {
 	std::ofstream	logfile;
 
-	logfile.open("werserver.logs", std::ifstream::app);
+	logfile.open("webserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
 		logfile << line << std::endl;
