@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:50 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 15:07:20 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:02:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,14 @@ server & server::operator=(const server & obj)
 
 server::~server() {}
 
-String server::getRootPath() const
+String server::getRootPath()
 {
+	size_t index;
+	if (_root.back() == '/')
+	{
+		index = _root.length() - 1;
+		_root.erase(index, 1);
+	}
 	return _root;
 }
 

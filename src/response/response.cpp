@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 11:19:42 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:44:40 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,9 @@ LocationMap response::locationMatch(Set locations, String path)
 
 String response::MethodNotAllowed(LocationMap location, String path, String body)
 {
+	(void)location;
+	(void)path;
+	(void)body;
     _status_code = NOT_ALLOWED;
     return getErrorPage(_serv, _status_code);
 }
@@ -103,7 +106,13 @@ String response::MethodGet(LocationMap location, String path, String body)
         it = indexes.begin();
         if (mode & (D_RD))
         {
-            Dir = opendir(path.c_str());
+			if (access(path.c_str(), X_OK) == 0)
+				Dir = opendir(path.c_str());
+			else
+			{
+				_status_code = FORBIDDEN;
+				return getErrorPage(_serv, _status_code);
+			}
 			if (!Dir)
 			{
 				_status_code = SERVER_ERROR;
@@ -118,22 +127,24 @@ String response::MethodGet(LocationMap location, String path, String body)
                     if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
                     {
                         _status_code = OK;
+						closedir(Dir);
                         return (readFile(path + *it));
                     }
                     else
                     {
                         _location = locationMatch(_ServerLocations, *it);
+						closedir(Dir);
                         return (MethodCheck(_location, _reqMethod, path + *it, body));
                     }
                 }
             }
+            closedir(Dir);
             if (isautoindex)
             {
                 _status_code = OK;
                 // directory listing autoindex
                 return dirListing(path);
             }
-            closedir(Dir);
         }
         else
         {
@@ -202,7 +213,13 @@ String response::MethodPost(LocationMap location, String path, String body)
         it = indexes.begin();
         if (mode & (D_RD))
         {
-            Dir = opendir(path.c_str());
+			if (access(path.c_str(), X_OK) == 0)
+				Dir = opendir(path.c_str());
+			else
+			{
+				_status_code = FORBIDDEN;
+				return getErrorPage(_serv, _status_code);
+			}
             if (!Dir)
 			{
 				_status_code = SERVER_ERROR;
@@ -277,6 +294,7 @@ String response::MethodPost(LocationMap location, String path, String body)
 String response::MethodDelete(LocationMap location, String path, String body)
 {
     (void)location;
+	(void)body;
     PATHMODE mode;
 	std::string root;
 
@@ -318,16 +336,16 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     it = methodsMap.begin();
     switch (_status_code)
     {
-    case BAD_REQUEST:
-        return (getErrorPage(_serv, _status_code));
-    case LARGE_PAYLOAD:
-        return (getErrorPage(_serv, _status_code));
-    case NOT_IMPLEMENTED:
-        return (getErrorPage(_serv, _status_code));
-    case NON_SUPPORTED_HTTPVERSION:
-        return (getErrorPage(_serv, _status_code));
-    default:
-        break;
+		case BAD_REQUEST:
+			return (getErrorPage(_serv, _status_code));
+		case LARGE_PAYLOAD:
+			return (getErrorPage(_serv, _status_code));
+		case NOT_IMPLEMENTED:
+			return (getErrorPage(_serv, _status_code));
+		case NON_SUPPORTED_HTTPVERSION:
+			return (getErrorPage(_serv, _status_code));
+		default:
+			break;
     }
     while (it != methodsMap.end())
     {
@@ -341,7 +359,10 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     return "";
 }
 
-response::response(request req, parsing conf) : __req(req), __conf(conf), _upload(req.getFilesBody())
+response::response(request req, parsing conf)
+	: __conf(conf)
+	, __req(req)
+	, _upload(req.getFilesBody())
 {
     _status_code = static_cast<CODES>(__req.getReqStatus());
     statusPhrases = setStatusPhrases();
@@ -477,8 +498,8 @@ String response::getResponse()
 
 String response::getCgiBody(String cgi_body)
 {
-    int found;
-    int found1;
+    size_t found;
+    size_t found1;
     String key;
     String value;
     String __headerfield;
@@ -518,7 +539,13 @@ String response::dirListing(String dirname)
     DIR *dr;
     struct dirent *en;
     String body;
-    dr = opendir(dirname.c_str());
+	if (access(dirname.c_str(), X_OK) == 0)
+    	dr = opendir(dirname.c_str());
+	else
+	{
+		_status_code = FORBIDDEN;
+		return getErrorPage(_serv, _status_code);
+	}
     if (!dr)
     {
         std::cerr << RED << "Cannot open directory : " << dirname << std::endl;

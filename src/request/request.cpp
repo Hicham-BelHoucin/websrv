@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 11:52:20 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:15:37 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 /*-----------------------------Consructors Destructors------------------------------------*/
 
 request::request(void)
-    : status(OK)
-    , req("")
+    : req("")
     , req_method("")
-    , req_body("")
-    , req_version("")
     , req_path("")
+    , req_version("")
+    , req_body("")
+    , status(OK)
 {}
 
 request::request(const request & obj)
@@ -46,32 +46,8 @@ request & request::operator=(const request & obj)
 	return *this;
 }
 
-request::request(std::string _req)
-{}
-
 request::~request()
 {}
-
-/*---------------------------------Member functions----------------------------------------*/
-
-void    request::requestPrint()
-{
-    std::cout << "----------------------------------------Request---------------------------------------------------"<< std::endl;
-
-    std::cout << "\e[1;35mMethod :\e[1;36m " << req_method <<"\e[1;33m"<< std::endl;
-    std::cout << "\e[1;35mUrl :\e[1;36m " << req_path <<"\e[1;33m"<< std::endl;
-    std::cout << "\e[1;35mVersion :\e[1;36m " << req_version <<"\e[1;33m"<< std::endl;
-    if(!req_query.empty())
-        std::cout << "\e[1;35mQuery :\e[1;36m " << req_query <<"\e[1;33m"<< std::endl;
-    for(std::map<std::string ,std::string>::iterator it = req_headers.begin(); it != req_headers.end() ; it++)
-	{
-		std::cout << "\e[1;35m" << it->first << ":\e[1;36m " << it->second <<"\e[1;33m"<<std::endl;
-	}
-    // if(!req_body.empty())
-    //     std::cout << "\e[1;35mBody :\e[1;36m " << req_body <<"\e[1;33m"<< std::endl;
-
-    std::cout << "--------------------------------------------------------------------------------------------------"<<std::endl;
-}
 
 int request::requestCheck(std::string _req)
 {
@@ -83,7 +59,6 @@ int request::requestCheck(std::string _req)
         status = st;
         return status;
     }
-    requestPrint();
     return 0;
 }
 
@@ -93,7 +68,7 @@ int request::parseHeaders()
     std::string     key;
     std::string     value;
     std::string     port;
-    int             lt_of_head;
+    size_t          lt_of_head;
     int             s;
 
     while ((lt_of_head = req.find("\r\n")) != std::string::npos)
@@ -179,11 +154,11 @@ int       request::parseReqBody()
     std::string     value;
     std::string     newreq;
     std::string     bound;
-    int             bound_pos;
-    int             content_pos;
-    int             con_last_pos;
-    int             bound_len;
-    int             last_bound;
+    size_t          bound_pos;
+    size_t          content_pos;
+    size_t          con_last_pos;
+    size_t          bound_len;
+    size_t          last_bound;
 
     newreq = req;
     bound = "--" + boundry;
@@ -222,17 +197,16 @@ int request::parseReqMethods()
     std::string     nreq;
     std::string     p_str;
     std::string     w_p_str;
-    int             f_line;
-    int             ind;
+    size_t          f_line;
+    size_t          ind;
 
     f_line = req.find("\r\n");
     if(f_line != std::string::npos)
     {
         r_line = req.substr(0,req.find("\n"));
         r_all = r_line.substr(0,r_line.find(' '));
-        if(r_all != "GET" && r_all != "PUT" && r_all != "DELETE" && r_all != "POST")
+        if(r_all != "GET" && r_all != "DELETE" && r_all != "POST")
         {
-            std::cout << " this is methode " << r_all << std::endl;
             printLogs(_displayTimestamp() + "NOT_IMPLEMENTED");
             return NOT_IMPLEMENTED;
         }
@@ -372,3 +346,4 @@ int request::getReqStatus()
 {
     return status;
 }
+

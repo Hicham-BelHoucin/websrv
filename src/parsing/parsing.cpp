@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/04 20:53:27 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/05 14:06:17 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ std::vector<int> 	parsing::getPorts(Map data) const
 
 Map					parsing::getErrorPages(Map data)
 {
-	int errors[] = { 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 308, 400, 401, 403, 404, 405, 406, 410, 411, 500, 501, 502, 505};
+	int errors[] = { 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 308, 400, 401, 403, 404, 405, 406, 410, 411, 413, 500, 501, 502, 505};
 	std::map<int, std::string> 	status;
 	Map							errorPages;
 	Map::iterator				it;
 	std::string 				error;
 
 	status = setStatusPhrases();
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < 27; i++)
 	{
 		it = data.find("error_page_" + std::to_string(errors[i]));
 		if (it != data.end())

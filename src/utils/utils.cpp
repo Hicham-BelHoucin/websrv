@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 11:20:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:05:50 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,7 @@ std::map<int, std::string> setStatusPhrases()
 	status[405] = "Method Not Allowed";
 	status[406] = "Not Acceptable";
 	status[410] = "Gone";
+	status[413] = "Large Payload";
 	status[411] = "Length Required";
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
@@ -433,7 +434,7 @@ int		IsHexa(std::string str)
 
 int		AppendHeaders(std::string req, std::string & body)
 {
-	int index;
+	size_t index;
 
 	index = req.find("\r\n\r\n");
 	if (index == std::string::npos)
@@ -443,15 +444,10 @@ int		AppendHeaders(std::string req, std::string & body)
 	return 1;
 }
 
-std::string AppendBody(std::string req, std::string & body)
-{
-	return std::string();
-}
-
 std::vector<std::string> split(std::string text, std::string del)
 {
-	int start;
-	int end;
+	size_t start;
+	size_t end;
 	std::vector<std::string> ret;
 
 	end = 0;
