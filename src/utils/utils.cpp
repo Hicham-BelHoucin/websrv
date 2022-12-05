@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 11:44:47 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:36:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void			printLogs(const std::string & line)
 {
 	std::ofstream	logfile;
 
-	logfile.open("werserver.logs", std::ifstream::app);
+	logfile.open("webserver.logs", std::ifstream::app);
 	if (logfile.is_open())
 	{
 		logfile << line << std::endl;
@@ -186,9 +186,7 @@ PATHMODE	checkPathMode(std::string path)
 
 	if(stat(path.c_str(), &st) == 0)
 	{
-		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
-			return	D_ALL;
-		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
+		if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
 			return    D_RW;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
 			return    D_WX;
@@ -200,8 +198,8 @@ PATHMODE	checkPathMode(std::string path)
 			return    D_WRITE;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR)
 			return    D_EXEC;
-		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
-			return	F_ALL;
+		else if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
+			return	D_ALL;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
 			return    F_RW;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
@@ -214,6 +212,8 @@ PATHMODE	checkPathMode(std::string path)
 			return    F_WRITE;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR)
 			return    F_EXEC;
+		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
+			return	F_ALL;
 		else if (st.st_mode & S_IFDIR)
 			return    _DIR;
 		else if (st.st_mode & S_IFREG)
@@ -282,6 +282,7 @@ std::map<int, std::string> setStatusPhrases()
 	status[405] = "Method Not Allowed";
 	status[406] = "Not Acceptable";
 	status[410] = "Gone";
+	status[413] = "Large Payload";
 	status[411] = "Length Required";
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
@@ -293,10 +294,9 @@ std::map<int, std::string> setStatusPhrases()
 
 String	getContentType(String path, CODES status)
 {
-	if (!(status & S_SUCCESS))
-		return "text/html";
 	String type = checkExtension(path);
-	if (type == "html" || type == "htm")
+
+	if (type == "html" || type == "htm" || status == NOT_FOUND)
 			return "text/html";
 	else if (type == "mp4")
 		return "video/mp4";
@@ -419,7 +419,7 @@ std::string generateErrorPage(int number, std::string description)
 		"<body class=\"container\"> \n"
 		"	<div>Error " + std::to_string(number) + "</div> \n"
 		"	<div>" + description + "</div> \n"
-		"	<img src=\"http://0.0.0.0:3000/img/5741333.png\" alt=\"error\"/>"
+		"	<img src=\"/img/error.png\" alt=\"error\"/>"
 		"</body> \n"
 		"</html>"
 	);
@@ -434,7 +434,7 @@ int		IsHexa(std::string str)
 
 int		AppendHeaders(std::string req, std::string & body)
 {
-	int index;
+	size_t index;
 
 	index = req.find("\r\n\r\n");
 	if (index == std::string::npos)
@@ -444,15 +444,10 @@ int		AppendHeaders(std::string req, std::string & body)
 	return 1;
 }
 
-std::string AppendBody(std::string req, std::string & body)
-{
-	return std::string();
-}
-
 std::vector<std::string> split(std::string text, std::string del)
 {
-	int start;
-	int end;
+	size_t start;
+	size_t end;
 	std::vector<std::string> ret;
 
 	end = 0;
@@ -467,4 +462,9 @@ std::vector<std::string> split(std::string text, std::string del)
 		start = end;
 	}
 	return ret;
+}
+
+String getErrorPage(server serv, CODES status)
+{
+	return serv.getErrorPages().find("error_page_" + std::to_string(status))->second;
 }

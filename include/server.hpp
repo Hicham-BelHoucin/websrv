@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 11:27:17 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 12:58:58 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class server
 		std::vector<int>	_ports;
 		Map					_errorPages;
 	public:
-		String 				getRootPath(void) const;
+		String 				getRootPath(void);
 		String 				getHost(void) const;
 		Set 				getlocations(void) const;
 		String				getServerName(void) const;

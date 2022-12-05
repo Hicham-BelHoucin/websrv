@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 01:41:38 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/05 13:32:39 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void cgi::cgiEnvInit(String path, request req)
     std::map<std::string, std::string>::iterator it = headers.begin();
 	String temp;
 
-	if (headers.find("Auth-Scheme") != headers.end() && headers["Auth-Scheme"] != "")
-		this->env["AUTH_TYPE"] = headers["Authorization"];
 	this->env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	this->env["REDIRECT_STATUS"] = "200";
 	this->env["SCRIPT_NAME"] = path;
@@ -45,13 +43,11 @@ void cgi::cgiEnvInit(String path, request req)
 	this->env["PATH_INFO"] = req.getReqPath();
 	this->env["PATH_TRANSLATED"] = req.getReqPath();
 	this->env["QUERY_STRING"] = req.getReqQuery();
+	this->env["AUTH_TYPE"] = headers["Authorization"];
 	this->env["REMOTE_IDENT"] = headers["Authorization"];
 	this->env["REMOTE_USER"] = headers["Authorization"];
 	this->env["REQUEST_URI"] = req.getReqPath() + req.getReqQuery();
-	if (headers.find("Host") != headers.end())
-		this->env["SERVER_NAME"] = headers["Host"];
-	else
-		this->env["SERVER_NAME"] = "";
+	this->env["SERVER_NAME"] = headers["Host"];
 	this->env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->env["SERVER_SOFTWARE"] = "Webserv IHO-0.1";
 	while (it != headers.end())
@@ -90,8 +86,8 @@ String cgi::executeCgi(String script, String cgi_pass)
 
 	if (pid == -1)
 	{
-		std::cerr <<"Fork crashed." << std::endl;
-		return ("Status: 500\r\n\r\n");
+		printLogs( "Fork crashed.");
+		return ("Status: 500 \r\n\r\n");
 	}
 	else if (!pid)
 	{
@@ -101,15 +97,15 @@ String cgi::executeCgi(String script, String cgi_pass)
 			dup2(fdIn, STDIN_FILENO);
 			dup2(fdOut, STDOUT_FILENO);
 			execve(cgi_pass.c_str(), args, envv);
-			std::cerr <<"Execve crashed !!" << std::endl;
-			write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+			printLogs("Error: Execve crashed !!");
+			write(STDOUT_FILENO, "Status: 500 \r\n\r\n", 16);
 			exit(1);
 		}
 		dup2(fdIn, STDIN_FILENO);
 		dup2(fdOut, STDOUT_FILENO);
 		execve(script.c_str(), NULL, envv);
-		std::cerr <<"Execve crashed !!" << std::endl;
-		write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+		printLogs("Error: Execve crashed !!");
+		write(STDOUT_FILENO, "Status: 500 \r\n\r\n", 16);
 		exit(1);
 
 	}

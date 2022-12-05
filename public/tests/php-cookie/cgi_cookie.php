@@ -1,18 +1,18 @@
 <?php
-if (isset($_COOKIE['prenom']) && isset($_COOKIE['nom']))
+if (isset($_POST['prenom']) && isset($_POST['nom']))
+{
+    $prenom = $_POST['prenom'];
+    $nom = $_POST['nom'];
+    setcookie("prenom", $_POST['prenom'], time() + (10 * 365 * 24 * 60 * 60));
+    setcookie("nom", $_POST['nom'],   time() + (10 * 365 * 24 * 60 * 60));
+}
+else
 {
     $prenom = $_COOKIE['prenom'];
     $nom = $_COOKIE['nom'];
 }
-else
-{
-    setcookie("prenom", $_POST['prenom']);
-    setcookie("nom", $_POST['nom']);
-    $prenom = $_POST['prenom'];
-    $nom = $_POST['nom'];
-}
 ?>
-
+<html>
 
 <form action="" method="post" enctype="multipart/form-data">
     Name: <input type="text" name="prenom"><br>
@@ -22,3 +22,5 @@ else
 
 
 <div>Bonjour <?php echo $nom?>  <?php echo $prenom ?></div>
+
+</html>

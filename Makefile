@@ -6,7 +6,7 @@
 #    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/12/04 11:46:40 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/12/05 15:37:47 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g
+CFLAGS = -Wall -Wextra -Werror
 
 OBEJECTDIR = .objects
 
@@ -32,16 +32,18 @@ SRCS = src/parsing/parsing.cpp \
 SRCOBJ = $(SRCS:.cpp=.o)
 SRCOBJ := $(addprefix $(OBEJECTDIR)/, $(SRCOBJ))
 
-INCLUDE =	include/createSocket.hpp \
+INCLUDE =	include/ResponseUtils.h \
+			include/cgi.hpp \
+			include/client.hpp \
+			include/common.h \
+			include/createSocket.hpp \
 			include/parsing.hpp \
 			include/request.hpp \
-			include/server.hpp \
-			include/webServ.hpp \
-			include/utils.h \
 			include/response.hpp \
-			include/ResponseUtils.h \
-			include/client.hpp \
-			include/cgi.hpp
+			include/server.hpp \
+			include/utils.h \
+			include/webServ.hpp \
+
 
 all: $(NAME)
 
