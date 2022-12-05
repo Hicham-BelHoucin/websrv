@@ -14,7 +14,7 @@
             $_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
             header('Location: /php-login/homepage.php');
         } else {
-			echo "Please enter the username or password again!";
+			echo "<html> Please enter the username or password again!";
         }
     }
 ?>

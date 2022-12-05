@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 15:33:12 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 16:12:31 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -589,8 +589,11 @@ void parsing::checkSemicolon(std::string text)
 	{
 		index = 0;
 		skipWhiteSpaces(line, index);
-		pos = line.find(';');
+		int t = line.find(';');
+		int j = line.find('#');
 		if (IsSpecialKey(line) == 1)
+			continue;
+		else if (j > t)
 			continue;
 		else if (line[line.size() - 1] != ';')
 			throw std::runtime_error("missing semicolone !" + line);
