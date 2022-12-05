@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 11:45:37 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 11:05:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,6 @@ std::vector<std::string> split(std::string text, std::string del);
 int			AppendHeaders(std::string req, std::string & body);
 int		IsHexa(std::string str);
 String upperCase(String str);
+String                      getErrorPage(server serv, CODES status);
 
 #endif

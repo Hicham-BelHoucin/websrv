@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 11:46:27 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 10:37:49 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,18 +128,18 @@ int request::parseHeaders()
             return BAD_REQUEST;
         boundry = it->second.substr(it->second.find("=") + 1, it->second.find("\r\n"));
     }
-    // if((it = req_headers.find("Content-Length") )!= req_headers.end())
-    // {
-    //     server obj;
+    if((it = req_headers.find("Content-Length") )!= req_headers.end())
+    {
+        server obj;
 
-    //     obj = selectServer(servers, getReqHost(), getReqPort());
-    //     if(!isNumber(it->second))
-    //     {
-    //         return BAD_REQUEST;
-    //     }
-    //     if(std::stoi(it->second) > obj.getMaxBodySize())
-    //         return LARGE_PAYLOAD;
-    // }
+        obj = selectServer(servers, getReqHost(), getReqPort());
+        if(!isNumber(it->second))
+        {
+            return BAD_REQUEST;
+        }
+        if(std::stoi(it->second) > obj.getMaxBodySize())
+            return LARGE_PAYLOAD;
+    }
     int s = 0;
     if(!req.empty())
     {

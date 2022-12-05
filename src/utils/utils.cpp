@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 11:44:47 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 11:04:06 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,4 +467,9 @@ std::vector<std::string> split(std::string text, std::string del)
 		start = end;
 	}
 	return ret;
+}
+
+String getErrorPage(server serv, CODES status)
+{
+	return serv.getErrorPages().find("error_page_" + std::to_string(status))->second;
 }
