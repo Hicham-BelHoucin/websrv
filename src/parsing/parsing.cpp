@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 14:06:17 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:33:12 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,10 @@ void	parsing::parseFile(std::string text, size_t start)
 	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
 	Pair	conf;
 	size_t		end;
+	std::map<int, std::string> status;
+	std::map<int, std::string>::iterator it;
 
+	status = setStatusPhrases();
 	end = text.find_first_of(";\n", start);
 	if (end == std::string::npos)
 		return ;
@@ -275,6 +278,10 @@ void	parsing::parseFile(std::string text, size_t start)
 			{
 				if (conf.first == keywords[i])
 					break;
+				it = status.begin();
+				for (; it != status.end(); it++)
+					if (conf.first == "error_page_" + std::to_string(it->first))
+						i = 15;
 				else if (i == 9 && conf.first != keywords[i])
 					throw std::runtime_error("unknown key word " + conf.first);
 			}
