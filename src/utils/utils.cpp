@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 11:04:06 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 11:20:33 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,9 +186,7 @@ PATHMODE	checkPathMode(std::string path)
 
 	if(stat(path.c_str(), &st) == 0)
 	{
-		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
-			return	D_ALL;
-		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
+		if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
 			return    D_RW;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
 			return    D_WX;
@@ -200,8 +198,8 @@ PATHMODE	checkPathMode(std::string path)
 			return    D_WRITE;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR)
 			return    D_EXEC;
-		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
-			return	F_ALL;
+		else if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
+			return	D_ALL;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
 			return    F_RW;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
@@ -214,6 +212,8 @@ PATHMODE	checkPathMode(std::string path)
 			return    F_WRITE;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR)
 			return    F_EXEC;
+		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
+			return	F_ALL;
 		else if (st.st_mode & S_IFDIR)
 			return    _DIR;
 		else if (st.st_mode & S_IFREG)
@@ -293,10 +293,9 @@ std::map<int, std::string> setStatusPhrases()
 
 String	getContentType(String path, CODES status)
 {
-	if (!(status & S_SUCCESS))
-		return "text/html";
 	String type = checkExtension(path);
-	if (type == "html" || type == "htm")
+
+	if (type == "html" || type == "htm" || status == NOT_FOUND)
 			return "text/html";
 	else if (type == "mp4")
 		return "video/mp4";
@@ -419,7 +418,7 @@ std::string generateErrorPage(int number, std::string description)
 		"<body class=\"container\"> \n"
 		"	<div>Error " + std::to_string(number) + "</div> \n"
 		"	<div>" + description + "</div> \n"
-		"	<img src=\"http://0.0.0.0:3000/img/5741333.png\" alt=\"error\"/>"
+		"	<img src=\"/img/error.png\" alt=\"error\"/>"
 		"</body> \n"
 		"</html>"
 	);

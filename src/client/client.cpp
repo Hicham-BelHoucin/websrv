@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 10:50:54 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 11:48:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 		{
 			if (isChunked(req_string))
 				req_string = handleChunked(req_string, 0);
-			// print(req_string);
+			print(req_string);
 			request req;
 			req = request();
 			req.setservers(servers);

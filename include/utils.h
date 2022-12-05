@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 11:05:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 11:22:18 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ int				            checkExtansion(String filename);
 pollfd			            *getfds(std::vector<createSocket> & sockets);
 int 		            	getsocket(std::vector<createSocket> sockets, int fd);
 std::string                 _displayTimestamp( void );
-PATHMODE    checkPathMode(std::string path);
+PATHMODE                    checkPathMode(std::string path);
 String                      checkExtension(String filename);
 // String                      dirListing(String dirname);
 String                      getDate();
 String                      HtmlCompose(String htmlbody, String htmltitle);
-server selectServer(std::vector<server> servers, std::string host, std::string port);
+server                      selectServer(std::vector<server> servers, std::string host, std::string port);
 std::string&                stringtrim(std::string &str);
 void		            	printLogs(const std::string & line);
 int	            			checkExtansion(String filename);
@@ -50,6 +50,11 @@ std::vector<std::string> split(std::string text, std::string del);
 int			AppendHeaders(std::string req, std::string & body);
 int		IsHexa(std::string str);
 String upperCase(String str);
+int			                hexToDecimal(std::string str);
+std::vector<std::string>    split(std::string text, std::string del);
+int			                AppendHeaders(std::string req, std::string & body);
+int		                    IsHexa(std::string str);
+String                      upperCase(String str);
 String                      getErrorPage(server serv, CODES status);
 
 #endif
