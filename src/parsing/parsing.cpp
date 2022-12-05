@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 16:12:31 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:48:53 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -589,11 +589,10 @@ void parsing::checkSemicolon(std::string text)
 	{
 		index = 0;
 		skipWhiteSpaces(line, index);
-		int t = line.find(';');
-		int j = line.find('#');
+		pos = line.find(';');
 		if (IsSpecialKey(line) == 1)
 			continue;
-		else if (j > t)
+		else if (line.find('#') > line.find(';'))
 			continue;
 		else if (line[line.size() - 1] != ';')
 			throw std::runtime_error("missing semicolone !" + line);
@@ -617,6 +616,12 @@ const char * parsing::Parseerror::what() const throw ()
 
 void	parsing::checkMethods(std::vector<std::string>  & methods)
 {
+	std::vector<std::string>::iterator d = std::unique(methods.begin(), methods.end());
+	if (d != methods.end())
+	{
+		throw std::runtime_error("Bad Syntax in allow_methods\nUsage : [GET,POST,DELETE]");
+		return ;
+	}
 	for (unsigned long i = 0; i < methods.size(); i++)
 	{
 		if ((methods[i] != "GET" ) && ( methods[i] != "POST" ) && ( methods[i] != "DELETE" ))

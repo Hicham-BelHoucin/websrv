@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 14:44:40 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:49:06 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,15 +347,20 @@ String response::MethodCheck(LocationMap location, String method, String path, S
 		default:
 			break;
     }
+	if (location.find("allow_methods") != location.end())
+	{
+		i = std::find(location.find("allow_methods")->second.begin(), location.find("allow_methods")->second.end(), method);
+		if (i == location.find("allow_methods")->second.end())
+			return ((this->*methodsMap.find("NotAllowed")->second)(location, path, body));
+	}
+	else
+		return ((this->*methodsMap.find("NotAllowed")->second)(location, path, body));
     while (it != methodsMap.end())
     {
         if (method == it->first)
             return ((this->*(it->second))(location, path, body));
         it++;
     }
-    i = std::find(location.find("allow_methods")->second.begin(), location.find("allow_methods")->second.end(), method);
-    if (i == location.find("allow_methods")->second.end())
-        return ((this->*methodsMap.find("NotAllowed")->second)(location, path, body));
     return "";
 }
 
@@ -468,8 +473,8 @@ void response::ResponseBuilder()
     // checkAndAppend(headers,_response,"last-modified");
     checkAndAppend(headers, _response, "Server");
     _response += "\r\n";
-    _response.append(_body);
-    // _response += "\r\n";
+	_response.append(_body);
+    _response += "\r\n";
 }
 
 void response::ClearResponse()
