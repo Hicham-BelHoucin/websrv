@@ -7,6 +7,7 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
 /*   Updated: 2022/12/05 14:27:59 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/04 18:48:57 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,11 +168,11 @@ int client::normalRevc(int connection)
     {
         headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
         index = req_string.find("Content-Length: ");
-		if (index != NOTFOUND)
-		{
-			index += strlen("Content-Length: ");
-        	contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
-		}
+      if (index != NOTFOUND)
+      {
+        index += strlen("Content-Length: ");
+            contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
+      }
     }
     catch(const std::exception& e)
     {
