@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/11/30 18:38:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 15:36:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 std::string& rtrim(std::string& str, const std::string &ws)
 {
+	(void)ws;
     str.erase(str.find_last_not_of(WHITESPACES) + 1);
     return str;
 }
@@ -21,6 +22,7 @@ std::string& rtrim(std::string& str, const std::string &ws)
 // trim from beginning of string (left)
 std::string& ltrim(std::string& str, const std::string &ws)
 {
+	(void)ws;
     str.erase(0, str.find_first_not_of(WHITESPACES));
     return str;
 }
@@ -40,28 +42,28 @@ std::string	_displayTimestamp( void )
 	time (&rawtime);
 	timeinfo = localtime (&rawtime);
 
-	strftime (buffer, 80, "[%d/%m/%Y  %H:%M:%S] ", timeinfo);
+	strftime (buffer, 80, "%d/%m/%Y  %H:%M:%S ", timeinfo);
 	return buffer;
 }
 
 // print logs in the log file
 void			printLogs(const std::string & line)
 {
-	// std::ofstream	logfile;
+	std::ofstream	logfile;
 
-	// logfile.open("werserver.logs", std::ifstream::app);
-	// if (logfile.is_open())
-	// {
-	// 	logfile << "" << line  << std::endl;
-	// 	logfile.close();
-	// }
+	logfile.open("webserver.logs", std::ifstream::app);
+	if (logfile.is_open())
+	{
+		logfile << line << std::endl;
+		logfile.close();
+	}
 }
 
 std::vector<int>	getallPorts(Data data, parsing obj)
 {
 	std::vector<int> ports;
 	std::vector<int> temp;
-	for (int i = 0; i < data.size(); i++)
+	for (size_t i = 0; i < data.size(); i++)
 	{
 		temp = obj.getPorts(data[0].data);
 		ports.insert(ports.end(), temp.begin(), temp.end());
@@ -80,7 +82,7 @@ std::vector<server> createServers(Data data, parsing obj)
 	Map 				errorPages;
 	std::vector<server>	servers;
 
-	for (int i = 0; i < data.size(); i++)
+	for (size_t i = 0; i < data.size(); i++)
 	{
 		root = obj.getRoot(data[i].data);
 		host = obj.getHost(data[i].data);
@@ -111,7 +113,8 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 	createSocket								socket;
 	String										host;
 
-	for (int i = 0; i < data.size(); i++)
+	(void)obj;
+	for (size_t i = 0; i < data.size(); i++)
 	{
 		ret = data[i].data.equal_range("listen");
 		host = data[i].data.find("host")->second;
@@ -131,7 +134,7 @@ std::vector<createSocket>	createSockets(Data data, parsing obj)
 
 int	getsocket(std::vector<createSocket> sockets, int fd)
 {
-	for (int i = 0; i < sockets.size(); i++)
+	for (size_t i = 0; i < sockets.size(); i++)
 		if (sockets[i].getSockfd() == fd)
 			return i;
 	return -1;
@@ -143,8 +146,6 @@ int	checkExtansion(String filename)
 		return -1;
 	return 0;
 }
-
-#include <fstream>
 
 std::string	readFile(std::string filename)
 {
@@ -185,9 +186,7 @@ PATHMODE	checkPathMode(std::string path)
 
 	if(stat(path.c_str(), &st) == 0)
 	{
-		if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
-			return	D_ALL;
-		else if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
+		if (st.st_mode & S_IFDIR && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
 			return    D_RW;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
 			return    D_WX;
@@ -199,8 +198,8 @@ PATHMODE	checkPathMode(std::string path)
 			return    D_WRITE;
 		else if (st.st_mode & S_IFDIR && st.st_mode & S_IXUSR)
 			return    D_EXEC;
-		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
-			return	F_ALL;
+		else if(st.st_mode &  S_IFDIR &&  st.st_mode & S_IRWXU)
+			return	D_ALL;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IRUSR && st.st_mode & S_IWUSR)
 			return    F_RW;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR && st.st_mode & S_IWUSR)
@@ -213,6 +212,8 @@ PATHMODE	checkPathMode(std::string path)
 			return    F_WRITE;
 		else if (st.st_mode & S_IFREG && st.st_mode & S_IXUSR)
 			return    F_EXEC;
+		else if(st.st_mode & S_IFREG && st.st_mode & S_IRWXU)
+			return	F_ALL;
 		else if (st.st_mode & S_IFDIR)
 			return    _DIR;
 		else if (st.st_mode & S_IFREG)
@@ -281,6 +282,7 @@ std::map<int, std::string> setStatusPhrases()
 	status[405] = "Method Not Allowed";
 	status[406] = "Not Acceptable";
 	status[410] = "Gone";
+	status[413] = "Large Payload";
 	status[411] = "Length Required";
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
@@ -293,7 +295,8 @@ std::map<int, std::string> setStatusPhrases()
 String	getContentType(String path, CODES status)
 {
 	String type = checkExtension(path);
-	if (type == "html" || type == "htm")
+
+	if (type == "html" || type == "htm" || status == NOT_FOUND)
 			return "text/html";
 	else if (type == "mp4")
 		return "video/mp4";
@@ -336,13 +339,20 @@ bool isNumber(const std::string& s)
 int line_countword(std::string line)
 {
     int c = 0;
-    for(int i = 0 ; i < line.size() ;i++)
+    for(size_t i = 0 ; i < line.size() ;i++)
     {
         if(line[i] == ' ')
            c++;
     }
     c = c + 1;
     return c;
+}
+
+String upperCase(String str)
+{
+	String s = str;
+	std::transform(s.begin(), s.end(),s.begin(), ::toupper);
+	return s;
 }
 
 server selectServer(std::vector<server> servers, std::string host, std::string port)
@@ -409,8 +419,52 @@ std::string generateErrorPage(int number, std::string description)
 		"<body class=\"container\"> \n"
 		"	<div>Error " + std::to_string(number) + "</div> \n"
 		"	<div>" + description + "</div> \n"
-		"	<img src=\"http://0.0.0.0:3000/img/5741333.png\" alt=\"error\"/>"
+		"	<img src=\"/img/error.png\" alt=\"error\"/>"
 		"</body> \n"
 		"</html>"
 	);
+}
+
+int		IsHexa(std::string str)
+{
+	if (str.find_first_not_of("0123456789abcdefABCDEF\r\n") == std::string::npos)
+		return 1;
+	return 0;
+}
+
+int		AppendHeaders(std::string req, std::string & body)
+{
+	size_t index;
+
+	index = req.find("\r\n\r\n");
+	if (index == std::string::npos)
+		return 0;
+	if (body.empty())
+		body.append(req, 0, index + 4);
+	return 1;
+}
+
+std::vector<std::string> split(std::string text, std::string del)
+{
+	size_t start;
+	size_t end;
+	std::vector<std::string> ret;
+
+	end = 0;
+	start = 0;
+	while (start <= text.length())
+	{
+		end = text.find(del, start);
+		if (end == std::string::npos)
+			break;
+		end += del.length();
+		ret.push_back(text.substr(start, end - start));
+		start = end;
+	}
+	return ret;
+}
+
+String getErrorPage(server serv, CODES status)
+{
+	return serv.getErrorPages().find("error_page_" + std::to_string(status))->second;
 }

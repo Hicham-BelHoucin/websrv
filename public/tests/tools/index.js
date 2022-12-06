@@ -1,21 +1,22 @@
 const data = [
 	{
 		id: 1,
-		githubName: 'Hicham-BelHoucin',
+		login: 'hbel-hou',
 		fullname: 'Hicham Bel houcin',
 	},
 	{
 		id: 2,
-		githubName: 'BEAJousama',
+		login: 'obeaj',
 		fullname: 'Ousama Beaj',
 	},
 	{
 		id: 3,
-		githubName: 'imabid99',
+		login: 'imabid',
 		fullname: 'Imad Abid',
 	}
 ]
-function appendContributors(fullname, githubName)
+
+function appendContributors(fullname, login)
 {
 	const container = document.createElement('div')
 	const child = document.createElement("img");
@@ -24,7 +25,7 @@ function appendContributors(fullname, githubName)
 	span.setAttribute('class', 'name')
 	span.innerText = fullname
 	container.setAttribute('class', 'Card')
-	child.setAttribute('src', `https://github.com/${githubName}.png`)
+	child.setAttribute('src', `/img/${login}.png`)
 	child.setAttribute('class', 'profile-img')
 
 	const el = document.getElementById("root");
@@ -32,4 +33,5 @@ function appendContributors(fullname, githubName)
 	container.appendChild(span)
 	el.appendChild(container);
 }
-data.map(item => appendContributors(item.fullname, item.githubName))
+
+data.map(item => appendContributors(item.fullname, item.login))

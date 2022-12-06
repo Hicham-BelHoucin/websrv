@@ -6,7 +6,7 @@
 #    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/11/30 14:13:42 by hbel-hou         ###   ########.fr        #
+#    Updated: 2022/12/05 17:28:07 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,34 +14,36 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = -g 
+CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 OBEJECTDIR = .objects
 
 SRCS = src/parsing/parsing.cpp \
-	   src/request/request.cpp \
-	   src/utils/utils.cpp \
 	   src/server/createSocket.cpp \
 	   src/server/server.cpp \
 	   src/webserv.cpp \
 	   src/main.cpp \
-	   src/response/response.cpp \
 	   src/client/client.cpp \
-	   src/cgi/cgi.cpp
+	   src/cgi/cgi.cpp \
+	   src/utils/utils.cpp \
+	   src/response/response.cpp \
+	   src/request/request.cpp \
 
 SRCOBJ = $(SRCS:.cpp=.o)
 SRCOBJ := $(addprefix $(OBEJECTDIR)/, $(SRCOBJ))
 
-INCLUDE =	include/createSocket.hpp \
+INCLUDE =	include/ResponseUtils.h \
+			include/cgi.hpp \
+			include/client.hpp \
+			include/common.h \
+			include/createSocket.hpp \
 			include/parsing.hpp \
 			include/request.hpp \
-			include/server.hpp \
-			include/webServ.hpp \
-			include/utils.h \
 			include/response.hpp \
-			include/ResponseUtils.h \
-			include/client.hpp \
-			include/cgi.hpp
+			include/server.hpp \
+			include/utils.h \
+			include/webServ.hpp \
+
 
 all: $(NAME)
 
@@ -58,6 +60,7 @@ $(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
 clean:
 	@rm -rf $(SRCOBJ)
 	@rm -rf $(OBEJECTDIR)
+	@rm -f webserver.logs
 
 fclean: clean
 	@rm -f $(NAME)

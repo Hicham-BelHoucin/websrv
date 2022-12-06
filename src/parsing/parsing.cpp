@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 12:56:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:14:13 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ std::vector<int> 	parsing::getPorts(Map data) const
 
 Map					parsing::getErrorPages(Map data)
 {
-	int errors[] = { 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 308, 400, 401, 403, 404, 405, 406, 410, 411, 500, 501, 502, 505};
+	int errors[] = { 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 308, 400, 401, 403, 404, 405, 406, 410, 411, 413, 500, 501, 502, 505};
 	std::map<int, std::string> 	status;
 	Map							errorPages;
 	Map::iterator				it;
 	std::string 				error;
 
 	status = setStatusPhrases();
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < 27; i++)
 	{
 		it = data.find("error_page_" + std::to_string(errors[i]));
 		if (it != data.end())
@@ -80,11 +80,18 @@ std::string			parsing::getServerName(Map data) const
 int					parsing::getMaxBodySize(Map data) const
 {
 	Map::iterator	it;
+	int				ret;
 
+	ret = INT_MAX;
 	it = data.find("client_max_body_size");
 	if (it == data.end())
 		return CLINETMAXBODYSIZE;
-	return std::stoi(it->second);
+	try
+	{
+		ret = std::stoi(it->second);
+	}
+	catch(const std::exception& e){}
+	return ret;
 };
 
 std::string			parsing::getRoot(Map data) const
@@ -240,7 +247,10 @@ void	parsing::parseFile(std::string text, size_t start)
 	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
 	Pair	conf;
 	size_t		end;
+	std::map<int, std::string> status;
+	std::map<int, std::string>::iterator it;
 
+	status = setStatusPhrases();
 	end = text.find_first_of(";\n", start);
 	if (end == std::string::npos)
 		return ;
@@ -268,6 +278,10 @@ void	parsing::parseFile(std::string text, size_t start)
 			{
 				if (conf.first == keywords[i])
 					break;
+				it = status.begin();
+				for (; it != status.end(); it++)
+					if (conf.first == "error_page_" + std::to_string(it->first))
+						i = 15;
 				else if (i == 9 && conf.first != keywords[i])
 					throw std::runtime_error("unknown key word " + conf.first);
 			}
@@ -578,6 +592,8 @@ void parsing::checkSemicolon(std::string text)
 		pos = line.find(';');
 		if (IsSpecialKey(line) == 1)
 			continue;
+		else if (line.find('#') > line.find(';'))
+			continue;
 		else if (line[line.size() - 1] != ';')
 			throw std::runtime_error("missing semicolone !" + line);
 		else if (pos != std::string::npos && line[pos] == ';' && line[pos + 1] == ';')
@@ -600,6 +616,12 @@ const char * parsing::Parseerror::what() const throw ()
 
 void	parsing::checkMethods(std::vector<std::string>  & methods)
 {
+	std::vector<std::string>::iterator d = std::unique(methods.begin(), methods.end());
+	if (d != methods.end())
+	{
+		throw std::runtime_error("Bad Syntax in allow_methods\nUsage : [GET,POST,DELETE]");
+		return ;
+	}
 	for (unsigned long i = 0; i < methods.size(); i++)
 	{
 		if ((methods[i] != "GET" ) && ( methods[i] != "POST" ) && ( methods[i] != "DELETE" ))

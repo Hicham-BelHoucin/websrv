@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:50 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 11:28:09 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:02:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 server::server()
 	: _root()
-    , _host()
 	, _serverName()
+    , _host()
 	, _locations()
     , _maxBodySize()
 	, _ports()
@@ -24,8 +24,8 @@ server::server()
 
 server::server(String root, String host, String serverName, Set locations, int maxBodySize, std::vector<int> ports, Map errorPages)
 	: _root(root)
-    , _host(host)
 	, _serverName(serverName)
+    , _host(host)
 	, _locations(locations)
     , _maxBodySize(maxBodySize)
 	, _ports(ports)
@@ -34,8 +34,8 @@ server::server(String root, String host, String serverName, Set locations, int m
 
 server::server(const server & obj)
 	: _root(obj._root)
-    , _host(obj._host)
 	, _serverName(obj._serverName)
+    , _host(obj._host)
 	, _locations(obj._locations)
     , _maxBodySize(obj._maxBodySize)
 	, _ports(obj._ports)
@@ -59,8 +59,14 @@ server & server::operator=(const server & obj)
 
 server::~server() {}
 
-String server::getRootPath() const
+String server::getRootPath()
 {
+	size_t index;
+	if (_root.back() == '/')
+	{
+		index = _root.length() - 1;
+		_root.erase(index, 1);
+	}
 	return _root;
 }
 
