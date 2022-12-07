@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 14:15:37 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 11:53:35 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ int request::parseHeaders()
     if((it = req_headers.find("Host")) != req_headers.end())
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
+		if (port == "0.0.0.0")
+			port = "80";
         if(!isNumber(port))
         {
             printLogs(_displayTimestamp() + "BAD_REQUEST");
@@ -311,6 +313,8 @@ std::string request::getReqPort()
 
     if((found = port.find_first_of(":")) != std::string::npos)
         port = port.substr(found + 1);
+	if (port == "0.0.0.0")
+		port = "80";
 	return port;
 }
 
