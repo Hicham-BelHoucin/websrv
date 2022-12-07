@@ -11,6 +11,6 @@ test.cpp
 .objects/
 testing.cpp
 used_struct.hpp
-werserver.logs
+webserver.logs
 /public/tests/upload/*
 /conf/*

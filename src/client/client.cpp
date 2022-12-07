@@ -6,10 +6,10 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 14:27:59 by hbel-hou         ###   ########.fr       */
-/*   Updated: 2022/12/04 18:48:57 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:24:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "client.hpp"
 
@@ -103,7 +103,6 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 };
 
 int 	client::HnadleOutputEvent(pollfd & fd) {
-	// print(req_string);
 	if (isDone() == true && req_string != "")
 	{
 		if (total == 0)

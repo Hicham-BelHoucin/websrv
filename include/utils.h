@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 11:22:18 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:09:25 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@
 #include "server.hpp"
 #include "ResponseUtils.h"
 
+void	printParsingData(Map data, Set locations);
 bool isNumber(const std::string& s);
 int line_countword(std::string line);
 std::string generateErrorPage(int number, std::string description);
-std::string&                stringtrim(std::string &str);
+std::string&    stringtrim(std::string &str, std::string rejected = WHITESPACES);
 bool                        isMatch(String pattern, String str);
 void			            printLogs(const std::string & line);
 int				            checkExtansion(String filename);
@@ -36,7 +37,7 @@ String                      checkExtension(String filename);
 String                      getDate();
 String                      HtmlCompose(String htmlbody, String htmltitle);
 server                      selectServer(std::vector<server> servers, std::string host, std::string port);
-std::string&                stringtrim(std::string &str);
+
 void		            	printLogs(const std::string & line);
 int	            			checkExtansion(String filename);
 pollfd			            *getfds(std::vector<createSocket> & sockets);
