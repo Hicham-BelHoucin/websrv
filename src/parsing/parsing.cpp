@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 12:18:27 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 14:24:26 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,18 @@ parsing::~parsing() {}
 
 void	parsing::parseFile(std::string text, size_t start)
 {
-	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
+	std::string keywords[10] = {
+		"listen",
+		"host",
+		"root",
+		"server_name",
+		"client_max_body_size",
+		"error_page_403" ,
+		"error_page_404",
+		"error_page_500",
+		"error_page_502",
+		"return"
+	};
 	Pair	conf;
 	size_t		end;
 	std::map<int, std::string> status;
@@ -435,7 +446,7 @@ void	parsing::checkKeyWords(void)
 		"error_page_403" ,
 		"error_page_404",
 		"error_page_500",
-		"error_page_502"
+		"error_page_502",
 	};
 
 	i = 0;
