@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/03 16:25:50 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:34:16 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class client
 		int 			HnadleInputEvent(pollfd & fd);
 		int 			HnadleOutputEvent(pollfd & fd);
 		int				normalRevc(int connection);
-		std::string		handleChunked(std::string req, int);
+		std::string		handleChunked(std::string req);
 		void			setResString(const std::string & res);
 		client(void);
 		client(const std::vector<server> servers, const parsing config);

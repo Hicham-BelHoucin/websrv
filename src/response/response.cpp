@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 20:38:22 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/07 14:13:04 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,11 @@ LocationMap response::locationMatch(Set locations, String path)
         while (it1 != locations.end())
         {
             if (isMatch(it1->first, path))
+            {
+                if ((it1->second).find("root") != it1->second.end())
+                    _rootpath = (it1->second.find("root")->second)[0];
                 return it1->second;
+            }
             it1++;
         }
     }
@@ -81,6 +85,9 @@ LocationMap response::locationMatch(Set locations, String path)
 
 String response::MethodNotAllowed(LocationMap location, String path, String body)
 {
+	(void)location;
+	(void)path;
+	(void)body;
     _status_code = NOT_ALLOWED;
     return getErrorPage(_serv, _status_code);
 }
@@ -99,11 +106,23 @@ String response::MethodGet(LocationMap location, String path, String body)
     {
         if (location.find("index") != location.end())
             indexes = location.find("index")->second;
+        else
+        {
+            indexes.push_back("index.html");
+            indexes.push_back("index.htm");
+            indexes.push_back("index.php");     
+        }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
         if (mode & (D_RD))
         {
-            Dir = opendir(path.c_str());
+			if (access(path.c_str(), X_OK) == 0)
+				Dir = opendir(path.c_str());
+			else
+			{
+				_status_code = FORBIDDEN;
+				return getErrorPage(_serv, _status_code);
+			}
 			if (!Dir)
 			{
 				_status_code = SERVER_ERROR;
@@ -118,22 +137,24 @@ String response::MethodGet(LocationMap location, String path, String body)
                     if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
                     {
                         _status_code = OK;
+						closedir(Dir);
                         return (readFile(path + *it));
                     }
                     else
                     {
                         _location = locationMatch(_ServerLocations, *it);
+						closedir(Dir);
                         return (MethodCheck(_location, _reqMethod, path + *it, body));
                     }
                 }
             }
+            closedir(Dir);
             if (isautoindex)
             {
                 _status_code = OK;
                 // directory listing autoindex
                 return dirListing(path);
             }
-            closedir(Dir);
         }
         else
         {
@@ -202,12 +223,18 @@ String response::MethodPost(LocationMap location, String path, String body)
         it = indexes.begin();
         if (mode & (D_RD))
         {
-            Dir = opendir(path.c_str());
+			if (access(path.c_str(), X_OK) == 0)
+				Dir = opendir(path.c_str());
+			else
+			{
+				_status_code = FORBIDDEN;
+				return getErrorPage(_serv, _status_code);
+			}
             if (!Dir)
-            {
-                std::cerr << RED << "Cannot open directory : " << path << std::endl;
-                return "";
-            }
+			{
+				_status_code = SERVER_ERROR;
+				return getErrorPage(_serv, _status_code);
+			}
             while ((DirEntry = readdir(Dir)))
             {
                 // Search for index in directory
@@ -277,6 +304,7 @@ String response::MethodPost(LocationMap location, String path, String body)
 String response::MethodDelete(LocationMap location, String path, String body)
 {
     (void)location;
+	(void)body;
     PATHMODE mode;
 	std::string root;
 
@@ -311,6 +339,8 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     std::map<String, MethodCall> methodsMap;
     std::map<String, MethodCall>::iterator it;
     std::vector<String>::iterator i;
+    LocationMap::iterator it1;
+    
     methodsMap["GET"] = &response::MethodGet;
     methodsMap["POST"] = &response::MethodPost;
     methodsMap["DELETE"] = &response::MethodDelete;
@@ -318,44 +348,73 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     it = methodsMap.begin();
     switch (_status_code)
     {
-    case BAD_REQUEST:
-        return (getErrorPage(_serv, _status_code));
-    case LARGE_PAYLOAD:
-        return (getErrorPage(_serv, _status_code));
-    case NOT_IMPLEMENTED:
-        return (getErrorPage(_serv, _status_code));
-    case NON_SUPPORTED_HTTPVERSION:
-        return (getErrorPage(_serv, _status_code));
-    default:
-        break;
+		case BAD_REQUEST:
+			return (getErrorPage(_serv, _status_code));
+		case LARGE_PAYLOAD:
+			return (getErrorPage(_serv, _status_code));
+		case NOT_IMPLEMENTED:
+			return (getErrorPage(_serv, _status_code));
+		case NON_SUPPORTED_HTTPVERSION:
+			return (getErrorPage(_serv, _status_code));
+		default:
+			break;
     }
+    if ((it1 = location.find("return")) != location.end())
+    {
+        _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
+        headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
+        return "";
+    }
+	if (location.find("allow_methods") != location.end())
+	{
+		i = std::find(location.find("allow_methods")->second.begin(), location.find("allow_methods")->second.end(), method);
+		if (i == location.find("allow_methods")->second.end())
+			return ((this->*methodsMap.find("NotAllowed")->second)(location, path, body));
+	}
+	else
+		return ((this->*methodsMap.find("NotAllowed")->second)(location, path, body));
     while (it != methodsMap.end())
     {
         if (method == it->first)
             return ((this->*(it->second))(location, path, body));
         it++;
     }
-    i = std::find(location.find("allow_methods")->second.begin(), location.find("allow_methods")->second.end(), method);
-    if (i == location.find("allow_methods")->second.end())
-        return ((this->*methodsMap.find("NotAllowed")->second)(location, path, body));
     return "";
 }
 
-response::response(request req, parsing conf) : __req(req), __conf(conf), _upload(req.getFilesBody())
+response::response(request req, parsing conf)
+	: __conf(conf)
+	, __req(req)
+	, _upload(req.getFilesBody())
 {
     _status_code = static_cast<CODES>(__req.getReqStatus());
     statusPhrases = setStatusPhrases();
-    // for(std::map<std::string ,std::string>::iterator it = _upload.begin(); it != _upload.end() ; it++)
-	// {
-	// 	std::cout << "| " << it->first << " : " << it->second <<" |"<<std::endl;
-	// }
     // selecting a server
     _serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
-    // matching the path location
     _ServerLocations = _serv.getlocations();
     _reqMethod = req.getReqMethod();
     _rootpath = _serv.getRootPath();
     _path = req.getReqPath();
+    // matching the path location
+    /*-------- TO DO -------
+    
+        Before matching the location we should see if server contains a redirection
+        if it does we goto setHeaders and ResponseBuilder directly without checking the location
+
+     pseudo_code :
+        if ((it1 = _serv.find("return"))!= _serv.end())
+        {
+                _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
+                headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
+        }
+        else
+        {
+            _location = locationMatch(_ServerLocations, _path);
+            _body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
+        }
+        setHeaders(req);
+        ResponseBuilder();
+    */
     _location = locationMatch(_ServerLocations, _path);
     _body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
     setHeaders(req);
@@ -447,8 +506,8 @@ void response::ResponseBuilder()
     // checkAndAppend(headers,_response,"last-modified");
     checkAndAppend(headers, _response, "Server");
     _response += "\r\n";
-    _response.append(_body);
-    // _response += "\r\n";
+	_response.append(_body);
+    _response += "\r\n";
 }
 
 void response::ClearResponse()
@@ -477,8 +536,8 @@ String response::getResponse()
 
 String response::getCgiBody(String cgi_body)
 {
-    int found;
-    int found1;
+    size_t found;
+    size_t found1;
     String key;
     String value;
     String __headerfield;
@@ -518,7 +577,13 @@ String response::dirListing(String dirname)
     DIR *dr;
     struct dirent *en;
     String body;
-    dr = opendir(dirname.c_str());
+	if (access(dirname.c_str(), X_OK) == 0)
+    	dr = opendir(dirname.c_str());
+	else
+	{
+		_status_code = FORBIDDEN;
+		return getErrorPage(_serv, _status_code);
+	}
     if (!dr)
     {
         std::cerr << RED << "Cannot open directory : " << dirname << std::endl;

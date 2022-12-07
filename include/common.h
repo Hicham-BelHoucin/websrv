@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 15:04:11 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:04:35 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,9 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <dirent.h>
-#include <climits>
+# include <climits>
 # include <algorithm>
 
-# define ERROR400 "./src/errors/error_400.html"
-# define ERROR403 "./src/errors/error_403.html"
-# define ERROR404 "./src/errors/error_404.html"
-# define ERROR405 "./src/errors/error_405.html"
-# define ERROR413 "./src/errors/error_413.html"
-# define ERROR405 "./src/errors/error_405.html"
-# define ERROR500 "./src/errors/error_500.html"
-# define ERROR501 "./src/errors/error_501.html"
-# define ERROR502 "./src/errors/error_502.html"
-# define ERROR505 "./src/errors/error_503.html"
 # define CONFIGFILE "./conf/config.conf"
 # define NOTFOUND std::string::npos
 

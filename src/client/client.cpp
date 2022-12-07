@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/04 21:03:24 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/05 16:16:10 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ size_t		findSpecial(std::string text, size_t index)
 }
 
 
-std::string	client::handleChunked(std::string req, int connection)
+std::string	client::handleChunked(std::string req)
 {
 	std::string body;
 	std::string head;
@@ -62,9 +62,9 @@ std::string	client::handleChunked(std::string req, int connection)
 	head = req.find("\r\n\r\n") != std::string::npos ? req.substr(0, req.find("\r\n\r\n") + 4) : req;
 	req.erase(req.find(head), head.length());
 	end = 0;
-	for (int i = 0; i < req.size();)
+	for (size_t i = 0; i < req.size();)
 	{
-		int j;
+		size_t j;
 		for (j = i; j < req.size(); j++)
 		{
 			if (req[j] == '\n')
@@ -102,13 +102,13 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 };
 
 int 	client::HnadleOutputEvent(pollfd & fd) {
+	// print(req_string);
 	if (isDone() == true && req_string != "")
 	{
 		if (total == 0)
 		{
 			if (isChunked(req_string))
-				req_string = handleChunked(req_string, 0);
-			// print(req_string);
+				req_string = handleChunked(req_string);
 			request req;
 			req = request();
 			req.setservers(servers);
@@ -116,8 +116,6 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 			connection = req.getHeaderValue("Connection");
 			response res(req, config);
 			setResString(res.getResponse());
-			// print(res.getResponse());
-			// std::cout << YELLOW <<res.getResponse() << std::endl;
 			req.ClearRequest();
 			res.ClearResponse();
 		}
@@ -155,12 +153,12 @@ int client::normalRevc(int connection)
     char     buff[10025];
     int        ret = 10024;
     int headerslength = 0;
-    int index = 0;
+    size_t index = 0;
     int    contentlength = 0;
 
     bzero(buff, 10024);
     ret = recv(connection, buff, 10024, 0);
-    if (ret < 0)
+    if (ret <= 0)
         return -1;
     buff[ret] = '\0';
     if (ret > 0)
@@ -168,24 +166,28 @@ int client::normalRevc(int connection)
     try
     {
         headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
-        index = req_string.find("Content-Length: ") + strlen("Content-Length: ");
-        contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
+        index = req_string.find("Content-Length: ");
+		if (index != NOTFOUND)
+		{
+			index += strlen("Content-Length: ");
+        	contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
+		}
     }
     catch(const std::exception& e)
     {
         headerslength = 0;
         index = 0;
-        contentlength =0;
+        contentlength = 0;
     }
     if ((req_string.length() < 20048 && isChunked(req_string)) || chunked == true)
     {
 		chunked = true;
-        int index = req_string.find("0\r\n\r\n", i);
+        size_t index = req_string.find("0\r\n\r\n", i);
         if (index != NOTFOUND)
             this->donereading = true;
 		i = req_string.length();
     }
-    else if ((contentlength + headerslength <= req_string.length())
+    else if ((contentlength + headerslength <= (int)req_string.length())
             || (!contentlength && ret < 10024))
         this->donereading = true;
     return ret;
@@ -210,7 +212,7 @@ int	client::_send(int connection)
 	}
 	if (res_string.length() - sent > 0)
 		rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
-	if (rv == -1)
+	if (rv <= 0)
 		return -1;
 	sent += rv;
 	if ((total != 0 && total == sent))
@@ -222,36 +224,36 @@ client::client(void)
 	: req_string("")
 	, res_string("")
 	, donereading(false)
+	, chunked(false)
 	, donesending(true)
 	, sent(0)
 	, total(0)
 	, servers()
 	, config()
-	, chunked(false)
 {}
 
 client::client(const std::vector<server> servers, const parsing config)
 	: req_string("")
 	, res_string("")
 	, donereading(false)
+	, chunked(false)
 	, donesending(true)
 	, sent(0)
 	, total(0)
 	, servers(servers)
 	, config(config)
-	, chunked(false)
 {}
 
 client::client(const client & copy)
 	: req_string(copy.req_string)
 	, res_string(copy.res_string)
 	, donereading(copy.donereading)
+	, chunked(false)
 	, donesending(copy.donesending)
 	, sent(copy.sent)
 	, total(copy.total)
 	, servers(copy.servers)
 	, config(copy.config)
-	, chunked(false)
 {}
 
 client & client::operator=(const client & assign)
