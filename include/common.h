@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 15:23:31 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 15:50:28 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <dirent.h>
-#include <climits>
+# include <climits>
 # include <algorithm>
 
 # define CONFIGFILE "./conf/config.conf"

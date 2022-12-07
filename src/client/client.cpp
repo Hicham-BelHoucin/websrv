@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 15:43:19 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 15:51:33 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 };
 
 int 	client::HnadleOutputEvent(pollfd & fd) {
+	// print(req_string);
 	if (isDone() == true && req_string != "")
 	{
 		if (total == 0)
@@ -158,7 +159,7 @@ int client::normalRevc(int connection)
 
     bzero(buff, 10024);
     ret = recv(connection, buff, 10024, 0);
-    if (ret < 0)
+    if (ret <= 0)
         return -1;
     buff[ret] = '\0';
     if (ret > 0)
@@ -167,11 +168,11 @@ int client::normalRevc(int connection)
     {
         headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
         index = req_string.find("Content-Length: ");
-      if (index != NOTFOUND)
-      {
-        index += strlen("Content-Length: ");
+		if (index != NOTFOUND)
+		{
+        	index += strlen("Content-Length: ");
             contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
-      }
+      	}
     }
     catch(const std::exception& e)
     {
@@ -212,7 +213,7 @@ int	client::_send(int connection)
 	}
 	if (res_string.length() - sent > 0)
 		rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
-	if (rv == -1)
+	if (rv <= 0)
 		return -1;
 	sent += rv;
 	if ((total != 0 && total == sent))
