@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 15:36:51 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:14:34 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ std::string& ltrim(std::string& str, const std::string &ws)
 }
 
 // trim from both ends of string (right then left)
-std::string&    stringtrim(std::string &str)
+std::string&    stringtrim(std::string &str, std::string rejected)
 {
-    return(ltrim(rtrim(str, WHITESPACES), WHITESPACES));
+    return(ltrim(rtrim(str, rejected), rejected));
 }
 
 std::string	_displayTimestamp( void )
@@ -373,9 +373,12 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
 		catch(const std::exception& e){}
         it++;
     }
+	if (selected.size() == 1)
+		return selected[0];
     it = selected.begin();
     while (it != selected.end())
     {
+		elected = selected[0];
         std::stringstream s((*it).getServerName());
         std::string servername;
         while (std::getline(s, servername, ' '))
@@ -455,11 +458,10 @@ std::vector<std::string> split(std::string text, std::string del)
 	while (start <= text.length())
 	{
 		end = text.find(del, start);
-		if (end == std::string::npos)
-			break;
-		end += del.length();
 		ret.push_back(text.substr(start, end - start));
-		start = end;
+		if (end == NOTFOUND)
+			break;
+		start = end + del.length();
 	}
 	return ret;
 }
@@ -467,4 +469,34 @@ std::vector<std::string> split(std::string text, std::string del)
 String getErrorPage(server serv, CODES status)
 {
 	return serv.getErrorPages().find("error_page_" + std::to_string(status))->second;
+}
+
+void	printParsingData(Map data, Set locations)
+{
+	std::map<std::string, LocationMap>::iterator	begin;
+	std::map<std::string, Methods>::iterator		start;
+	std::map<std::string, std::string>::iterator	it;
+
+	std::cout << "********************************" << std::endl;
+	it = data.begin();
+	while (it != data.end())
+	{
+		std::cout << it->first << " == "<< it->second << std::endl;
+		it++;
+	}
+	std::cout << "********************************" << std::endl;
+	begin = locations.begin();
+	while (begin != locations.end())
+	{
+		std::cout << begin->first << std::endl;
+		start = begin->second.begin();
+		while (start != begin->second.end())
+		{
+			std::cout << "	" << start->first << " : " << std::endl;
+			for (size_t i = 0; i < start->second.size() ; i++)
+				std::cout << "			" << start->second[i] << std::endl;
+			start ++;
+		}
+		begin++;
+	}
 }
