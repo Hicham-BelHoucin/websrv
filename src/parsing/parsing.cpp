@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 17:48:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:03:23 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,15 @@ std::vector<int> 	parsing::getPorts(Map data) const
 
 Map					parsing::getErrorPages(Map data)
 {
-	int errors[] = { 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 308, 400, 401, 403, 404, 405, 406, 410, 411, 413, 500, 501, 502, 505};
 	std::map<int, std::string> 	status;
+	std::vector<int> errors;
 	Map							errorPages;
 	Map::iterator				it;
 	std::string 				error;
 
 	status = setStatusPhrases();
+	for (std::map<int, std::string>::iterator it = status.begin(); it != status.end(); it++)
+		errors.push_back(it->first);
 	for (int i = 0; i < 27; i++)
 	{
 		it = data.find("error_page_" + std::to_string(errors[i]));
@@ -67,6 +69,17 @@ parsing &parsing::operator=(const parsing & obj)
 	this->locationsInfo = obj.locationsInfo;
 	return *this;
 }
+
+std::string			parsing::getReturn(Map data) const
+{
+	Map::iterator it;
+
+	it = data.find("return");
+	if (it == data.end())
+		return "";
+	return it->second;
+};
+
 std::string			parsing::getServerName(Map data) const
 {
 	Map::iterator it;
@@ -109,6 +122,14 @@ Data	parsing::getData(void) const
 parsing::parsing()
 {
 
+}
+
+bool isServer(std::string key)
+{
+	key = stringtrim(key);
+	if (key == "server")
+		return true;
+	return false;
 }
 
 int	parsing::countSize(std::string text)
@@ -191,6 +212,20 @@ std::string	parsing::readFile(std::string filename)
 
 //////////////////////////////////// [constructor and destructor ] /////////////////////////////////////
 
+std::string   parsing::trimString(std::string s, std::string rejected)
+{
+	std::stringstream str(s);
+	std::string text;
+	std::string line;
+
+	while (getline(str, line, '\n'))
+	{
+		line = stringtrim(line, rejected);
+		text.append(line + "\n");
+	}
+	return text;
+}
+
 parsing::parsing(std::string filename) : _size(0)
 {
 	std::string text;
@@ -201,6 +236,7 @@ parsing::parsing(std::string filename) : _size(0)
 	size_t			end;
 
 	text = readFile(filename);
+	text = trimString(text);
 	_size = countSize(text);
 	checkBrackets(text);
 	checkSemicolon(text);
@@ -244,7 +280,18 @@ parsing::~parsing() {}
 
 void	parsing::parseFile(std::string text, size_t start)
 {
-	std::string keywords[10] = {"listen", "host", "root", "server_name", "client_max_body_size", "error_page_403" , "error_page_404", "error_page_500", "error_page_502"};
+	std::string keywords[10] = {
+		"listen",
+		"host",
+		"root",
+		"server_name",
+		"client_max_body_size",
+		"error_page_403" ,
+		"error_page_404",
+		"error_page_500",
+		"error_page_502",
+		"return"
+	};
 	Pair	conf;
 	size_t		end;
 	std::map<int, std::string> status;
@@ -263,7 +310,9 @@ void	parsing::parseFile(std::string text, size_t start)
 			if (conf.first == "listen")
 			{
 				if (conf.second.find_first_not_of("0123456789") != std::string::npos)
-					throw	std::runtime_error("port value must composed only from digits ! ");
+					throw	std::runtime_error("port value must be composed only from digits ! ");
+				else if (std::stoi(conf.second) < 1 || std::stoi(conf.second) > 65535)
+					throw	std::runtime_error("unacceptable Port value : '" + conf.second + "' should be in range [1-65535]");
 			}
 			else if (conf.first == "host")
 				checkHost(conf);
@@ -330,7 +379,13 @@ Pair	parsing::parseLine(std::string line)
 	skipWhiteSpaces(line, start);
 	end = line.find_first_of(";", start);
 	value = line.substr(start, end - start);
-	if (keyWord[0] != '#' && keyWord != "return" && keyWord != "server_name" && value.find_first_of(WHITESPACES) != std::string::npos)
+	if (keyWord == "return")
+	{
+		std::vector<std::string> args = split(value, " ");
+		if ((args[0] != "301" && args[0] != "302") || args.size() != 2)
+			throw std::runtime_error("error : " + std::string((args.size() != 2 ? "Wrong input" : "Invalid Statis code")) +  " : " + line);
+	}
+	if (keyWord[0] != '#' && keyWord != "index" && keyWord != "return" && keyWord != "server_name" && value.find_first_of(WHITESPACES) != std::string::npos)
 		throw std::runtime_error("error in this line => " + value);
 	return std::make_pair(keyWord, value);
 }
@@ -410,7 +465,7 @@ void	parsing::checkKeyWords(void)
 		"error_page_403" ,
 		"error_page_404",
 		"error_page_500",
-		"error_page_502"
+		"error_page_502",
 	};
 
 	i = 0;
@@ -511,10 +566,13 @@ void	parsing::parseLocation(std::string text, size_t start)
 			}
 			else
 			{
+				methods.clear();
 				if (conf.second.find_first_of("{}[];,()") != std::string::npos)
 					throw std::runtime_error("error : " + conf.second);
-				methods.clear();
-				methods.push_back(conf.second);
+				else if (conf.first == "index")
+					methods = split(conf.second, " ");
+				else
+					methods.push_back(conf.second);
 			}
 			locationsInfo.insert(std::make_pair(conf.first, methods));
 		}
@@ -568,6 +626,7 @@ int parsing::IsSpecialKey(std::string line)
 {
 	size_t	index = 0;
 
+	line = stringtrim(line);
 	skipWhiteSpaces(line, index);
 	if (line == "server" || line[index] == '{' || line[index] == '}' || line.compare(index, 8, "location") == 0 || line[index] == '#')
 	{

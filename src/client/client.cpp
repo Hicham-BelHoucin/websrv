@@ -6,10 +6,10 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/05 14:27:59 by hbel-hou         ###   ########.fr       */
-/*   Updated: 2022/12/04 18:48:57 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 19:05:21 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "client.hpp"
 
@@ -96,6 +96,7 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 	int ret;
 
 	ret = _read(fd.fd);
+	last_time_read = get_time();
 	if (ret == -1)
 		fd.revents = POLLNVAL;
 	fd.events = POLLIN | POLLOUT;
@@ -103,20 +104,34 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 };
 
 int 	client::HnadleOutputEvent(pollfd & fd) {
-	// print(req_string);
+	if (!req_string.empty() && spent_time(last_time_read) > 10000)
+	{
+		donereading = true;
+		timed_out = true;
+	}
 	if (isDone() == true && req_string != "")
 	{
+		// check https
 		if (total == 0)
 		{
+			// print(YELLOW << req_string);
 			if (isChunked(req_string))
 				req_string = handleChunked(req_string);
-			request req;
-			req = request();
-			req.setservers(servers);
-			req.requestCheck(getReqString());
-			connection = req.getHeaderValue("Connection");
-			response res(req, config);
-			setResString(res.getResponse());
+			try
+			{
+				req.setservers(servers);
+				req.requestCheck(getReqString());
+				if (timed_out)
+					req.setStatusCode(408);
+				connection = req.getHeaderValue("Connection");
+				res = response(req, config);
+				setResString(res.getResponse());
+			}
+			catch(...) {
+				req.setStatusCode(500);
+				res = response(req, config);
+				setResString(res.getResponse());
+			}
 			req.ClearRequest();
 			res.ClearResponse();
 		}
@@ -136,6 +151,7 @@ void	client::clean(void)
 	donereading = false;
 	donesending = true;
 	chunked = false;
+	timed_out = false;
 }
 
 bool	client::isDone(void)
@@ -159,7 +175,7 @@ int client::normalRevc(int connection)
 
     bzero(buff, 10024);
     ret = recv(connection, buff, 10024, 0);
-    if (ret < 0)
+    if (ret <= 0)
         return -1;
     buff[ret] = '\0';
     if (ret > 0)
@@ -168,11 +184,11 @@ int client::normalRevc(int connection)
     {
         headerslength = req_string.find("\r\n\r\n") != std::string::npos ? req_string.find("\r\n\r\n") + 4 : 0;
         index = req_string.find("Content-Length: ");
-      if (index != NOTFOUND)
-      {
-        index += strlen("Content-Length: ");
+		if (index != NOTFOUND)
+		{
+        	index += strlen("Content-Length: ");
             contentlength = std::stoi(req_string.substr(index, req_string.find("\r\n", index) - index));
-      }
+      	}
     }
     catch(const std::exception& e)
     {
@@ -213,12 +229,18 @@ int	client::_send(int connection)
 	}
 	if (res_string.length() - sent > 0)
 		rv = send(connection, res_string.c_str() + sent, res_string.length() - sent, 0);
-	if (rv == -1)
+	if (rv <= 0)
 		return -1;
 	sent += rv;
 	if ((total != 0 && total == sent))
 		clean();
 	return rv;
+}
+
+void client::handler(int status)
+{
+	(void)status;
+	printLogs("Bad Request");
 }
 
 client::client(void)
@@ -231,7 +253,14 @@ client::client(void)
 	, total(0)
 	, servers()
 	, config()
-{}
+	, connection()
+	, last_time_read()
+	, req()
+	, res()
+	, timed_out()
+{
+	signal(SIGPIPE, &this->handler);
+}
 
 client::client(const std::vector<server> servers, const parsing config)
 	: req_string("")
@@ -243,7 +272,14 @@ client::client(const std::vector<server> servers, const parsing config)
 	, total(0)
 	, servers(servers)
 	, config(config)
-{}
+	, connection()
+	, last_time_read()
+	, req()
+	, res()
+	, timed_out()
+{
+	signal(SIGPIPE, &this->handler);
+}
 
 client::client(const client & copy)
 	: req_string(copy.req_string)
@@ -255,10 +291,18 @@ client::client(const client & copy)
 	, total(copy.total)
 	, servers(copy.servers)
 	, config(copy.config)
-{}
+	, connection(copy.connection)
+	, last_time_read(copy.last_time_read)
+	, req(copy.req)
+	, res(copy.res)
+	, timed_out(copy.timed_out)
+{
+	signal(SIGPIPE, &this->handler);
+}
 
 client & client::operator=(const client & assign)
 {
+	signal(SIGPIPE, &this->handler);
 	if (this != &assign)
 	{
 		req_string = assign.req_string;
@@ -270,6 +314,11 @@ client & client::operator=(const client & assign)
 		total = assign.total;
 		servers = assign.servers;
 		config = assign.config;
+		connection = assign.connection;
+		last_time_read = assign.last_time_read;
+		req = assign.req;
+		res = assign.res;
+		timed_out = assign.timed_out;
 	}
 	return *this;
 }

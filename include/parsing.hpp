@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/11/21 15:12:17 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/07 16:01:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,12 @@ class parsing
         };
 		Data				getData(void) const;
 		std::string 		getHost(Map data) const;
+		std::string 		getReturn(Map data) const;
 		std::vector<int> 	getPorts(Map data) const;
 		Map					getErrorPages(Map data);
 		std::string			getServerName(Map data) const;
 		int					getMaxBodySize(Map data) const;
+		std::string   		trimString(std::string s, std::string rejected = WHITESPACES);
 		std::string			getRoot(Map data) const;
 		int					checkDuplicatePort(Map data);
 		void				checkMethodsKeyWords(LocationMap locations);

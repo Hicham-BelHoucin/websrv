@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 17:49:06 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:47:55 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,11 @@ LocationMap response::locationMatch(Set locations, String path)
         while (it1 != locations.end())
         {
             if (isMatch(it1->first, path))
+            {
+                if ((it1->second).find("root") != it1->second.end())
+                    _rootpath = (it1->second.find("root")->second)[0];
                 return it1->second;
+            }
             it1++;
         }
     }
@@ -102,6 +106,12 @@ String response::MethodGet(LocationMap location, String path, String body)
     {
         if (location.find("index") != location.end())
             indexes = location.find("index")->second;
+        else
+        {
+            indexes.push_back("index.html");
+            indexes.push_back("index.htm");
+            indexes.push_back("index.php");
+        }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
         if (mode & (D_RD))
@@ -329,6 +339,8 @@ String response::MethodCheck(LocationMap location, String method, String path, S
     std::map<String, MethodCall> methodsMap;
     std::map<String, MethodCall>::iterator it;
     std::vector<String>::iterator i;
+    LocationMap::iterator it1;
+
     methodsMap["GET"] = &response::MethodGet;
     methodsMap["POST"] = &response::MethodPost;
     methodsMap["DELETE"] = &response::MethodDelete;
@@ -342,10 +354,20 @@ String response::MethodCheck(LocationMap location, String method, String path, S
 			return (getErrorPage(_serv, _status_code));
 		case NOT_IMPLEMENTED:
 			return (getErrorPage(_serv, _status_code));
+		case UNSUPPORTEDMEDIATYPE:
+			return (getErrorPage(_serv, _status_code));
+		case REQUEST_TIMEOUT:
+			return (getErrorPage(_serv, _status_code));
 		case NON_SUPPORTED_HTTPVERSION:
 			return (getErrorPage(_serv, _status_code));
 		default:
 			break;
+    }
+    if ((it1 = location.find("return")) != location.end())
+    {
+        _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
+        headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
+        return "";
     }
 	if (location.find("allow_methods") != location.end())
 	{
@@ -371,30 +393,40 @@ response::response(request req, parsing conf)
 {
     _status_code = static_cast<CODES>(__req.getReqStatus());
     statusPhrases = setStatusPhrases();
-    // for(std::map<std::string ,std::string>::iterator it = _upload.begin(); it != _upload.end() ; it++)
-	// {
-	// 	std::cout << "| " << it->first << " : " << it->second <<" |"<<std::endl;
-	// }
     // selecting a server
     _serv = selectServer(createServers(conf.getData(), conf), req.getReqHost(), req.getReqPort());
-    // matching the path location
     _ServerLocations = _serv.getlocations();
     _reqMethod = req.getReqMethod();
     _rootpath = _serv.getRootPath();
     _path = req.getReqPath();
-    _location = locationMatch(_ServerLocations, _path);
-    _body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
-    setHeaders(req);
-    ResponseBuilder();
+	std::string _return = _serv.getReturn();
+	if (_return != "")
+	{
+		try
+		{
+			_status_code = static_cast<CODES>(std::stoi(_return.substr(0,3)));
+			headers.insert(std::make_pair("Location", _return.substr(4)));
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
+	}
+	else
+	{
+		_location = locationMatch(_ServerLocations, _path);
+		_body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
+	}
+	setHeaders(req);
+	ResponseBuilder();
 }
 
 void response::setHeaders(request req)
 {
     headers.insert(std::make_pair("Server", "Webserv IHO-0.1"));
     headers.insert(std::make_pair("Date", getDate()));
-    // headers["Last-Modified"] = getLastModified();
     if (req.getHeaderValue("Connection") != "")
-        headers.insert(std::make_pair("Connection", "keep-alive"));
+        headers.insert(std::make_pair("Connection", req.getHeaderValue("Connection") != "NoValue" ? req.getHeaderValue("Connection") : "close"));
     if (headers.find("Connection")->second == "Keep-Alive")
         headers.insert(std::make_pair("Keep-Alive", "timeout=5, max=1000"));
     headers.insert(std::make_pair("Content-Length", std::to_string(_body.length())));

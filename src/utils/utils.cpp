@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 15:36:51 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 18:07:49 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ std::string& ltrim(std::string& str, const std::string &ws)
 }
 
 // trim from both ends of string (right then left)
-std::string&    stringtrim(std::string &str)
+std::string&    stringtrim(std::string &str, std::string rejected)
 {
-    return(ltrim(rtrim(str, WHITESPACES), WHITESPACES));
+    return(ltrim(rtrim(str, rejected), rejected));
 }
 
 std::string	_displayTimestamp( void )
@@ -76,6 +76,7 @@ std::vector<server> createServers(Data data, parsing obj)
 	String 				root;
 	String 				host;
 	String 				serverName;
+	String 				_return;
 	Set 				locations;
 	int 				maxBodySize;
 	std::vector<int> 	ports;
@@ -91,7 +92,9 @@ std::vector<server> createServers(Data data, parsing obj)
 		locations = data[i].locations;
 		errorPages = obj.getErrorPages(data[i].data);
 		ports = obj.getPorts(data[i].data);
-		servers.push_back(server(root, host, serverName, locations, maxBodySize, ports, errorPages));
+		_return = obj.getReturn(data[i].data);
+		// print(_return);
+		servers.push_back(server(root, host, serverName, locations, maxBodySize, ports, errorPages, _return));
 	}
 	return servers;
 }
@@ -281,9 +284,11 @@ std::map<int, std::string> setStatusPhrases()
 	status[404] = "Not Found";
 	status[405] = "Method Not Allowed";
 	status[406] = "Not Acceptable";
+	status[408] = "Request Timeout";
 	status[410] = "Gone";
 	status[413] = "Large Payload";
 	status[411] = "Length Required";
+	status[415] = "Unsupported Media Type";
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
 	status[502] = "Bad Gateway";
@@ -373,9 +378,12 @@ server selectServer(std::vector<server> servers, std::string host, std::string p
 		catch(const std::exception& e){}
         it++;
     }
+	if (selected.size() == 1)
+		return selected[0];
     it = selected.begin();
     while (it != selected.end())
     {
+		elected = selected[0];
         std::stringstream s((*it).getServerName());
         std::string servername;
         while (std::getline(s, servername, ' '))
@@ -455,11 +463,11 @@ std::vector<std::string> split(std::string text, std::string del)
 	while (start <= text.length())
 	{
 		end = text.find(del, start);
-		if (end == std::string::npos)
-			break;
-		end += del.length();
 		ret.push_back(text.substr(start, end - start));
-		start = end;
+		if (end == NOTFOUND)
+			break;
+		start = end + del.length();
+		start = text.find_first_not_of(del, start);
 	}
 	return ret;
 }
@@ -467,4 +475,54 @@ std::vector<std::string> split(std::string text, std::string del)
 String getErrorPage(server serv, CODES status)
 {
 	return serv.getErrorPages().find("error_page_" + std::to_string(status))->second;
+}
+
+void	printParsingData(Map data, Set locations)
+{
+	std::map<std::string, LocationMap>::iterator	begin;
+	std::map<std::string, Methods>::iterator		start;
+	std::map<std::string, std::string>::iterator	it;
+
+	std::cout << "********************************" << std::endl;
+	it = data.begin();
+	while (it != data.end())
+	{
+		std::cout << it->first << " == "<< it->second << std::endl;
+		it++;
+	}
+	std::cout << "********************************" << std::endl;
+	begin = locations.begin();
+	while (begin != locations.end())
+	{
+		std::cout << begin->first << std::endl;
+		start = begin->second.begin();
+		while (start != begin->second.end())
+		{
+			std::cout << "	" << start->first << " : " << std::endl;
+			for (size_t i = 0; i < start->second.size() ; i++)
+				std::cout << "			" << start->second[i] << std::endl;
+			start ++;
+		}
+		begin++;
+	}
+}
+
+long int	get_time(void)
+{
+	long int			time;
+	struct timeval		current_time;
+
+	time = 0;
+	gettimeofday(&current_time, NULL);
+	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (time);
+}
+
+int	spent_time(long int time)
+{
+	long int	c_time;
+
+	c_time = get_time();
+	c_time -= time;
+	return (c_time);
 }

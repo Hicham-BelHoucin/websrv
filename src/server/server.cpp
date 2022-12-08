@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:50 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 13:02:26 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:14:50 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ server::server()
     , _maxBodySize()
 	, _ports()
     , _errorPages()
+	, _return()
 {}
 
-server::server(String root, String host, String serverName, Set locations, int maxBodySize, std::vector<int> ports, Map errorPages)
+server::server(String root, String host, String serverName, Set locations, int maxBodySize, std::vector<int> ports, Map errorPages, String _return)
 	: _root(root)
 	, _serverName(serverName)
     , _host(host)
@@ -30,6 +31,7 @@ server::server(String root, String host, String serverName, Set locations, int m
     , _maxBodySize(maxBodySize)
 	, _ports(ports)
     , _errorPages(errorPages)
+	, _return(_return)
 {}
 
 server::server(const server & obj)
@@ -40,6 +42,7 @@ server::server(const server & obj)
     , _maxBodySize(obj._maxBodySize)
 	, _ports(obj._ports)
     , _errorPages(obj._errorPages)
+	, _return(obj._return)
 {}
 
 server & server::operator=(const server & obj)
@@ -53,6 +56,7 @@ server & server::operator=(const server & obj)
 		_maxBodySize = obj._maxBodySize;
 		_ports = obj._ports;
 		_errorPages = obj._errorPages;
+		_return = obj._return;
 	}
 	return *this;
 }
@@ -68,6 +72,11 @@ String server::getRootPath()
 		_root.erase(index, 1);
 	}
 	return _root;
+}
+
+String server::getReturn() const
+{
+	return _return;
 }
 
 String server::getHost() const
