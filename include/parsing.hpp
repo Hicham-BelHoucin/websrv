@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 11:24:25 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:01:11 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class parsing
         };
 		Data				getData(void) const;
 		std::string 		getHost(Map data) const;
+		std::string 		getReturn(Map data) const;
 		std::vector<int> 	getPorts(Map data) const;
 		Map					getErrorPages(Map data);
 		std::string			getServerName(Map data) const;

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 16:30:30 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/07 15:50:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:02:49 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@
 #include "parsing.hpp"
 #include "server.hpp"
 #include "ResponseUtils.h"
-
+long int	get_time(void);
+int	spent_time(long int time);
 void	printParsingData(Map data, Set locations);
 bool isNumber(const std::string& s);
-int line_countword(std::string line);
+int 		line_countword(std::string line);
 std::string generateErrorPage(int number, std::string description);
 std::string&    stringtrim(std::string &str, std::string rejected = WHITESPACES);
 bool                        isMatch(String pattern, String str);

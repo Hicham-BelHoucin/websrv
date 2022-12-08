@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/07 15:52:59 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:48:02 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,16 @@ int request::requestCheck(std::string _req)
     int     st = 0;
 
     req = _req;
-    if((st = parseReqMethods()) || (st = parseHeaders()))
-    {
-        status = st;
-        return status;
-    }
-    return 0;
+	st = parseReqMethods();
+	if (st)
+	{
+		int index = req.find("\r\n");
+		std::string line = req.substr(0, index);
+		req.erase(0, line.length() + 2);
+	}
+	int st1 = parseHeaders();
+	status = std::max(st, st1);
+	return status;
 }
 
 int request::parseHeaders()
@@ -108,6 +112,8 @@ int request::parseHeaders()
     }
     if((it = req_headers.find("Content-Type")) != req_headers.end())
     {
+		if (it->second.compare(0, strlen("multipart/form-data;"), "multipart/form-data;"))
+			return UNSUPPORTEDMEDIATYPE;
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
         {
             printLogs(_displayTimestamp() + "BAD_REQUEST");
@@ -131,7 +137,7 @@ int request::parseHeaders()
             return LARGE_PAYLOAD;
         }
     }
-    if((it = req_headers.find("Content-Length")) != req_headers.end() && req.empty())
+    if((it = req_headers.find("Content-Length")) != req_headers.end() && it->second != "0" && req.empty())
     {
         printLogs(_displayTimestamp() + "BAD_REQUEST");
         return BAD_REQUEST;
@@ -351,3 +357,11 @@ int request::getReqStatus()
     return status;
 }
 
+void        request::setservers(const std::vector<server> & obj) {
+	servers = obj;
+}
+
+void		request::setStatusCode(int code)
+{
+	status = code;
+}

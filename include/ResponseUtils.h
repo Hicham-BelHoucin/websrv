@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseUtils.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:18:08 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/04 01:18:28 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/08 17:47:42 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define RESPONSEUTILS_H
 
 #include "common.h"
- 
+
 typedef enum S_STATUSCODE
 {
     OK = 200,
@@ -34,7 +34,9 @@ typedef enum S_STATUSCODE
     NOT_FOUND =  404,
     NOT_ALLOWED = 405,
     NOT_ACCEPTABLE = 406,
+    REQUEST_TIMEOUT = 408,
     LARGE_PAYLOAD = 413,
+	UNSUPPORTEDMEDIATYPE = 415,
     S_ERROR = BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND | NOT_ALLOWED | NOT_ACCEPTABLE | LARGE_PAYLOAD,
     SERVER_ERROR = 500,
     NOT_IMPLEMENTED = 501,
@@ -68,7 +70,7 @@ typedef enum S_PATHMODE {
     D_RD = D_RX | D_RW | D_READ | D_ALL,
     ISDIR = _DIR | D_ALL | D_READ | D_WRITE | D_EXEC | D_RW | D_RX | D_WX,
     ISFILE = _FILE | F_EXEC | F_RW | F_RX | F_WX | F_READ | F_ALL | F_WRITE
-    
+
 } PATHMODE;
 
 #endif

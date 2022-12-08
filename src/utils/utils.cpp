@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/07 15:52:25 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 16:04:49 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ std::vector<server> createServers(Data data, parsing obj)
 	String 				root;
 	String 				host;
 	String 				serverName;
+	String 				_return;
 	Set 				locations;
 	int 				maxBodySize;
 	std::vector<int> 	ports;
@@ -91,7 +92,9 @@ std::vector<server> createServers(Data data, parsing obj)
 		locations = data[i].locations;
 		errorPages = obj.getErrorPages(data[i].data);
 		ports = obj.getPorts(data[i].data);
-		servers.push_back(server(root, host, serverName, locations, maxBodySize, ports, errorPages));
+		_return = obj.getReturn(data[i].data);
+		// print(_return);
+		servers.push_back(server(root, host, serverName, locations, maxBodySize, ports, errorPages, _return));
 	}
 	return servers;
 }
@@ -281,9 +284,11 @@ std::map<int, std::string> setStatusPhrases()
 	status[404] = "Not Found";
 	status[405] = "Method Not Allowed";
 	status[406] = "Not Acceptable";
+	status[408] = "Request Timeout";
 	status[410] = "Gone";
 	status[413] = "Large Payload";
 	status[411] = "Length Required";
+	status[415] = "Unsupported Media Type";
 	status[500] = "Internal Server Error";
 	status[501] = "Not Implemented";
 	status[502] = "Bad Gateway";
@@ -462,6 +467,7 @@ std::vector<std::string> split(std::string text, std::string del)
 		if (end == NOTFOUND)
 			break;
 		start = end + del.length();
+		start = text.find_first_not_of(del, start);
 	}
 	return ret;
 }
@@ -499,4 +505,24 @@ void	printParsingData(Map data, Set locations)
 		}
 		begin++;
 	}
+}
+
+long int	get_time(void)
+{
+	long int			time;
+	struct timeval		current_time;
+
+	time = 0;
+	gettimeofday(&current_time, NULL);
+	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (time);
+}
+
+int	spent_time(long int time)
+{
+	long int	c_time;
+
+	c_time = get_time();
+	c_time -= time;
+	return (c_time);
 }

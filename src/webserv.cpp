@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 15:52:29 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 15:40:20 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ webserv::webserv(String filename)
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << e.what() << '\n';
+		printLogs(e.what());
+		std::cerr << RED << e.what() << '\n';
 	}
 }
 

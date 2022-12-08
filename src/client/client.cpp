@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 15:51:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:39:29 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 	int ret;
 
 	ret = _read(fd.fd);
+	last_time_read = get_time();
 	if (ret == -1)
 		fd.revents = POLLNVAL;
 	fd.events = POLLIN | POLLOUT;
@@ -103,20 +104,35 @@ int 	client::HnadleInputEvent(pollfd & fd) {
 };
 
 int 	client::HnadleOutputEvent(pollfd & fd) {
-	// print(req_string);
+	if (!req_string.empty() && spent_time(last_time_read) > 10000)
+	{
+		donereading = true;
+		timed_out = true;
+	}
 	if (isDone() == true && req_string != "")
 	{
+		print(req_string);
+		// check https
 		if (total == 0)
 		{
+			// print(YELLOW << req_string);
 			if (isChunked(req_string))
 				req_string = handleChunked(req_string);
-			request req;
-			req = request();
-			req.setservers(servers);
-			req.requestCheck(getReqString());
-			connection = req.getHeaderValue("Connection");
-			response res(req, config);
-			setResString(res.getResponse());
+			try
+			{
+				req.setservers(servers);
+				req.requestCheck(getReqString());
+				if (timed_out)
+					req.setStatusCode(408);
+				connection = req.getHeaderValue("Connection");
+				res = response(req, config);
+				setResString(res.getResponse());
+			}
+			catch(...) {
+				req.setStatusCode(500);
+				res = response(req, config);
+				setResString(res.getResponse());
+			}
 			req.ClearRequest();
 			res.ClearResponse();
 		}
@@ -136,6 +152,7 @@ void	client::clean(void)
 	donereading = false;
 	donesending = true;
 	chunked = false;
+	timed_out = false;
 }
 
 bool	client::isDone(void)
@@ -231,6 +248,11 @@ client::client(void)
 	, total(0)
 	, servers()
 	, config()
+	, connection()
+	, last_time_read()
+	, req()
+	, res()
+	, timed_out()
 {}
 
 client::client(const std::vector<server> servers, const parsing config)
@@ -243,6 +265,11 @@ client::client(const std::vector<server> servers, const parsing config)
 	, total(0)
 	, servers(servers)
 	, config(config)
+	, connection()
+	, last_time_read()
+	, req()
+	, res()
+	, timed_out()
 {}
 
 client::client(const client & copy)
@@ -255,6 +282,11 @@ client::client(const client & copy)
 	, total(copy.total)
 	, servers(copy.servers)
 	, config(copy.config)
+	, connection(copy.connection)
+	, last_time_read(copy.last_time_read)
+	, req(copy.req)
+	, res(copy.res)
+	, timed_out(copy.timed_out)
 {}
 
 client & client::operator=(const client & assign)
@@ -270,6 +302,11 @@ client & client::operator=(const client & assign)
 		total = assign.total;
 		servers = assign.servers;
 		config = assign.config;
+		connection = assign.connection;
+		last_time_read = assign.last_time_read;
+		req = assign.req;
+		res = assign.res;
+		timed_out = assign.timed_out;
 	}
 	return *this;
 }

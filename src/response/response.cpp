@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/07 15:52:15 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:47:55 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,6 +354,10 @@ String response::MethodCheck(LocationMap location, String method, String path, S
 			return (getErrorPage(_serv, _status_code));
 		case NOT_IMPLEMENTED:
 			return (getErrorPage(_serv, _status_code));
+		case UNSUPPORTEDMEDIATYPE:
+			return (getErrorPage(_serv, _status_code));
+		case REQUEST_TIMEOUT:
+			return (getErrorPage(_serv, _status_code));
 		case NON_SUPPORTED_HTTPVERSION:
 			return (getErrorPage(_serv, _status_code));
 		default:
@@ -395,39 +399,34 @@ response::response(request req, parsing conf)
     _reqMethod = req.getReqMethod();
     _rootpath = _serv.getRootPath();
     _path = req.getReqPath();
-    // matching the path location
-    /*-------- TO DO -------
-
-        Before matching the location we should see if server contains a redirection
-        if it does we goto setHeaders and ResponseBuilder directly without checking the location
-
-     pseudo_code :
-        if ((it1 = _serv.find("return"))!= _serv.end())
-        {
-                _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
-                headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
-        }
-        else
-        {
-            _location = locationMatch(_ServerLocations, _path);
-            _body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
-        }
-        setHeaders(req);
-        ResponseBuilder();
-    */
-    _location = locationMatch(_ServerLocations, _path);
-    _body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
-    setHeaders(req);
-    ResponseBuilder();
+	std::string _return = _serv.getReturn();
+	if (_return != "")
+	{
+		try
+		{
+			_status_code = static_cast<CODES>(std::stoi(_return.substr(0,3)));
+			headers.insert(std::make_pair("Location", _return.substr(4)));
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
+	}
+	else
+	{
+		_location = locationMatch(_ServerLocations, _path);
+		_body = MethodCheck(_location, _reqMethod, _rootpath + _path, req.getReqBody());
+	}
+	setHeaders(req);
+	ResponseBuilder();
 }
 
 void response::setHeaders(request req)
 {
     headers.insert(std::make_pair("Server", "Webserv IHO-0.1"));
     headers.insert(std::make_pair("Date", getDate()));
-    // headers["Last-Modified"] = getLastModified();
     if (req.getHeaderValue("Connection") != "")
-        headers.insert(std::make_pair("Connection", "keep-alive"));
+        headers.insert(std::make_pair("Connection", req.getHeaderValue("Connection") != "NoValue" ? req.getHeaderValue("Connection") : "close"));
     if (headers.find("Connection")->second == "Keep-Alive")
         headers.insert(std::make_pair("Keep-Alive", "timeout=5, max=1000"));
     headers.insert(std::make_pair("Content-Length", std::to_string(_body.length())));

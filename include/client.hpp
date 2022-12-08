@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:03:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 15:50:23 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 16:55:37 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ class client
 		std::vector<server>			servers;
 		parsing 					config;
 		std::string 				connection;
+		long long 					last_time_read;
+		request						req;
+		response					res;
+		bool						timed_out;
 	public:
 		int				_read(int);
 		int				_send(int);

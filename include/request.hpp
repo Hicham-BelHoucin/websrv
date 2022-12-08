@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 10:54:00 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 13:40:33 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 16:49:10 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ class request
         std::map<std::string, std::string> getHeaders();
         std::string getReqQuery();
         void        ClearRequest();
+		void		setStatusCode(int code);
         Map         getFilesBody();
-        void        setservers(const std::vector<server> & obj) {servers = obj;};
+        void        setservers(const std::vector<server> & obj);
 };
 #endif
