@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 17:03:23 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 19:14:06 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ Map					parsing::getErrorPages(Map data)
 	status = setStatusPhrases();
 	for (std::map<int, std::string>::iterator it = status.begin(); it != status.end(); it++)
 		errors.push_back(it->first);
-	for (int i = 0; i < 27; i++)
+	for (int i = 0; i < (int)errors.size(); i++)
 	{
 		it = data.find("error_page_" + std::to_string(errors[i]));
 		if (it != data.end())

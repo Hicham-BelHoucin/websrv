@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 19:05:21 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 22:46:52 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 		// check https
 		if (total == 0)
 		{
+			// print(req_string);
 			// print(YELLOW << req_string);
 			if (isChunked(req_string))
 				req_string = handleChunked(req_string);
