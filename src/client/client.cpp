@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 17:39:29 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 19:05:21 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 	}
 	if (isDone() == true && req_string != "")
 	{
-		print(req_string);
 		// check https
 		if (total == 0)
 		{
@@ -238,6 +237,12 @@ int	client::_send(int connection)
 	return rv;
 }
 
+void client::handler(int status)
+{
+	(void)status;
+	printLogs("Bad Request");
+}
+
 client::client(void)
 	: req_string("")
 	, res_string("")
@@ -253,7 +258,9 @@ client::client(void)
 	, req()
 	, res()
 	, timed_out()
-{}
+{
+	signal(SIGPIPE, &this->handler);
+}
 
 client::client(const std::vector<server> servers, const parsing config)
 	: req_string("")
@@ -270,7 +277,9 @@ client::client(const std::vector<server> servers, const parsing config)
 	, req()
 	, res()
 	, timed_out()
-{}
+{
+	signal(SIGPIPE, &this->handler);
+}
 
 client::client(const client & copy)
 	: req_string(copy.req_string)
@@ -287,10 +296,13 @@ client::client(const client & copy)
 	, req(copy.req)
 	, res(copy.res)
 	, timed_out(copy.timed_out)
-{}
+{
+	signal(SIGPIPE, &this->handler);
+}
 
 client & client::operator=(const client & assign)
 {
+	signal(SIGPIPE, &this->handler);
 	if (this != &assign)
 	{
 		req_string = assign.req_string;

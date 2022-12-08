@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:06:18 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/02 11:40:41 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 18:21:51 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ class webserv
 		parsing 					config;
     public:
         void 		init(String);
-		void 		handleInputEvent(createSocket &, pollfd &);
-		void 		handleOutputEvent(createSocket &, pollfd &);
+		void 		handleInputEvent(createSocket, pollfd &);
+		void 		handleOutputEvent(createSocket, pollfd &);
 		void 		eraseSocket(int, int, int);
 		void 		setUpServer(void);
         webserv();

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/08 15:49:48 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 18:41:24 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 # define CONFIGFILE "./conf/config.conf"
 # define NOTFOUND std::string::npos
-
+# define MSG_CONNTERM  0x80
 # define CGI_BUFSIZE 1024
 // Colors
 # define RED "\033[31m"
