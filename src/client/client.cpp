@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 22:46:52 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/09 12:25:09 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,8 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 	}
 	if (isDone() == true && req_string != "")
 	{
-		// check https
 		if (total == 0)
 		{
-			// print(req_string);
-			// print(YELLOW << req_string);
 			if (isChunked(req_string))
 				req_string = handleChunked(req_string);
 			try
@@ -131,6 +128,7 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 			catch(...) {
 				req.setStatusCode(500);
 				res = response(req, config);
+				connection = "close";
 				setResString(res.getResponse());
 			}
 			req.ClearRequest();
