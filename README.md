@@ -29,6 +29,6 @@
 
 # Some useful resources :
 
-[Understand how Select and it's equivalent work .](https://youtu.be/Y6pFtgRdUts)
-[Understand difference between blocking file descriptor and non-blocking](https://youtu.be/wB9tIg209-8)
-[Exmaple of socket usage in c](https://www.binarytides.com/socket-programming-c-linux-tutorial/)
+[Understand how Select and it's equivalent work .](https://youtu.be/Y6pFtgRdUts)<br>
+[Understand difference between blocking file descriptor and non-blocking](https://youtu.be/wB9tIg209-8)<br>
+[Exmaple of socket usage in c](https://www.binarytides.com/socket-programming-c-linux-tutorial/)<br>
