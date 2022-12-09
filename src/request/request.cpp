@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/08 17:48:02 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/08 22:46:07 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ int request::parseHeaders()
     if((it = req_headers.find("Host")) != req_headers.end())
     {
         port = it->second.substr(it->second.find(":") + 1, it->second.length());
-		if (port == "0.0.0.0")
-			port = "80";
+        if(it->second.find(":") == std::string::npos)
+            port = "80";
         if(!isNumber(port))
         {
             printLogs(_displayTimestamp() + "BAD_REQUEST");
@@ -112,8 +112,6 @@ int request::parseHeaders()
     }
     if((it = req_headers.find("Content-Type")) != req_headers.end())
     {
-		if (it->second.compare(0, strlen("multipart/form-data;"), "multipart/form-data;"))
-			return UNSUPPORTEDMEDIATYPE;
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
         {
             printLogs(_displayTimestamp() + "BAD_REQUEST");
@@ -319,8 +317,8 @@ std::string request::getReqPort()
 
     if((found = port.find_first_of(":")) != std::string::npos)
         port = port.substr(found + 1);
-	if (port == "0.0.0.0")
-		port = "80";
+	else
+        port = "80";
 	return port;
 }
 

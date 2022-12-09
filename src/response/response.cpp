@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/08 17:47:55 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 11:42:09 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ String response::MethodGet(LocationMap location, String path, String body)
     DIR *Dir;
     struct dirent *DirEntry;
     VecIterator it;
-
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -214,6 +213,7 @@ String response::MethodPost(LocationMap location, String path, String body)
         _status_code = SERVER_ERROR;
         return getErrorPage(_serv, _status_code);
     }
+
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -354,8 +354,6 @@ String response::MethodCheck(LocationMap location, String method, String path, S
 			return (getErrorPage(_serv, _status_code));
 		case NOT_IMPLEMENTED:
 			return (getErrorPage(_serv, _status_code));
-		case UNSUPPORTEDMEDIATYPE:
-			return (getErrorPage(_serv, _status_code));
 		case REQUEST_TIMEOUT:
 			return (getErrorPage(_serv, _status_code));
 		case NON_SUPPORTED_HTTPVERSION:
@@ -427,15 +425,12 @@ void response::setHeaders(request req)
     headers.insert(std::make_pair("Date", getDate()));
     if (req.getHeaderValue("Connection") != "")
         headers.insert(std::make_pair("Connection", req.getHeaderValue("Connection") != "NoValue" ? req.getHeaderValue("Connection") : "close"));
-    if (headers.find("Connection")->second == "Keep-Alive")
-        headers.insert(std::make_pair("Keep-Alive", "timeout=5, max=1000"));
     headers.insert(std::make_pair("Content-Length", std::to_string(_body.length())));
     if (!isCgiBody)
         headers.insert(std::make_pair("Content-Type", getContentType(req.getReqPath(), _status_code)));
     if (getContentType(req.getReqPath(), _status_code) == "application/pdf")
         headers.insert(std::make_pair("Content-Disposition", "attachment; filename=" + req.getReqPath().substr(1)));
     headers.insert(std::make_pair("Content-Location", req.getReqPath()));
-    headers.insert(std::make_pair("Transfer-Encoding", "chunked"));
 }
 
 void response::checkAndAppend(Map &map, String &str, String key)
@@ -465,6 +460,11 @@ String response::handleUpload(LocationMap location)
     else
         upload_store = "";
     // loop over the map and call writeContent function
+    if (it == _upload.end() && __req.getReqBody() != "")
+    {
+        _status_code = UNSUPPORTEDMEDIATYPE;
+        return getErrorPage(_serv, _status_code);
+    }
     while (it != _upload.end())
     {
         if (checkPathMode(_rootpath + upload_store) & ISDIR)
@@ -486,6 +486,7 @@ String response::handleUpload(LocationMap location)
         _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
         headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
     }
+	body += "<p>File Upload success</p>";
     return body;
 }
 
