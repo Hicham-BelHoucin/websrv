@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 19:14:06 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/09 12:06:35 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,7 +385,9 @@ Pair	parsing::parseLine(std::string line)
 		if ((args[0] != "301" && args[0] != "302") || args.size() != 2)
 			throw std::runtime_error("error : " + std::string((args.size() != 2 ? "Wrong input" : "Invalid Statis code")) +  " : " + line);
 	}
-	if (keyWord[0] != '#' && keyWord != "index" && keyWord != "return" && keyWord != "server_name" && value.find_first_of(WHITESPACES) != std::string::npos)
+	if (keyWord[0] != '#' && keyWord != "index" && keyWord != "allow_methods"
+			&& keyWord != "return" && keyWord != "server_name"
+			&& value.find_first_of(WHITESPACES) != std::string::npos)
 		throw std::runtime_error("error in this line => " + value);
 	return std::make_pair(keyWord, value);
 }
@@ -699,6 +701,7 @@ std::vector <std::string >	parsing::parseArray(const std::string & line)
 
 	while (getline(string, method, ','))
 	{
+		method = stringtrim(method);
 		if (method == "" || line[line.size() - 2] == ',')
 			throw std::runtime_error("Usage [GET,POST,DELETE]");
 		methods.push_back(method);
