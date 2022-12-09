@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/09 12:06:35 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:55:36 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ std::string			parsing::getServerName(Map data) const
 	return it->second;
 };
 
-int					parsing::getMaxBodySize(Map data) const
+long long			parsing::getMaxBodySize(Map data) const
 {
 	Map::iterator	it;
-	int				ret;
+	long long		ret;
 
 	ret = INT_MAX;
 	it = data.find("client_max_body_size");
@@ -101,9 +101,11 @@ int					parsing::getMaxBodySize(Map data) const
 		return CLINETMAXBODYSIZE;
 	try
 	{
-		ret = std::stoi(it->second);
+		ret = static_cast<long long>(std::stod(it->second));
 	}
-	catch(const std::exception& e){}
+	catch(const std::exception& e){
+		ret = LLONG_MAX;
+	}
 	return ret;
 };
 
@@ -122,14 +124,6 @@ Data	parsing::getData(void) const
 parsing::parsing()
 {
 
-}
-
-bool isServer(std::string key)
-{
-	key = stringtrim(key);
-	if (key == "server")
-		return true;
-	return false;
 }
 
 int	parsing::countSize(std::string text)
@@ -271,7 +265,18 @@ parsing::parsing(std::string filename) : _size(0)
 		}
 		checkKeyWords();
 	}
-	printLogs(_displayTimestamp() + "file parsed successfully");
+	Data::iterator d = std::unique(data.begin(), data.end());
+	while ((d != data.end()))
+	{
+		if (d != data.end())
+		{
+			printWarning("Duplicate server bloc !!!");
+			data.erase(d);
+			printWarning("ignoring it's configuration");
+		}
+		d = std::unique(data.begin(), data.end());
+	}
+	printSuccess("file parsed successfully");
 }
 
 parsing::~parsing() {}
@@ -316,6 +321,12 @@ void	parsing::parseFile(std::string text, size_t start)
 			}
 			else if (conf.first == "host")
 				checkHost(conf);
+			else if (conf.first == "root")
+			{
+				PATHMODE mode = checkPathMode(conf.second);
+				if (!(mode & ISDIR))
+					printWarning("Warning: Invalid root !!! => " + conf.second);
+			}
 			else if (conf.first == "client_max_body_size")
 			{
                 if (conf.second.find_first_not_of("0123456789bB") != std::string::npos)

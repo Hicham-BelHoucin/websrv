@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/09 11:42:09 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 15:21:22 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,12 @@ String response::MethodPost(LocationMap location, String path, String body)
     {
         if (location.find("index") != location.end())
             indexes = location.find("index")->second;
+		else
+        {
+            indexes.push_back("index.html");
+            indexes.push_back("index.htm");
+            indexes.push_back("index.php");
+        }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
         if (mode & (D_RD))

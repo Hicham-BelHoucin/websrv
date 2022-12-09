@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 16:30:49 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/08 22:46:07 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/09 19:53:56 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int request::parseHeaders()
         all = req.substr(0, lt_of_head);
         if(all.find(':') == std::string::npos)
         {
-            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            printError("BAD_REQUEST");
             return BAD_REQUEST;
         }
         key = all.substr(0,all.find(':'));
@@ -93,7 +93,7 @@ int request::parseHeaders()
         req_headers.insert(std::make_pair((key), value));
         if(req_headers.count("Host") > 1  || req_headers.count("Host") < 0)
         {
-            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            printError("BAD_REQUEST");
             return BAD_REQUEST;
         }
         req = req.substr(req.find("\r\n") + 2,req.length());
@@ -106,7 +106,7 @@ int request::parseHeaders()
             port = "80";
         if(!isNumber(port))
         {
-            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            printError("BAD_REQUEST");
             return BAD_REQUEST;
         }
     }
@@ -114,7 +114,7 @@ int request::parseHeaders()
     {
         if(it->second.find("multipart") != std::string::npos && it->second.find("boundary") == std::string::npos)
         {
-            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            printError("BAD_REQUEST");
             return BAD_REQUEST;
         }
         boundry = it->second.substr(it->second.find("=") + 1, it->second.find("\r\n"));
@@ -126,18 +126,18 @@ int request::parseHeaders()
         obj = selectServer(servers, getReqHost(), getReqPort());
         if(!isNumber(it->second))
         {
-            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            printError("BAD_REQUEST");
             return BAD_REQUEST;
         }
         if(std::stoi(it->second) > obj.getMaxBodySize())
         {
-            printLogs(_displayTimestamp() + "LARGE_PAYLOAD");
+            printError("LARGE_PAYLOAD");
             return LARGE_PAYLOAD;
         }
     }
     if((it = req_headers.find("Content-Length")) != req_headers.end() && it->second != "0" && req.empty())
     {
-        printLogs(_displayTimestamp() + "BAD_REQUEST");
+        printError("BAD_REQUEST");
         return BAD_REQUEST;
     }
     if(!req.empty())
@@ -170,7 +170,7 @@ int       request::parseReqBody()
     bound = "--" + boundry;
     if((last_bound = newreq.find(bound + "--")) == std::string::npos)
     {
-        printLogs(_displayTimestamp() + "BAD_REQUEST");
+        printError("BAD_REQUEST");
         return BAD_REQUEST;
     }
     newreq = newreq.substr(newreq.find(bound) + bound.length() + 2,last_bound + bound.length() + 2);
@@ -213,7 +213,7 @@ int request::parseReqMethods()
         r_all = r_line.substr(0,r_line.find(' '));
         if(r_all != "GET" && r_all != "DELETE" && r_all != "POST")
         {
-            printLogs(_displayTimestamp() + "NOT_IMPLEMENTED");
+            printError("NOT_IMPLEMENTED");
             return NOT_IMPLEMENTED;
         }
         else
@@ -248,7 +248,7 @@ int request::parseReqMethods()
         }
         else
         {
-            printLogs(_displayTimestamp() + "BAD_REQUEST");
+            printError("BAD_REQUEST");
             return BAD_REQUEST;
         }
         r_all = r_all.substr(r_all.find(' ') + 1,req.find("\r\n"));
@@ -257,7 +257,7 @@ int request::parseReqMethods()
             req_version = r_all;
         else
         {
-            printLogs(_displayTimestamp() + "NON_SUPPORTED_HTTPVERSION");
+            printError("NON_SUPPORTED_HTTPVERSION");
             return NON_SUPPORTED_HTTPVERSION;
         }
     }
@@ -339,15 +339,16 @@ Map request::getFilesBody()
 
 void        request::ClearRequest()
 {
-    req = "";
-    req_method = "";
-    req_path = "";
-    req_version = "";
-    req_body = "";
-    req_query = "";
+    req.clear();
+    req_method.clear();
+    req_path.clear();
+    req_version.clear();
+    req_body.clear();
+    req_query.clear();
     status = 0;
     req_headers.clear();
     error = 0;
+	body_con.clear();
 }
 
 int request::getReqStatus()

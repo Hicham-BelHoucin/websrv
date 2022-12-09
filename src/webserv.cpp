@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:30:15 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 19:04:53 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:56:17 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,13 @@ webserv::webserv(String filename)
 {
 	try
 	{
-		printLogs("\n\n\n\n---------------------------------[" \
-			+ _displayTimestamp() + " start new web server session " + getenv("USER") \
-			+ "]---------------------------------");
 		init(filename);
-		printLogs(_displayTimestamp() + "server initialized successfully");
-		printLogs(_displayTimestamp() + "start listing ... ");
+		printSuccess("server initialized successfully");
 		setUpServer();
 	}
 	catch (const std::exception &e)
 	{
-		printLogs(e.what());
-		std::cerr << RED << e.what() << '\n';
+		printError(e.what());
 	}
 }
 
@@ -115,7 +110,7 @@ void webserv::handleInputEvent(createSocket _socket, pollfd &fd)
 		sockets.push_back(createSocket(connection, _socket.ip, _socket.port));
 		listning_fds.push_back(new_connection);
 		clients.insert(std::make_pair(new_connection.fd, c));
-		printLogs("received new connection : " + _socket.ip + ":" + std::to_string(_socket.port));
+		printSuccess("received new connection : " + _socket.ip + ":" + std::to_string(_socket.port));
 	}
 	else
 	{

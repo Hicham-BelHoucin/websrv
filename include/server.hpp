@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:25 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/07 15:59:06 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:34:32 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class server
 		String 				_serverName;
 		String 				_host;
 		Set					_locations;
-		int                 _maxBodySize;
+		long long           _maxBodySize;
 		std::vector<int>	_ports;
 		Map					_errorPages;
 		String 				_return;
@@ -37,7 +37,7 @@ class server
 		Map 				getErrorPages(void) const;
 		int 				getMaxBodySize(void) const;
 		server(void);
-		server(String, String, String, Set, int, std::vector<int>, Map, String);
+		server(String, String, String, Set, long long, std::vector<int>, Map, String);
 		server(const server & obj);
 		server & operator=(const server & obj);
 		~server(void);

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:34:14 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/02 11:39:42 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 20:03:17 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ int createSocket::_listen(void)
 {
 	if (listen(sockfd, -1) == -1)
 		return (-1);
-	std::cout << "listing on port: " << ip << ":" << port << std::endl;
+	printSuccess("listing on port: " + ip + ":" + std::to_string(port));
     return (0);
 }
 
