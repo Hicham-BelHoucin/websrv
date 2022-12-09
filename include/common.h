@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/08 18:41:24 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 20:02:52 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,16 @@ typedef	struct s_data
 {
 	Map 			data;
 	Set				locations;
+	friend bool operator==(const s_data & lhs, const s_data & rhs) {
+		if (lhs.data == rhs.data && lhs.locations == rhs.locations)
+			return true;
+		return false;
+	}
 } t_data;
 
 typedef	std::vector<t_data>													Data;
-std::string		readFile(std::string filename);
+
+std::string					readFile(std::string filename);
+void						printSuccess(std::string line);;
 
 #endif // COMMON_H

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:57:21 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/05 13:32:39 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:57:18 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ String cgi::executeCgi(String script, String cgi_pass)
 
 	if (pid == -1)
 	{
-		printLogs( "Fork crashed.");
+		printError( "Fork crashed.");
 		return ("Status: 500 \r\n\r\n");
 	}
 	else if (!pid)
@@ -97,14 +97,14 @@ String cgi::executeCgi(String script, String cgi_pass)
 			dup2(fdIn, STDIN_FILENO);
 			dup2(fdOut, STDOUT_FILENO);
 			execve(cgi_pass.c_str(), args, envv);
-			printLogs("Error: Execve crashed !!");
+			printError("Error: Execve crashed !!");
 			write(STDOUT_FILENO, "Status: 500 \r\n\r\n", 16);
 			exit(1);
 		}
 		dup2(fdIn, STDIN_FILENO);
 		dup2(fdOut, STDOUT_FILENO);
 		execve(script.c_str(), NULL, envv);
-		printLogs("Error: Execve crashed !!");
+		printError("Error: Execve crashed !!");
 		write(STDOUT_FILENO, "Status: 500 \r\n\r\n", 16);
 		exit(1);
 

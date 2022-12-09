@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 09:02:50 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/07 16:14:50 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:34:15 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ server::server()
 	, _return()
 {}
 
-server::server(String root, String host, String serverName, Set locations, int maxBodySize, std::vector<int> ports, Map errorPages, String _return)
+server::server(String root, String host, String serverName, Set locations, long long maxBodySize, std::vector<int> ports, Map errorPages, String _return)
 	: _root(root)
 	, _serverName(serverName)
     , _host(host)

@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 15:04:33 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/09 12:25:09 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:56:45 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int 	client::HnadleOutputEvent(pollfd & fd) {
 				req.requestCheck(getReqString());
 				if (timed_out)
 					req.setStatusCode(408);
+				if (!req.getReqStatus())
+					printSuccess("request parsed successfully");
 				connection = req.getHeaderValue("Connection");
 				res = response(req, config);
 				setResString(res.getResponse());
@@ -166,11 +168,11 @@ std::string		client::getReqString() const
 int client::normalRevc(int connection)
 {
 	static	int 	i;
-    char     buff[10025];
-    int        ret = 10024;
-    int headerslength = 0;
-    size_t index = 0;
-    int    contentlength = 0;
+    char     		buff[10025];
+    int        		ret = 10024;
+    int 			headerslength = 0;
+    size_t 			index = 0;
+    int    			contentlength = 0;
 
     bzero(buff, 10024);
     ret = recv(connection, buff, 10024, 0);
@@ -199,13 +201,19 @@ int client::normalRevc(int connection)
     {
 		chunked = true;
         size_t index = req_string.find("0\r\n\r\n", i);
-        if (index != NOTFOUND)
-            this->donereading = true;
 		i = req_string.length();
+        if (index != NOTFOUND)
+		{
+            this->donereading = true;
+			i = 0;
+		}
     }
     else if ((contentlength + headerslength <= (int)req_string.length())
             || (!contentlength && ret < 10024))
+	{
+		i = 0;
         this->donereading = true;
+	}
     return ret;
 }
 
@@ -232,14 +240,17 @@ int	client::_send(int connection)
 		return -1;
 	sent += rv;
 	if ((total != 0 && total == sent))
+	{
 		clean();
+		printSuccess("response sent successfully");
+	}
 	return rv;
 }
 
 void client::handler(int status)
 {
 	(void)status;
-	printLogs("Bad Request");
+	printWarning("Bad Request");
 }
 
 client::client(void)

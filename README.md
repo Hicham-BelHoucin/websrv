@@ -19,13 +19,13 @@
 
 **To configure the server you will need to modify ```config.conf``` which is located on ```/conf``` or create a new config file and pass it as argument**
 
-**This server is compatible with `Firefox` only !!!!!!**
+**This server is compatible with `Chrome` only !!!!!!**
 
 # Contributors :
 
-[Imad abid](https://github.com/imabid99)
-[Ousama beaj](https://github.com/BEAJousama)
-[Hicham bel houcin](https://github.com/Hicham-BelHoucin)
+[Imad abid](https://github.com/imabid99)<br>
+[Ousama beaj](https://github.com/BEAJousama)<br>
+[Hicham bel houcin](https://github.com/Hicham-BelHoucin)<br>
 
 # Some useful resources :
 

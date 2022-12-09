@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:52:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/07 16:01:11 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:32:31 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class parsing
 		std::vector<int> 	getPorts(Map data) const;
 		Map					getErrorPages(Map data);
 		std::string			getServerName(Map data) const;
-		int					getMaxBodySize(Map data) const;
+		long long			getMaxBodySize(Map data) const;
 		std::string   		trimString(std::string s, std::string rejected = WHITESPACES);
 		std::string			getRoot(Map data) const;
 		int					checkDuplicatePort(Map data);

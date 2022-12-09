@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 09:57:05 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/08 15:39:34 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 20:00:58 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
 	(void)argc;
 	if (argv[1] && (checkExtansion(argv[1]) == -1))
 	{
-		std::cerr << "Bad extansion !!!" << std::endl;
+		printError("Bad extansion !!!");
 		return EXIT_FAILURE;
 	}
 	else if (!argv[1])
@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		printError(e.what());
 	}
 	return 0;
 }

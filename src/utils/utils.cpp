@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 09:19:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/09 12:23:20 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/09 20:00:25 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,6 @@ std::string	_displayTimestamp( void )
 	return buffer;
 }
 
-// print logs in the log file
-void			printLogs(const std::string & line)
-{
-	std::ofstream	logfile;
-
-	logfile.open("webserver.logs", std::ifstream::app);
-	if (logfile.is_open())
-	{
-		logfile << line << std::endl;
-		logfile.close();
-	}
-}
-
 std::vector<int>	getallPorts(Data data, parsing obj)
 {
 	std::vector<int> ports;
@@ -78,7 +65,7 @@ std::vector<server> createServers(Data data, parsing obj)
 	String 				serverName;
 	String 				_return;
 	Set 				locations;
-	int 				maxBodySize;
+	long long 			maxBodySize;
 	std::vector<int> 	ports;
 	Map 				errorPages;
 	std::vector<server>	servers;
@@ -93,7 +80,6 @@ std::vector<server> createServers(Data data, parsing obj)
 		errorPages = obj.getErrorPages(data[i].data);
 		ports = obj.getPorts(data[i].data);
 		_return = obj.getReturn(data[i].data);
-		// print(_return);
 		servers.push_back(server(root, host, serverName, locations, maxBodySize, ports, errorPages, _return));
 	}
 	return servers;
@@ -255,8 +241,7 @@ void check(int condition)
 {
 	if (condition)
 	{
-		// printLogs(strerror(errno));
-		print(strerror(errno));
+		printError(strerror(errno));
 	}
 }
 
@@ -525,4 +510,19 @@ int	spent_time(long int time)
 	c_time = get_time();
 	c_time -= time;
 	return (c_time);
+}
+
+void	printWarning(std::string line)
+{
+	print(YELLOW << "! Warning : " << line << RESET);
+}
+
+void	printSuccess(std::string line)
+{
+    print(GREEN << "√ Success : " << line << RESET);
+}
+
+void    printError(std::string line)
+{
+	print(RED << "💥 Error : " << line << RESET);
 }
