@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/09 15:21:22 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/10 00:50:30 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ String response::MethodGet(LocationMap location, String path, String body)
     DIR *Dir;
     struct dirent *DirEntry;
     VecIterator it;
+    String newpath;
+    
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -137,13 +139,18 @@ String response::MethodGet(LocationMap location, String path, String body)
                     {
                         _status_code = OK;
 						closedir(Dir);
+                        if (path[path.length() -1] != '/')
+                            path += "/";
                         return (readFile(path + *it));
                     }
                     else
                     {
                         _location = locationMatch(_ServerLocations, *it);
-						closedir(Dir);
-                        return (MethodCheck(_location, _reqMethod, path + *it, body));
+                        newpath = _rootpath + _path;
+                        if (newpath[newpath.length() -1] != '/')
+                            newpath += "/";
+                        closedir(Dir);
+                        return (MethodCheck(_location, _reqMethod, newpath + *it, body));
                     }
                 }
             }
@@ -203,6 +210,7 @@ String response::MethodPost(LocationMap location, String path, String body)
     DIR *Dir;
     struct dirent *DirEntry;
     VecIterator it;
+    String newpath;
 
     if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
     {
@@ -249,13 +257,19 @@ String response::MethodPost(LocationMap location, String path, String body)
                     // if index.html or index.htm found
                     if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
                     {
+                        if (path[path.length() -1] != '/')
+                            path += "/";
                         _status_code = OK;
                         return (readFile(path + *it));
                     }
                     else
                     {
                         _location = locationMatch(_ServerLocations, *it);
-                        return (MethodCheck(_location, _reqMethod, path + *it, body));
+                        newpath = _rootpath + _path;
+                        if (newpath[newpath.length() -1] != '/')
+                            newpath += "/";
+                        closedir(Dir);
+                        return (MethodCheck(_location, _reqMethod, newpath + *it, body));
                     }
                 }
             }
