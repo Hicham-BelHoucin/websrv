@@ -6,7 +6,7 @@
 #    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/12/09 23:33:28 by obeaj            ###   ########.fr        #
+#    Updated: 2022/12/10 22:11:54 by obeaj            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = Webserv
 
 CC = c++
 
-CFLAGS = 
+CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 OBEJECTDIR = .objects
 

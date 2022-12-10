@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/10 00:50:30 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/10 23:37:00 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,15 @@ String response::writeContent(String path, String body)
     if (mode & ISFILE)
     {
         file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+        if (file.is_open() == false)
+        {
+            _status_code = FORBIDDEN;
+            return getErrorPage(_serv, _status_code);
+        }
         file << body;
         file.close();
         _status_code = NO_CONTENT;
-        return "";
+        return "";     
     }
     else
     {
@@ -45,7 +50,8 @@ String response::writeContent(String path, String body)
         file << body;
         file.close();
         _status_code = CREATED;
-        return "";
+        headers.insert(std::make_pair("Location", path.substr(_rootpath.length())));
+        return "<h1>File Uploaded successfully !</h1>";
     }
     return "";
 }
@@ -67,7 +73,6 @@ LocationMap response::locationMatch(Set locations, String path)
 
     if (it == locations.end())
     {
-        // return locations.find("*.py")->second;
         Set::iterator it1 = locations.begin();
         while (it1 != locations.end())
         {
@@ -139,7 +144,7 @@ String response::MethodGet(LocationMap location, String path, String body)
                     {
                         _status_code = OK;
 						closedir(Dir);
-                        if (path[path.length() -1] != '/')
+                        if (path[path.length() - 1] != '/')
                             path += "/";
                         return (readFile(path + *it));
                     }
@@ -147,7 +152,7 @@ String response::MethodGet(LocationMap location, String path, String body)
                     {
                         _location = locationMatch(_ServerLocations, *it);
                         newpath = _rootpath + _path;
-                        if (newpath[newpath.length() -1] != '/')
+                        if (newpath[newpath.length() - 1] != '/')
                             newpath += "/";
                         closedir(Dir);
                         return (MethodCheck(_location, _reqMethod, newpath + *it, body));
@@ -326,18 +331,12 @@ String response::MethodDelete(LocationMap location, String path, String body)
     (void)location;
 	(void)body;
     PATHMODE mode;
-	std::string root;
 
     mode = checkPathMode(path);
-    if (mode & ISFILE)
+    if (mode & ISFILE || mode & ISDIR)
     {
-		root = _serv.getRootPath();
-		if (root.back() == '/')
-			_path = root + _path.substr(1);
-		else
-			_path = root + _path;
-        if (remove(_path.c_str()) == 0)
-            _status_code = NO_CONTENT;
+        if (remove(path.c_str()) == 0)
+            _status_code = OK;
         else
         {
             _status_code = FORBIDDEN;
@@ -349,7 +348,7 @@ String response::MethodDelete(LocationMap location, String path, String body)
         _status_code = NOT_FOUND;
         return getErrorPage(_serv, _status_code);
     }
-    return "";
+    return "<h1> File deleted successfuly !</h1>";
 }
 
 typedef String (response::*MethodCall)(LocationMap location, String path, String body);
@@ -492,21 +491,18 @@ String response::handleUpload(LocationMap location)
         else
         {
             if (mkdir((_rootpath + upload_store).c_str(), 0777) == -1)
-                std::cerr << RED << "Error :  " << strerror(errno) << std::endl;
+                std::cerr << RED << "Error :  " << "Couldn't create th upload location !" << std::endl;
             body = writeContent(_rootpath + upload_store + "/" + it->first, it->second);
         }
         it++;
     }
     if (_status_code == FORBIDDEN)
         return (body);
-    // see if location contain a return line
-    // if it does, add the location header, and change the status code accordingly
     if ((it1 = location.find("return")) != location.end())
     {
         _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
         headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
     }
-	body += "<p>File Upload success</p>";
     return body;
 }
 
@@ -514,16 +510,11 @@ void response::ResponseBuilder()
 {
     _response += "HTTP/1.1 " + std::to_string(_status_code) + " " + statusPhrases[_status_code] + "\r\n";
     checkAndAppend(headers, _response, "Connection");
-    // checkAndAppend(headers,_response,"Keep-Alive");
     checkAndAppend(headers, _response, "Date");
-    // checkAndAppend(headers,_response,"Content-Location");
     checkAndAppend(headers, _response, "Content-Length");
-    // checkAndAppend(headers,_response,"Content-Disposition");
-    // if (headers.find("Content-Type") != headers.end())
     checkAndAppend(headers, _response, "Content-Type");
     checkAndAppend(headers, _response, "Location");
     checkAndAppend(headers, _response, "Set-Cookie");
-    // checkAndAppend(headers,_response,"last-modified");
     checkAndAppend(headers, _response, "Server");
     _response += "\r\n";
 	_response.append(_body);
