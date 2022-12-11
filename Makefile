@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+         #
+#    By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/24 10:20:36 by hbel-hou          #+#    #+#              #
-#    Updated: 2022/12/11 02:18:46 by obeaj            ###   ########.fr        #
+#    Updated: 2022/12/11 11:52:35 by hbel-hou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,6 @@ $(OBEJECTDIR)/%.o : %.cpp $(INCLUDE)
 clean:
 	@rm -rf $(SRCOBJ)
 	@rm -rf $(OBEJECTDIR)
-	@rm -f webserver.logs
 
 fclean: clean
 	@rm -f $(NAME)
