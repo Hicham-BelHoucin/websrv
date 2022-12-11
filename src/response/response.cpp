@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/11 02:11:56 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/11 11:49:56 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ String response::writeContent(String path, String body)
         file << body;
         file.close();
         _status_code = NO_CONTENT;
-        return "";     
+        return "";
     }
     else
     {
@@ -50,7 +50,6 @@ String response::writeContent(String path, String body)
         file << body;
         file.close();
         _status_code = CREATED;
-        headers.insert(std::make_pair("Location", path.substr(_rootpath.length())));
         return "<h1>File Uploaded successfully !</h1>";
     }
     return "";
@@ -106,7 +105,7 @@ String response::MethodGet(LocationMap location, String path, String body)
     struct dirent *DirEntry;
     VecIterator it;
     String newpath;
-    
+
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -220,15 +219,15 @@ String response::MethodPost(LocationMap location, String path, String body)
 
     mode = checkPathMode(path);
 
-    if (!(mode & ISDIR) && !(mode & ISFILE))
-    {
-        _status_code = NOT_FOUND;
-        return (getErrorPage(_serv, _status_code));
-    }
     if ((location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
         && (!__req.getReqBody().empty() || !_upload.empty()))
     {
         return (handleUpload(location));
+    }
+    if (!(mode & ISDIR) && !(mode & ISFILE))
+    {
+        _status_code = NOT_FOUND;
+        return (getErrorPage(_serv, _status_code));
     }
     else if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "off")
     {
@@ -533,16 +532,15 @@ void response::ClearResponse()
 {
     __req.ClearRequest();
     headers.clear();
-    _body = "";
-    _response = "";
+    _body.clear();
+    _response.clear();
     _location.clear();
-    _rootpath = "";
-    _path = "";
+    _rootpath.clear();
+    _path.clear();
     statusPhrases.clear();
     _upload.clear();
     isCgiBody = 0;    // __conf.clearConf();
-    _reqMethod = "";
-    // _serv.clearServer();
+    _reqMethod.clear();
     _ServerLocations.clear();
     _status_code = OK;
     //...

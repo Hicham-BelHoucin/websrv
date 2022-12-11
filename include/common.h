@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:17:03 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/09 20:02:52 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/11 10:34:45 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ typedef enum s_type
 typedef	std::vector <std::string >								Methods;
 typedef std::pair<std::string, std::string>						Pair;
 typedef	std::multimap<std::string , std::string>				Map;
-typedef	std::map<std::string , Methods>							LocationMap;
+typedef	std::multimap<std::string , Methods>					LocationMap;
 typedef std::map<std::string, LocationMap>						Set;
 typedef	std::string												String;
 typedef std::vector<std::string>::iterator                   	VecIterator;
