@@ -6,7 +6,7 @@
 /*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/10 23:37:00 by obeaj            ###   ########.fr       */
+/*   Updated: 2022/12/11 02:11:56 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ String response::MethodGet(LocationMap location, String path, String body)
         }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
-        if (mode & (D_RD))
+        if (mode & D_RD)
         {
 			if (access(path.c_str(), X_OK) == 0)
 				Dir = opendir(path.c_str());
@@ -131,6 +131,7 @@ String response::MethodGet(LocationMap location, String path, String body)
 			}
 			if (!Dir)
 			{
+                std::cout << strerror(errno);
 				_status_code = SERVER_ERROR;
 				return getErrorPage(_serv, _status_code);
 			}
@@ -143,9 +144,9 @@ String response::MethodGet(LocationMap location, String path, String body)
                     if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
                     {
                         _status_code = OK;
-						closedir(Dir);
                         if (path[path.length() - 1] != '/')
                             path += "/";
+						closedir(Dir);
                         return (readFile(path + *it));
                     }
                     else
@@ -217,17 +218,23 @@ String response::MethodPost(LocationMap location, String path, String body)
     VecIterator it;
     String newpath;
 
-    if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
+    mode = checkPathMode(path);
+
+    if (!(mode & ISDIR) && !(mode & ISFILE))
+    {
+        _status_code = NOT_FOUND;
+        return (getErrorPage(_serv, _status_code));
+    }
+    if ((location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
+        && (!__req.getReqBody().empty() || !_upload.empty()))
     {
         return (handleUpload(location));
     }
     else if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "off")
     {
-        _status_code = SERVER_ERROR;
+        _status_code = FORBIDDEN;
         return getErrorPage(_serv, _status_code);
     }
-
-    mode = checkPathMode(path);
     if (mode & ISDIR)
     {
         if (location.find("index") != location.end())
@@ -240,7 +247,7 @@ String response::MethodPost(LocationMap location, String path, String body)
         }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
-        if (mode & (D_RD))
+        if (mode & D_RD)
         {
 			if (access(path.c_str(), X_OK) == 0)
 				Dir = opendir(path.c_str());
@@ -265,6 +272,7 @@ String response::MethodPost(LocationMap location, String path, String body)
                         if (path[path.length() -1] != '/')
                             path += "/";
                         _status_code = OK;
+                        closedir(Dir);
                         return (readFile(path + *it));
                     }
                     else

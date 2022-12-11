@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseUtils.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: obeaj <obeaj@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:18:08 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/08 17:47:42 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/11 01:28:05 by obeaj            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef enum S_STATUSCODE
     REQUEST_TIMEOUT = 408,
     LARGE_PAYLOAD = 413,
 	UNSUPPORTEDMEDIATYPE = 415,
-    S_ERROR = BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND | NOT_ALLOWED | NOT_ACCEPTABLE | LARGE_PAYLOAD,
+    S_ERROR = BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND | NOT_ALLOWED | NOT_ACCEPTABLE | LARGE_PAYLOAD | UNSUPPORTEDMEDIATYPE,
     SERVER_ERROR = 500,
     NOT_IMPLEMENTED = 501,
     NON_SUPPORTED_HTTPVERSION = 505,
