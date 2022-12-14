@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 10:46:12 by obeaj             #+#    #+#             */
-/*   Updated: 2022/12/09 15:21:22 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/11 11:49:56 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ String response::writeContent(String path, String body)
     if (mode & ISFILE)
     {
         file.open(path.c_str(), std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+        if (file.is_open() == false)
+        {
+            _status_code = FORBIDDEN;
+            return getErrorPage(_serv, _status_code);
+        }
         file << body;
         file.close();
         _status_code = NO_CONTENT;
@@ -45,7 +50,7 @@ String response::writeContent(String path, String body)
         file << body;
         file.close();
         _status_code = CREATED;
-        return "";
+        return "<h1>File Uploaded successfully !</h1>";
     }
     return "";
 }
@@ -67,7 +72,6 @@ LocationMap response::locationMatch(Set locations, String path)
 
     if (it == locations.end())
     {
-        // return locations.find("*.py")->second;
         Set::iterator it1 = locations.begin();
         while (it1 != locations.end())
         {
@@ -100,6 +104,8 @@ String response::MethodGet(LocationMap location, String path, String body)
     DIR *Dir;
     struct dirent *DirEntry;
     VecIterator it;
+    String newpath;
+
     mode = checkPathMode(path);
     if (mode & ISDIR)
     {
@@ -113,7 +119,7 @@ String response::MethodGet(LocationMap location, String path, String body)
         }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
-        if (mode & (D_RD))
+        if (mode & D_RD)
         {
 			if (access(path.c_str(), X_OK) == 0)
 				Dir = opendir(path.c_str());
@@ -124,6 +130,7 @@ String response::MethodGet(LocationMap location, String path, String body)
 			}
 			if (!Dir)
 			{
+                std::cout << strerror(errno);
 				_status_code = SERVER_ERROR;
 				return getErrorPage(_serv, _status_code);
 			}
@@ -136,14 +143,19 @@ String response::MethodGet(LocationMap location, String path, String body)
                     if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
                     {
                         _status_code = OK;
+                        if (path[path.length() - 1] != '/')
+                            path += "/";
 						closedir(Dir);
                         return (readFile(path + *it));
                     }
                     else
                     {
                         _location = locationMatch(_ServerLocations, *it);
-						closedir(Dir);
-                        return (MethodCheck(_location, _reqMethod, path + *it, body));
+                        newpath = _rootpath + _path;
+                        if (newpath[newpath.length() - 1] != '/')
+                            newpath += "/";
+                        closedir(Dir);
+                        return (MethodCheck(_location, _reqMethod, newpath + *it, body));
                     }
                 }
             }
@@ -203,18 +215,25 @@ String response::MethodPost(LocationMap location, String path, String body)
     DIR *Dir;
     struct dirent *DirEntry;
     VecIterator it;
+    String newpath;
 
-    if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
+    mode = checkPathMode(path);
+
+    if ((location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "on")
+        && (!__req.getReqBody().empty() || !_upload.empty()))
     {
         return (handleUpload(location));
     }
+    if (!(mode & ISDIR) && !(mode & ISFILE))
+    {
+        _status_code = NOT_FOUND;
+        return (getErrorPage(_serv, _status_code));
+    }
     else if (location.find("upload_enable") != location.end() && location.find("upload_enable")->second[0] == "off")
     {
-        _status_code = SERVER_ERROR;
+        _status_code = FORBIDDEN;
         return getErrorPage(_serv, _status_code);
     }
-
-    mode = checkPathMode(path);
     if (mode & ISDIR)
     {
         if (location.find("index") != location.end())
@@ -227,7 +246,7 @@ String response::MethodPost(LocationMap location, String path, String body)
         }
         isautoindex = (location.find("autoindex") != location.end() && location.find("autoindex")->second.at(0) == "on");
         it = indexes.begin();
-        if (mode & (D_RD))
+        if (mode & D_RD)
         {
 			if (access(path.c_str(), X_OK) == 0)
 				Dir = opendir(path.c_str());
@@ -249,13 +268,20 @@ String response::MethodPost(LocationMap location, String path, String body)
                     // if index.html or index.htm found
                     if (checkExtension(*it) == "html" || checkExtension(*it) == "htm")
                     {
+                        if (path[path.length() -1] != '/')
+                            path += "/";
                         _status_code = OK;
+                        closedir(Dir);
                         return (readFile(path + *it));
                     }
                     else
                     {
                         _location = locationMatch(_ServerLocations, *it);
-                        return (MethodCheck(_location, _reqMethod, path + *it, body));
+                        newpath = _rootpath + _path;
+                        if (newpath[newpath.length() -1] != '/')
+                            newpath += "/";
+                        closedir(Dir);
+                        return (MethodCheck(_location, _reqMethod, newpath + *it, body));
                     }
                 }
             }
@@ -312,18 +338,12 @@ String response::MethodDelete(LocationMap location, String path, String body)
     (void)location;
 	(void)body;
     PATHMODE mode;
-	std::string root;
 
     mode = checkPathMode(path);
-    if (mode & ISFILE)
+    if (mode & ISFILE || mode & ISDIR)
     {
-		root = _serv.getRootPath();
-		if (root.back() == '/')
-			_path = root + _path.substr(1);
-		else
-			_path = root + _path;
-        if (remove(_path.c_str()) == 0)
-            _status_code = NO_CONTENT;
+        if (remove(path.c_str()) == 0)
+            _status_code = OK;
         else
         {
             _status_code = FORBIDDEN;
@@ -335,7 +355,7 @@ String response::MethodDelete(LocationMap location, String path, String body)
         _status_code = NOT_FOUND;
         return getErrorPage(_serv, _status_code);
     }
-    return "";
+    return "<h1> File deleted successfuly !</h1>";
 }
 
 typedef String (response::*MethodCall)(LocationMap location, String path, String body);
@@ -478,21 +498,18 @@ String response::handleUpload(LocationMap location)
         else
         {
             if (mkdir((_rootpath + upload_store).c_str(), 0777) == -1)
-                std::cerr << RED << "Error :  " << strerror(errno) << std::endl;
+                std::cerr << RED << "Error :  " << "Couldn't create th upload location !" << std::endl;
             body = writeContent(_rootpath + upload_store + "/" + it->first, it->second);
         }
         it++;
     }
     if (_status_code == FORBIDDEN)
         return (body);
-    // see if location contain a return line
-    // if it does, add the location header, and change the status code accordingly
     if ((it1 = location.find("return")) != location.end())
     {
         _status_code = static_cast<CODES>(std::stoi(it1->second[0].substr(0,3)));
         headers.insert(std::make_pair("Location", it1->second[0].substr(4)));
     }
-	body += "<p>File Upload success</p>";
     return body;
 }
 
@@ -500,16 +517,11 @@ void response::ResponseBuilder()
 {
     _response += "HTTP/1.1 " + std::to_string(_status_code) + " " + statusPhrases[_status_code] + "\r\n";
     checkAndAppend(headers, _response, "Connection");
-    // checkAndAppend(headers,_response,"Keep-Alive");
     checkAndAppend(headers, _response, "Date");
-    // checkAndAppend(headers,_response,"Content-Location");
     checkAndAppend(headers, _response, "Content-Length");
-    // checkAndAppend(headers,_response,"Content-Disposition");
-    // if (headers.find("Content-Type") != headers.end())
     checkAndAppend(headers, _response, "Content-Type");
     checkAndAppend(headers, _response, "Location");
     checkAndAppend(headers, _response, "Set-Cookie");
-    // checkAndAppend(headers,_response,"last-modified");
     checkAndAppend(headers, _response, "Server");
     _response += "\r\n";
 	_response.append(_body);
@@ -520,16 +532,15 @@ void response::ClearResponse()
 {
     __req.ClearRequest();
     headers.clear();
-    _body = "";
-    _response = "";
+    _body.clear();
+    _response.clear();
     _location.clear();
-    _rootpath = "";
-    _path = "";
+    _rootpath.clear();
+    _path.clear();
     statusPhrases.clear();
     _upload.clear();
     isCgiBody = 0;    // __conf.clearConf();
-    _reqMethod = "";
-    // _serv.clearServer();
+    _reqMethod.clear();
     _ServerLocations.clear();
     _status_code = OK;
     //...

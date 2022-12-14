@@ -6,7 +6,7 @@
 /*   By: hbel-hou <hbel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 18:54:26 by hbel-hou          #+#    #+#             */
-/*   Updated: 2022/12/09 19:55:36 by hbel-hou         ###   ########.fr       */
+/*   Updated: 2022/12/11 10:47:00 by hbel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ Map					parsing::getErrorPages(Map data)
 		if (it != data.end())
 		{
 			error = readFile(it->second);
+			if (error == "")
+				printWarning("file Not Found => " + it->second);
 			error == "" ? generateErrorPage(errors[i], status.find(errors[i])->second) : error;
 		}
 		else
@@ -360,7 +362,13 @@ void	parsing::parseFile(std::string text, size_t start)
 				return ;
 			}
 			checkMethodsKeyWords(locationsInfo);
-			locations.insert(std::make_pair(conf.second, locationsInfo));
+			if (locations.count(conf.second))
+			{
+				printWarning("Duplicate location bloc !!! => " + conf.first + " " + conf.second);
+				printWarning("ignoring it's configuration");
+			}
+			else
+				locations.insert(std::make_pair(conf.second, locationsInfo));
 			locationsInfo.clear();
 		}
 		else if (getTokenType(line) == COMMENT)
@@ -456,7 +464,16 @@ int        parsing::checkMessingElements(Map data, std::string keys[])
 
 int        parsing::checkDuplicateKwywords(Map data, std::string keys[])
 {
+	std::map<int, std::string>				status;
+	std::map<int, std::string>::iterator 	it;
 	std::pair<Map::iterator, Map::iterator> conf;
+
+	status = setStatusPhrases();
+	for (it = status.begin(); it != status.end(); it++)
+	{
+		if (data.count("error_page_" + std::to_string(it->first)) > 1)
+			throw std::runtime_error("duplicate kwywords: " + std::string("error_page_") + std::to_string(it->first));
+	}
 
 	for (int i = 1; i < 10; i++)
     {
@@ -479,6 +496,7 @@ void	parsing::checkKeyWords(void)
 		"error_page_404",
 		"error_page_500",
 		"error_page_502",
+		"return",
 	};
 
 	i = 0;
@@ -512,6 +530,8 @@ void	parsing::checkMethodsKeyWords(LocationMap locations)
 	{
 		for (int i = 0; i < 8; i++)
 		{
+			if (locations.count(begin->first) > 1)
+				throw std::runtime_error("duplicate kwywords: " + begin->first);
 			if (begin->first == "upload_enable" || begin->first == "autoindex")
 			{
 				if (begin->second[0] != "off" && begin->second[0] != "on")

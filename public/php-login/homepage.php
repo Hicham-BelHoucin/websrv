@@ -1,7 +1,7 @@
 <?php
     session_start();
     if (!isset($_SESSION['luser'])) {
-		echo "Please Login again";
+		echo "<html>Please Login again";
         echo "<a href='/php-login/login.php'>Click Here to Login</a>";
     }
     else {
@@ -9,7 +9,7 @@
 
         if ($now > $_SESSION['expire']) {
 			session_destroy();
-            echo "Your session has expired! <a href='/php-login/login.php'>Login here</a>";
+            echo "<html> Your session has expired! <a href='/php-login/login.php'>Login here</a>";
         }
         else { //Starting this else one [else1]
 ?>
